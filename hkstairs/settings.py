@@ -25,7 +25,7 @@ SECRET_KEY = 'XXX-XX-XXXX'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['stairculture.com']
+ALLOWED_HOSTS = ['stairculture.com','localhost']
 
 
 # Application definition

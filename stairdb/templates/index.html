@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block content %}
+    <h3>{{ team }}</h3>
+    <div class="content-map">
+        <div id="map" class="map"></div>
+        
+        <div class="info-box" id="layer-info" style="display:none"></div>
+        <div class="info-box" id="accuracy-box" style="display:none">
+            <em>The process of placing historic maps on current maps ("georeferencing") is done by matching points on the historic map to corresponding points on a current basemap.  It is not an exact process.  One can see above how the historical documents fit well in some places, and badly in others.  This is to say that the historic maps are best considered as showing features in their current day </em>vicinity<em>, not their exact location.</em>
+        </div>
+    </div>
+    <p>
+    {% for p in players %}
+        {% if not forloop.first %} | {% endif %}{{ p }}
+    {% endfor %}
+    </p>
+    <input type="hidden" id="col_json" name="col_json" value="{{ col_json }}">
+    <script type='text/javascript' src="/static/js/map_base.js"></script>
+{% endblock %}
