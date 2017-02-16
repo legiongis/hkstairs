@@ -2,6 +2,7 @@ from django.core.management.base import BaseCommand, CommandError
 from django.conf import settings
 import os
 import shapefile
+import pygeoif
 from stairdb.models import Stair
 
 class Command(BaseCommand):
@@ -28,40 +29,40 @@ class Command(BaseCommand):
         
     def load_stairs(self):
     
-        shp = os.path.join(settings.BASE_DIR,'stairdb','fixtures','stairs_WGS84_v4_Point.shp')
+        shp = os.path.join(settings.BASE_DIR,'stairdb','fixtures','stairs_WGS84_v4_Polygon.shp')
         
         print shp
 
         sf = shapefile.Reader(shp)
         recs = sf.shapeRecords()
-
-        wkt = None
+    
         ct = 0
         for rec in recs:
-            #print rec.record
             
             sid = rec.record[1]
             name = rec.record[2]
             location = rec.record[3]
             type = rec.record[4]
+            g = pygeoif.geometry.as_shape(rec.shape)
+            # try:
+                # m = pygeoif.Polygon(g)
+            # except:
+            m = pygeoif.MultiPolygon(g)
+            wkt = m.wkt
+            wkt = wkt.replace(")(","),(")
             
-            x,y = rec.shape.points[0][0],rec.shape.points[0][1]
-            wkt = 'POINT({} {})'.format(x,y)
+
             
-            print sid, name, location, type, wkt
             
             obj = Stair(stairid=sid,name=name,type=type,location=location,geom=wkt)
+            # try:
             obj.save()
-            
-            print "saved"
-            
-            ct+=1
-            if ct == 5:
-                break
-                
-        print "now loading new ones!"
+            ct += 1
+            # except:
+                # print "ERROR:", sid, name, location, type, wkt
+        print ct, "stairs loaded"
         
     def remove_stairs(self):
         
         print "removing all existing stairs in database"
-        #Stair.objects.all().delete()
+        Stair.objects.all().delete()
