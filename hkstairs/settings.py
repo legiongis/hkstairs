@@ -37,6 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.gis',
+    'leaflet',
     'stairdb',
 ]
 
@@ -51,6 +53,12 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'hkstairs.urls'
+
+LEAFLET_CONFIG = {
+'DEFAULT_ZOOM': 12,
+'MIN_ZOOM': 3,
+'MAX_ZOOM': 18,
+}
 
 TEMPLATES = [
     {
