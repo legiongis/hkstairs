@@ -22,10 +22,10 @@ class Stair(models.Model):
     )
 
     stairid = models.IntegerField(primary_key=True)
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=100,null=True)
     type = models.CharField(max_length=25,choices=TYPE_CHOICES,null=True,)
     location = models.CharField(max_length=100)
-    geom = models.PointField()
+    geom = models.MultiPolygonField(null=True)
     
     def __str__(self):
         return str(self.stairid)
