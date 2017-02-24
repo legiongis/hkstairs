@@ -1,5 +1,4 @@
 hkstairs/settings_local.py
-stairdb/static
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
