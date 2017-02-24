@@ -166,6 +166,20 @@ var rlArgs = {"script":"prettyphoto","selector":"lightbox","customEvents":"","ac
 
 <!-- END GADWP Universal Tracking -->
 
+<!-- JQuery JS -->
+<script src="http://code.jquery.com/jquery-latest.js"></script>
+
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+
+<!-- Latest compiled JavaScript -->
+<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<link rel='stylesheet' id='divi-fonts-css'  href="{% static 'css/rockandroll.css' %}" type='text/css' media='all' />
+
+<script src="{% static 'js/rockandroll.js' %}"></script>
+
+
 </head>
 <body>
     <!--
@@ -209,13 +223,13 @@ var rlArgs = {"script":"prettyphoto","selector":"lightbox","customEvents":"","ac
     <div id="page-container">
 
 	
-	
+	<!--
 		<header id="main-header" data-height-onload="85">
 			<div class="container clearfix et_menu_container">
 							<div class="logo_container">
 					<span class="logo_helper"></span>
 					<a href="http://stairculture.com/archive/">
-						<img src="http://stairculture.com/archive/wp-content/uploads/2016/08/cropped-Symbol-Line-Final_HKSA_2016_smsq.jpg" alt="Hong Kong Stair Archive" id="logo" data-height-percentage="65" />
+						<img src="{% static 'img/cropped-Symbol-Line-Final_HKSA_2016_smsq.jpg' %}" alt="Hong Kong Stair Archive" id="logo" data-height-percentage="65" />
 					</a>
 				</div>
 				<div id="et-top-navigation" data-height="85" data-fixed-height="40">
@@ -234,8 +248,8 @@ var rlArgs = {"script":"prettyphoto","selector":"lightbox","customEvents":"","ac
 					<span class="select_page">Select Page</span>
 					<span class="mobile_menu_bar mobile_menu_bar_toggle"></span>
 				</div>
-			</div>				</div> <!-- #et-top-navigation -->
-			</div> <!-- .container -->
+			</div>				</div>
+			</div>
 			<div class="et_search_outer">
 				<div class="container et_search_form_container">
 					<form role="search" method="get" class="et-search-form" action="http://stairculture.com/archive/">
@@ -243,20 +257,47 @@ var rlArgs = {"script":"prettyphoto","selector":"lightbox","customEvents":"","ac
 					<span class="et_close_search_field"></span>
 				</div>
 			</div>
-		</header> <!-- #main-header -->
+		</header>-->
+        
+    <div id="header-nav" style="height:100px;" class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container" style="width:80%;max-width:1080px;margin:auto;padding:0px;">
+		<a class="navbar-brand hidden-xs" href="http://stairculture.com/archive/">
+            <img id="header-logo" style="height:75px" src="{% static 'img/cropped-Symbol-Line-Final_HKSA_2016_smsq.jpg' %}" alt="Hong Kong Stair Archive"/>
+        </a>
+        <button class="navbar-toggle" data-toggle="collapse" data-target="#mynavbar">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="mynavbar">
+            <!--<ul id="top-menu" class="nav navbar-nav navbar-right">
+                <li id="menu-item-81" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-home menu-item-81"><a href="http://stairculture.com/archive/">Home</a></li>
+                <li id="menu-item-109" class="menu-item"><a href="http://stairculture.com/archive/stairs/">Stairs</a></li>
+                <li id="menu-item-362" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-362"><a href="http://stairculture.com/archive/news/">News</a></li>
+                <li id="menu-item-80" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-80"><a href="http://stairculture.com/archive/about/">About</a></li>
+            </ul>-->
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="http://stairculture.com/archive/">Home</a></li>
+            <li><a href="http://stairculture.com/archive/stairs/">Stairs</a></li>
+            <li><a href="http://stairculture.com/archive/news">News</a></li>
+            <li style="padding-right:0px;"><a href="http://stairculture.com/archive/about">About</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
 
     <div id="et-main-area">
 
         <div id="main-content">
             <div class="container-fluid">
-                <div class="content container">
-                    <div class="row">
-                        <div class="col-md-8">
-                        {% block content %}
-                        {% endblock %}
-                        </div>
-                        <div class="col-md-4">
-                        </div>
+                <div class="row">
+                    <div class="col-xs-12 col-sm-9 fullheight" style="background-color:cyan;">
+                    {% block content %}
+                    {% endblock %}
+                    </div>
+                    <div class="hidden-xs col-sm-3 redback fullheight"
+                    {% block sidebar %}
+                    {% endblock %}
                     </div>
                 </div>
             </div>
