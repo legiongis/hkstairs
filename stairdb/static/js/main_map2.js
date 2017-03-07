@@ -5,7 +5,7 @@ window.addEventListener("map:init", function (event) {
     var markers = new L.MarkerClusterGroup();
     var polygons = new L.geoJson();
     $.ajaxSetup( { "async": false } );  // remove line for (slow) async behaviour
-    $.getJSON('/json/all', function(pois) {
+    $.getJSON('http://stairculture.com/dev/json/all', function(pois) {
         
         for (var i in pois.features) {
             var props = pois.features[i].properties;
