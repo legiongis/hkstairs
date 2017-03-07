@@ -26,30 +26,42 @@ class Stair(models.Model):
     type = models.CharField(max_length=25,choices=TYPE_CHOICES,null=True,)
     location = models.CharField(max_length=100)
     geom = models.PolygonField(null=True)
+    coords_x = models.FloatField(null=True,editable=False)
+    coords_y = models.FloatField(null=True,editable=False)
     objects = models.GeoManager()
     
     def __str__(self):
         return str(self.stairid)
         
     def as_json(self,centroid=False):
+        '''CURRENTLY NOT IN USE 3/7/17'''
         """returns a feature dictionary that can be added to a FeatureCollection"""
 
         jdict = {
-            'geometry': {},
+            'geometry': {
+                'type':"Polygon",
+                'coordinates':self.geom.coords
+            },
             'type': "Feature",
             'properties': {
                 'stairid': self.stairid,
                 'name': self.name,
                 'type': self.type,
-                'centroid': self.geom.centroid.coords
+                'coords_x': self.coords_x,
+                'coords_y': self.coords_y
             }
         }
         
-        if centroid:
-            jdict['geometry']['type'] = "Point"
-            jdict['geometry']['coordinates'] = self.geom.centroid.coords
-        else:
-            jdict['geometry']['type'] = "Polygon"
-            jdict['geometry']['coordinates'] = self.geom.coords
+        # if centroid:
+            # jdict['geometry']['type'] = "Point"
+            # jdict['geometry']['coordinates'] = self.geom.centroid.coords
+        # else:
+            # jdict['geometry']['type'] = "Polygon"
+            # jdict['geometry']['coordinates'] = self.geom.coords
         
         return jdict
+        
+    def save(self, *args, **kwargs):
+        self.coords_x = self.geom.centroid.coords[0]
+        self.coords_y = self.geom.centroid.coords[1]
+        super(Stair, self).save(*args, **kwargs)
