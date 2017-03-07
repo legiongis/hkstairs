@@ -1,14 +1,11 @@
-.redback {
-    background-color:blue;
-}
-
-.fullheight {
-    min-height:1000px;
+html body {
+    height: 100vh;
 }
 
 .navbar {
     background-color: white;
     border: none;
+    margin-bottom: 0px;
 }
 
 .nav li {
@@ -25,20 +22,20 @@
     vertical-align: middle;
 }
 
-nav.navbar{
-  /*background-color:#ccc;*/
-   // Animation
-   -webkit-transition: all 0.4s ease;
-   transition: all 0.4s ease;
+.nav-container {
+    width:80%;
+    max-width:1080px;
+    margin:auto;
+    padding:0px;
 }
 
-/*
-.in {
-    margin-top: 100px;
-    background-color: red;
+.leaflet-container {
+    height: 450px;
+    box-shadow: 5px 5px 3px #888888;
+    border: solid 1px #888888;
 }
 
-.in ul li {
-    height: 10px;
+.content-row {
+    height: 100vh
 }
-*/
+

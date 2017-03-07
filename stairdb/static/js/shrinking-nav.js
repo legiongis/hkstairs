@@ -4,7 +4,6 @@
 // resizing the header based on scroll bar position
 $(function(){
     $('#header-nav').data('size','big');
-    $('#header-logo').data('size','big');
 });
 
 $(window).scroll(function(){
@@ -16,9 +15,6 @@ $(window).scroll(function(){
             $('#header-nav').stop().animate({
                 height:'55px'
             },600);
-        }
-        if($('#header-logo').data('size') == 'big')
-        {
             $('#header-logo').data('size','small');
             $('#header-logo').stop().animate({
                 height:'25px'
@@ -33,13 +29,10 @@ $(window).scroll(function(){
             $('#header-nav').stop().animate({
                 height:'100px'
             },600);
-        }
-        if($('#header-logo').data('size') == 'small')
-        {
             $('#header-logo').data('size','big');
             $('#header-logo').stop().animate({
                 height:'65px'
             },600);
-        }        
+        }
     }
 });
