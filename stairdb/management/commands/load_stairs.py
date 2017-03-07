@@ -24,20 +24,18 @@ class Command(BaseCommand):
             self.remove_stairs()
             
         self.load_stairs()
-        
-        
-        
+
     def load_stairs(self):
     
         shp = os.path.join(settings.BASE_DIR,'stairdb','fixtures','stairs_WGS84_v4_Polygon.shp')
         
+        print "loading stairs into database from file:"
         print shp
 
         sf = shapefile.Reader(shp)
         recs = sf.shapeRecords()
     
-        ct = 0
-        bad_ct = 0
+        ct,bad_ct = 0,0
         for rec in recs:
             
             sid = rec.record[1]
@@ -53,17 +51,11 @@ class Command(BaseCommand):
             #m = pygeoif.MultiPolygon(g)
             poly_wkt = poly.wkt
             poly_wkt = poly_wkt.replace(")(","),(")
-            # centroid_wkt = poly.centroid.wkt
-            
-            
 
-            
-            
             obj = Stair(stairid=sid,name=name,type=type,location=location,geom=poly_wkt)
             obj.save()
             ct += 1
-            # except:
-                # print "ERROR:", sid, name, location, type, wkt
+
         print ct, "stairs loaded"
         print bad_ct, "loading errors"
         
