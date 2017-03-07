@@ -37,6 +37,7 @@ class Command(BaseCommand):
         recs = sf.shapeRecords()
     
         ct = 0
+        bad_ct = 0
         for rec in recs:
             
             sid = rec.record[1]
@@ -44,23 +45,27 @@ class Command(BaseCommand):
             location = rec.record[3]
             type = rec.record[4]
             g = pygeoif.geometry.as_shape(rec.shape)
-            # try:
-                # m = pygeoif.Polygon(g)
-            # except:
-            m = pygeoif.MultiPolygon(g)
-            wkt = m.wkt
-            wkt = wkt.replace(")(","),(")
+            try:
+                poly = pygeoif.Polygon(g)
+            except:
+                bad_ct+=1
+                continue
+            #m = pygeoif.MultiPolygon(g)
+            poly_wkt = poly.wkt
+            poly_wkt = poly_wkt.replace(")(","),(")
+            # centroid_wkt = poly.centroid.wkt
+            
             
 
             
             
-            obj = Stair(stairid=sid,name=name,type=type,location=location,geom=wkt)
-            # try:
+            obj = Stair(stairid=sid,name=name,type=type,location=location,geom=poly_wkt)
             obj.save()
             ct += 1
             # except:
                 # print "ERROR:", sid, name, location, type, wkt
         print ct, "stairs loaded"
+        print bad_ct, "loading errors"
         
     def remove_stairs(self):
         
