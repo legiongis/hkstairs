@@ -1,4 +1,5 @@
 {% load staticfiles %}
+{% load leaflet_tags %}
 <html>
     
 <head>
@@ -175,131 +176,54 @@ var rlArgs = {"script":"prettyphoto","selector":"lightbox","customEvents":"","ac
 <!-- Latest compiled JavaScript -->
 <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 
-<link rel='stylesheet' id='divi-fonts-css'  href="{% static 'css/rockandroll.css' %}" type='text/css' media='all' />
+<link rel='stylesheet' href="{% static 'css/style.css' %}" type='text/css' media='all' />
 
-<script src="{% static 'js/rockandroll.js' %}"></script>
+<!-- just the stuff for a shrinking/expanding nav-bar -->
+<!--<script src="{% static 'js/shrinking-nav.js' %}"></script>
+<link rel='stylesheet' href="{% static 'css/shrinking-nav.css' %}" type='text/css' media='all' />-->
 
+{% leaflet_js %}
+{% leaflet_css %}
 
-</head>
-<body>
-    <!--
-    <header id="main-header" data-height-onload="103" style="height:130;">
-        <div class="container clearfix et_menu_container">
-            <div class="logo_container">
-                <span class="logo_helper"></span>
-                <a href="http://stairculture.com/">
-                    <img src="http://stairculture.com/wp-content/uploads/2016/08/Logo-Full-Web_HKSA_2016.png" alt="stair culture" id="logo" data-height-percentage="90" />
-                </a>
-            </div>
-            
-            <div id="et-top-navigation" data-height="103" data-fixed-height="40">
-                <nav id="top-menu-nav">
-                    <ul id="top-menu" class="nav"><li id="menu-item-89" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-89"><a href="http://stairculture.com/category/news/">news</a></li>
-                        <li id="menu-item-39" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-39"><a href="http://stairculture.com/about/">about</a></li>
-                        <li id="menu-item-54" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-54"><a href="http://stairculture.com/contact/">contact</a></li>
-                        <li id="menu-item-412" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-412"><a href="http://stairculture.com/category/press/">press</a></li>
-                    </ul>						
-                </nav>
-                <div id="et_top_search">
-                    <span id="et_search_icon"></span>
-                </div>
-                <div id="et_mobile_nav_menu">
-                    <div class="mobile_nav closed">
-                        <span class="select_page">Select Page</span>
-                        <span class="mobile_menu_bar mobile_menu_bar_toggle"></span>
+    <script src='https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/Leaflet.fullscreen.min.js'></script>
+    <link href='https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/leaflet.fullscreen.css' rel='stylesheet' />
+    
+    <link href='https://unpkg.com/leaflet.markercluster@1.0.3/dist/MarkerCluster.Default.css' rel='stylesheet' />
+    <link href='https://unpkg.com/leaflet.markercluster@1.0.3/dist/MarkerCluster.css' rel='stylesheet' />
+    <script src='https://unpkg.com/leaflet.markercluster@1.0.3/dist/leaflet.markercluster.js'></script>
+
+    <script src="{% static 'js/main_map2.js' %}"} type="text/javascript"></script>
+
+  </head>
+  <body>
+    <div class="container-fluid">
+        <!-- add these classes to #header-nav to enable the shrinkage:  navbar-inverse navbar-fixed-top -->
+        <div class="row">
+            <div id="header-nav" style="height:100px;" class="navbar" role="navigation">
+                <div class="nav-container">
+                    <a class="navbar-brand hidden-xs" href="http://stairculture.com/archive/">
+                        <img id="header-logo" style="height:75px" src="{% static 'img/cropped-Symbol-Line-Final_HKSA_2016_smsq.jpg' %}" alt="Hong Kong Stair Archive"/>
+                    </a>
+                    <button class="navbar-toggle" data-toggle="collapse" data-target="#mynavbar">
+                      <span class="icon-bar"></span>
+                      <span class="icon-bar"></span>
+                      <span class="icon-bar"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="mynavbar">
+                      <ul class="nav navbar-nav navbar-right">
+                        <li><a href="http://stairculture.com/archive/">Home</a></li>
+                        <li><a href="http://stairculture.com/archive/stairs/">Stairs</a></li>
+                        <li><a href="http://stairculture.com/archive/news">News</a></li>
+                        <li style="padding-right:0px;"><a href="http://stairculture.com/archive/about">About</a></li>
+                      </ul>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="et_search_outer">
-            <div class="container et_search_form_container">
-                <form role="search" method="get" class="et-search-form" action="http://stairculture.com/">
-                <input type="search" class="et-search-field" placeholder="Search &hellip;" value="" name="s" title="Search for:" />					</form>
-                <span class="et_close_search_field"></span>
-            </div>
-        </div>
-    </header>
-    -->
-    <div id="page-container">
-
-	
-	<!--
-		<header id="main-header" data-height-onload="85">
-			<div class="container clearfix et_menu_container">
-							<div class="logo_container">
-					<span class="logo_helper"></span>
-					<a href="http://stairculture.com/archive/">
-						<img src="{% static 'img/cropped-Symbol-Line-Final_HKSA_2016_smsq.jpg' %}" alt="Hong Kong Stair Archive" id="logo" data-height-percentage="65" />
-					</a>
-				</div>
-				<div id="et-top-navigation" data-height="85" data-fixed-height="40">
-											<nav id="top-menu-nav">
-						<ul id="top-menu" class="nav"><li id="menu-item-81" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-home menu-item-81"><a href="http://stairculture.com/archive/">Home</a></li>
-<li id="menu-item-109" class="menu-item menu-item-type-post_type menu-item-object-page current-menu-item page_item page-item-105 current_page_item menu-item-109"><a href="http://stairculture.com/archive/stairs/">Stairs</a></li>
-<li id="menu-item-362" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-362"><a href="http://stairculture.com/archive/news/">News</a></li>
-<li id="menu-item-80" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-80"><a href="http://stairculture.com/archive/about/">About</a></li>
-</ul>						</nav>
-					
-					
-					
-					
-					<div id="et_mobile_nav_menu">
-				<div class="mobile_nav closed">
-					<span class="select_page">Select Page</span>
-					<span class="mobile_menu_bar mobile_menu_bar_toggle"></span>
-				</div>
-			</div>				</div>
-			</div>
-			<div class="et_search_outer">
-				<div class="container et_search_form_container">
-					<form role="search" method="get" class="et-search-form" action="http://stairculture.com/archive/">
-					<input type="search" class="et-search-field" placeholder="Search &hellip;" value="" name="s" title="Search for:" />					</form>
-					<span class="et_close_search_field"></span>
-				</div>
-			</div>
-		</header>-->
-        
-    <div id="header-nav" style="height:100px;" class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-      <div class="container" style="width:80%;max-width:1080px;margin:auto;padding:0px;">
-		<a class="navbar-brand hidden-xs" href="http://stairculture.com/archive/">
-            <img id="header-logo" style="height:75px" src="{% static 'img/cropped-Symbol-Line-Final_HKSA_2016_smsq.jpg' %}" alt="Hong Kong Stair Archive"/>
-        </a>
-        <button class="navbar-toggle" data-toggle="collapse" data-target="#mynavbar">
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="mynavbar">
-            <!--<ul id="top-menu" class="nav navbar-nav navbar-right">
-                <li id="menu-item-81" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-home menu-item-81"><a href="http://stairculture.com/archive/">Home</a></li>
-                <li id="menu-item-109" class="menu-item"><a href="http://stairculture.com/archive/stairs/">Stairs</a></li>
-                <li id="menu-item-362" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-362"><a href="http://stairculture.com/archive/news/">News</a></li>
-                <li id="menu-item-80" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-80"><a href="http://stairculture.com/archive/about/">About</a></li>
-            </ul>-->
-          <ul class="nav navbar-nav navbar-right">
-            <li><a href="http://stairculture.com/archive/">Home</a></li>
-            <li><a href="http://stairculture.com/archive/stairs/">Stairs</a></li>
-            <li><a href="http://stairculture.com/archive/news">News</a></li>
-            <li style="padding-right:0px;"><a href="http://stairculture.com/archive/about">About</a></li>
-          </ul>
-        </div>
-      </div>
-    </div>
-
-    <div id="et-main-area">
-
-        <div id="main-content">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-xs-12 col-sm-9 fullheight" style="background-color:cyan;">
-                    {% block content %}
-                    {% endblock %}
-                    </div>
-                    <div class="hidden-xs col-sm-3 redback fullheight"
-                    {% block sidebar %}
-                    {% endblock %}
-                    </div>
-                </div>
+        <div class="row">
+            <div class="col-xs-12">
+            {% block content %}
+            {% endblock %}
             </div>
         </div>
     </div>

@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
+{% load leaflet_tags %}
 {% block content %}
-    <h3>stair map here!</h3>
+    {% leaflet_map "main" %}
     <div class="content-map">
         <div id="map" class="map"></div>
         
