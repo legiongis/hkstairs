@@ -4,6 +4,7 @@ from django.contrib.gis.db.models.functions import Centroid,AsGeoJSON
 from django.core.serializers import serialize
 import json
 from models import Stair
+import time
 
 def index(request):
 
@@ -11,15 +12,19 @@ def index(request):
     
 def get_stairs(self,stairid="all"):
 
+    start = time.time()
     if stairid == "all":
         q1 = Stair.objects.all()
 
     else:
         #q1 = [Stair.objects.get(stairid=stairid),Stair.objects.get(stairid=str(int(stairid)+1))]
         q1 = [Stair.objects.get(stairid=stairid)]
-    
+    r = time.time()
+    print "objects retrieved:", r-start
     jsond = serialize('geojson',q1,geometry_field="geom",
           fields=('name','type','coords_x','coords_y'))
+    s = time.time()
+    print "objects serialized:", s-r
     
     ## custom serializing code is currently not in use
     # centroid = False
