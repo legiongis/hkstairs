@@ -39,3 +39,37 @@ html body {
     height: 100vh
 }
 
+.leaflet-popup {
+    background-color: red;
+    width:150px;
+    height:150px;
+}
+
+.leaflet-popup-content-wrapper {
+    height:100%;
+}
+
+.loader-mask {
+    background-color: rgba(0,0,0,.5)
+}
+
+#loader {
+    position: relative;
+	top: -250px;
+	width: 100%;
+	height: 50px;
+	z-index: 9999;
+}
+
+#loader-content {
+    display: table;
+    margin: 0 auto;
+    font-family: 'Abel', Helvetica, Arial, Lucida, sans-serif;
+    text-align: center;
+}
+
+.loader-mask {
+    padding: 15px;
+    background-color: rgba(255,255,255,.75);
+    border-radius: 5px;
+}
