@@ -62,6 +62,9 @@ LEAFLET_CONFIG = {
 'SPATIAL_EXTENT': (114, 22.2, 114.25, 22.35),
 }
 
+# string that can be passed to js to fix up the subdirectory url structure
+# this should be left empty here and only defined in settings_local
+LOCAL_URL = ''
 
 TEMPLATES = [
     {
@@ -74,13 +77,13 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'stairdb.context_processors.local_url',
             ],
         },
     },
 ]
 
 WSGI_APPLICATION = 'hkstairs.wsgi.application'
-
 
 # Database
 # https://docs.djangoproject.com/en/1.10/ref/settings/#databases

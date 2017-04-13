@@ -63,7 +63,7 @@ window.addEventListener("map:init", function (event) {
       // error: function (request, status, error) { alert(status + ", " + error); }
     // });
     
-    $.getJSON('/json/all', function(pois) {
+    $.getJSON(local_url+'/json/all', function(pois) {
         
         var start_time = new Date().getTime();
         

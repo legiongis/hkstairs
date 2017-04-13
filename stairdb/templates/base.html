@@ -202,11 +202,11 @@ var rlArgs = {"script":"prettyphoto","selector":"lightbox","customEvents":"","ac
     <link href='https://unpkg.com/leaflet.markercluster@1.0.3/dist/MarkerCluster.css' rel='stylesheet' />
     <script src='https://unpkg.com/leaflet.markercluster@1.0.3/dist/leaflet.markercluster.js'></script>
 
+    <script>var local_url = "{{local_url}}";</script>
     <script src="{% static 'js/main_map.js' %}" type="text/javascript"></script>
 
   </head>
-  <body>
-    
+  <body >
         <!-- add these classes to #header-nav to enable the shrinkage:  navbar-inverse navbar-fixed-top -->
         <!--<div class="row">-->
             {% block header %}
