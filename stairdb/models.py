@@ -21,7 +21,7 @@ class Stair(models.Model):
         ('Subway','Subway'),
     )
 
-    stairid = models.IntegerField(primary_key=True)
+    stairid = models.IntegerField()
     name = models.CharField(max_length=100,null=True)
     type = models.CharField(max_length=25,choices=TYPE_CHOICES,null=True,)
     location = models.CharField(max_length=100)
