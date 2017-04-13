@@ -40,6 +40,8 @@ class Command(BaseCommand):
             
             sid = rec.record[1]
             name = rec.record[2].strip()
+            if name == "":
+                name = "N/A"
             location = rec.record[3]
             type = rec.record[4]
             g = pygeoif.geometry.as_shape(rec.shape)
