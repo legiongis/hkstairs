@@ -1,25 +1,46 @@
 {% extends 'base.html' %}
 {% load staticfiles %}
 {% load leaflet_tags %}
+{% block header %}{% endblock %}
 {% block content %}
-    {% leaflet_map "main" %}
-    <div class="content-map">
-        <div id="map" class="map"></div>
-        <div id="loader">
-            <div id="loader-content">
-                <img src="{% static 'img/spinner.gif' %}" style="margin: 0 auto">
-                <div id="loader-msg"><h4><strong>loading...</strong></h4></div>
-            </div>
-        </div>
-        <div class="info-box" id="layer-info" style="display:none"></div>
-        <div class="info-box" id="accuracy-box" style="display:none">
-            <em>The process of placing historic maps on current maps ("georeferencing") is done by matching points on the historic map to corresponding points on a current basemap.  It is not an exact process.  One can see above how the historical documents fit well in some places, and badly in others.  This is to say that the historic maps are best considered as showing features in their current day </em>vicinity<em>, not their exact location.</em>
+<nav id="header-nav" class="navbar navbar-inverse" role="navigation">
+    <div class="container-fluid">
+    <div class="nav-container">
+        <a class="navbar-brand hidden-xs" href="http://stairculture.com/archive/">
+            <img id="header-logo" style="height:25px" src="{% static 'img/cropped-Symbol-Line-Final_HKSA_2016_smsq_trans.png' %}" alt="Hong Kong Stair Archive"/>
+        </a>
+        <button class="navbar-toggle" data-toggle="collapse" data-target="#mynavbar">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="mynavbar">
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="http://stairculture.com/archive/">Home</a></li>
+            <li><a href="http://stairculture.com/archive/stairs/">Stairs</a></li>
+            <li><a href="http://stairculture.com/archive/news">News</a></li>
+            <li style="padding-right:0px;"><a href="http://stairculture.com/archive/about">About</a></li>
+          </ul>
         </div>
     </div>
-    <p>
-    {% for p in players %}
-        {% if not forloop.first %} | {% endif %}{{ p }}
-    {% endfor %}
-    </p>
-    <input type="hidden" id="col_json" name="col_json" value="{{ col_json }}">
+    </div>
+</nav>
+{% leaflet_map "main" %}
+<div id="map" class="map"></div>
+<div id="loader">
+    <div id="loader-content">
+        <img src="{% static 'img/spinner.gif' %}" style="margin: 0 auto">
+        <div id="loader-msg"><h4><strong>loading...</strong></h4></div>
+    </div>
+</div>
+<div class="info-box" id="layer-info" style="display:none"></div>
+<div class="info-box" id="accuracy-box" style="display:none">
+    <em>The process of placing historic maps on current maps ("georeferencing") is done by matching points on the historic map to corresponding points on a current basemap.  It is not an exact process.  One can see above how the historical documents fit well in some places, and badly in others.  This is to say that the historic maps are best considered as showing features in their current day </em>vicinity<em>, not their exact location.</em>
+</div>
+<p>
+{% for p in players %}
+    {% if not forloop.first %} | {% endif %}{{ p }}
+{% endfor %}
+</p>
+<input type="hidden" id="col_json" name="col_json" value="{{ col_json }}">
 {% endblock %}

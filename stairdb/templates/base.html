@@ -206,36 +206,35 @@ var rlArgs = {"script":"prettyphoto","selector":"lightbox","customEvents":"","ac
 
   </head>
   <body>
-    <div class="container-fluid">
+    
         <!-- add these classes to #header-nav to enable the shrinkage:  navbar-inverse navbar-fixed-top -->
-        <div class="row">
-            <div id="header-nav" style="height:100px;" class="navbar" role="navigation">
-                <div class="nav-container">
-                    <a class="navbar-brand hidden-xs" href="http://stairculture.com/archive/">
-                        <img id="header-logo" style="height:75px" src="{% static 'img/cropped-Symbol-Line-Final_HKSA_2016_smsq.jpg' %}" alt="Hong Kong Stair Archive"/>
-                    </a>
-                    <button class="navbar-toggle" data-toggle="collapse" data-target="#mynavbar">
-                      <span class="icon-bar"></span>
-                      <span class="icon-bar"></span>
-                      <span class="icon-bar"></span>
-                    </button>
-                    <div class="collapse navbar-collapse" id="mynavbar">
-                      <ul class="nav navbar-nav navbar-right">
-                        <li><a href="http://stairculture.com/archive/">Home</a></li>
-                        <li><a href="http://stairculture.com/archive/stairs/">Stairs</a></li>
-                        <li><a href="http://stairculture.com/archive/news">News</a></li>
-                        <li style="padding-right:0px;"><a href="http://stairculture.com/archive/about">About</a></li>
-                      </ul>
+        <!--<div class="row">-->
+            {% block header %}
+            <nav id="header-nav" class="navbar navbar-inverse" role="navigation">
+                <div class="container-fluid">
+                    <div class="nav-container">
+                        <a class="navbar-brand hidden-xs" href="http://stairculture.com/archive/">
+                            <img id="header-logo" style="height:75px" src="{% static 'img/cropped-Symbol-Line-Final_HKSA_2016_smsq_trans.png' %}" alt="Hong Kong Stair Archive"/>
+                        </a>
+                        <button class="navbar-toggle" data-toggle="collapse" data-target="#mynavbar">
+                          <span class="icon-bar"></span>
+                          <span class="icon-bar"></span>
+                          <span class="icon-bar"></span>
+                        </button>
+                        <div class="collapse navbar-collapse" id="mynavbar">
+                          <ul class="nav navbar-nav navbar-right">
+                            <li><a href="http://stairculture.com/archive/">Home</a></li>
+                            <li><a href="http://stairculture.com/archive/stairs/">Stairs</a></li>
+                            <li><a href="http://stairculture.com/archive/news">News</a></li>
+                            <li style="padding-right:0px;"><a href="http://stairculture.com/archive/about">About</a></li>
+                          </ul>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </div>
-        <div class="row" style="width:80%;margin-right:auto;margin-left:auto">
-            <div class="col-xs-12">
+            </nav>
+            {% endblock %}
             {% block content %}
             {% endblock %}
-            </div>
-        </div>
     </div>
 </body>
 </html>

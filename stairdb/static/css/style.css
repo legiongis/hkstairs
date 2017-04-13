@@ -3,9 +3,12 @@ html body {
 }
 
 .navbar {
-    background-color: white;
-    border: none;
-    margin-bottom: 0px;
+    background-color: rgba(255, 255, 255, 0.9);
+    position: fixed;
+    z-index: 5000;
+    width: 100%;
+    border-radius: 0;
+    border: 0;
 }
 
 .nav li {
@@ -29,10 +32,29 @@ html body {
     padding:0px;
 }
 
+.navbar-toggle {
+    border: 0;
+}
+
+.navbar-toggle:hover {
+    background-color: rgba(2, 2, 2, 0.11) !important;
+    border: 0;
+}
+
+.navbar-inverse .navbar-toggle .icon-bar {
+    background-color: #888888;
+}
+
+.navbar-inverse .navbar-toggle {
+    
+}
+
 .leaflet-container {
-    height: 450px;
-    box-shadow: 5px 5px 3px #888888;
-    border: solid 1px #888888;
+    height: 100%;
+}
+
+.leaflet-top {
+    top: 50px !important;
 }
 
 .content-row {
