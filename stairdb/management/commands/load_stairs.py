@@ -27,7 +27,7 @@ class Command(BaseCommand):
 
     def load_stairs(self):
     
-        shp = os.path.join(settings.BASE_DIR,'stairdb','fixtures','stairs_WGS84_v4_Polygon.shp')
+        shp = os.path.join(settings.BASE_DIR,'stairdb','fixtures','Stairs_v5_polygons_wsg84.shp')
         
         print "loading stairs into database from file:"
         print shp
@@ -39,7 +39,7 @@ class Command(BaseCommand):
         for rec in recs:
             
             sid = rec.record[1]
-            name = rec.record[2]
+            name = rec.record[2].strip()
             location = rec.record[3]
             type = rec.record[4]
             g = pygeoif.geometry.as_shape(rec.shape)
@@ -51,7 +51,6 @@ class Command(BaseCommand):
             #m = pygeoif.MultiPolygon(g)
             poly_wkt = poly.wkt
             poly_wkt = poly_wkt.replace(")(","),(")
-
             obj = Stair(stairid=sid,name=name,type=type,location=location,geom=poly_wkt)
             obj.save()
             ct += 1
