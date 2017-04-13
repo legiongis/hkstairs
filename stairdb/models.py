@@ -21,10 +21,10 @@ class Stair(models.Model):
         ('Subway','Subway'),
     )
 
-    stairid = models.IntegerField()
-    name = models.CharField(max_length=100,null=True)
+    stairid = models.IntegerField(editable=False)
+    name = models.CharField(max_length=100,null=True,default="N/A")
     type = models.CharField(max_length=25,choices=TYPE_CHOICES,null=True,)
-    location = models.CharField(max_length=100)
+    location = models.CharField(max_length=100,null=True,default="N/A")
     geom = models.PolygonField(null=True)
     coords_x = models.FloatField(null=True,editable=False)
     coords_y = models.FloatField(null=True,editable=False)
