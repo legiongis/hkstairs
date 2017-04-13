@@ -7,11 +7,13 @@ $(window).load(function () {
 });
 
 window.addEventListener("map:init", function (event) {
+    
     var map = event.detail.map;
     map.addControl(new L.Control.Fullscreen());
-
+    
     var markers = new L.MarkerClusterGroup();
-    var polygons = new L.geoJson();
+    var polygons = new L.LayerGroup();
+    
     //$.ajaxSetup( { "async": false } );  // remove line for (slow) async behaviour
     
     // --- EXAMPLE of using a general ajax request instead of .getJSON. May be necessary down the road. ---
@@ -26,30 +28,31 @@ window.addEventListener("map:init", function (event) {
       // },
       // error: function (request, status, error) { alert(status + ", " + error); }
     // });
-
     
     $.getJSON('/json/all', function(pois) {
         
-        
         var start_time = new Date().getTime();
         
-        
+        // first get all of the markers
         for (var i in pois.features) {
             var props = pois.features[i].properties;
-            var marker = new L.Marker(new L.LatLng(props.coords_y, props.coords_x));
-            var polygon = new L.Polygon(pois.features[i].geometry.coordinates[0]);
-            polygons.addData(pois.features[i]);
-            marker.bindPopup(props.name);
-            markers.addLayer(marker);
+            var content = '<h3>'+props.type+'</h3><p>name = '+props.name+'<br>location = '+props.location+'<br>stairid = '+props.stairid+'</p>';
             
-            // L.geoJson(data, {
-          // onEachFeature: function onEachFeature(feature, layer) {
-            // var props = feature.properties;
-            // var content = `<img width="300" src="${props.picture_url}"/><h3>${props.title}</h3><p>${props.description}</p>`;
-            // layer.bindPopup(content);
-        // }}).addTo(map);
-        // });
+            var marker = new L.Marker(new L.LatLng(props.coords_y, props.coords_x));
+            marker.bindPopup(content);
+            markers.addLayer(marker);
         }
+        
+        // next get all of the polygons into a geojson layer
+        polygons = L.geoJson(pois, {
+            onEachFeature: function onEachFeature(feature, layer) {
+                var props = feature.properties;
+                //<img width="300" src="${props.picture_url}"/>
+                var content = `<h3>${props.type}</h3><p>name = ${props.name}<br>location = ${props.location}<br>stairid = ${props.stairid}</p>`;
+                layer.bindPopup(content);
+            }
+        })
+        
         success:
             $("#loader").addClass("hidden");
             var request_time = new Date().getTime() - start_time;

@@ -40,9 +40,9 @@ html body {
 }
 
 .leaflet-popup {
-    background-color: red;
     width:150px;
     height:150px;
+    font-family: 'Abel', Helvetica, Arial, Lucida, sans-serif;
 }
 
 .leaflet-popup-content-wrapper {

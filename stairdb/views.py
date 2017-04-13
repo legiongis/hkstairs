@@ -17,12 +17,11 @@ def get_stairs(self,stairid="all"):
         q1 = Stair.objects.all()
 
     else:
-        #q1 = [Stair.objects.get(stairid=stairid),Stair.objects.get(stairid=str(int(stairid)+1))]
-        q1 = [Stair.objects.get(stairid=stairid)]
+        q1 = [Stair.objects.get(stairid=str(int(stairid)+1))]
+
     r = time.time()
-    print "objects retrieved:", r-start
     jsond = serialize('geojson',q1,geometry_field="geom",
-          fields=('name','type','coords_x','coords_y'))
+          fields=('name','type','coords_x','coords_y','stairid','location'))
     s = time.time()
     print "objects serialized:", s-r
     
