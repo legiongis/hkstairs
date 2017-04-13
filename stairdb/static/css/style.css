@@ -32,6 +32,10 @@ html body {
     padding:0px;
 }
 
+.navbar-brand {
+    padding: 5px;
+}
+
 .navbar-toggle {
     border: 0;
 }
@@ -76,8 +80,8 @@ html body {
 }
 
 #loader {
-    position: relative;
-	top: -250px;
+    position: absolute;
+	top: 250px;
 	width: 100%;
 	height: 50px;
 	z-index: 9999;
