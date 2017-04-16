@@ -53,15 +53,6 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'hkstairs.urls'
 
-LEAFLET_CONFIG = {
-'DEFAULT_CENTER': (22.28,114.15),
-'DEFAULT_ZOOM': 14,
-'MIN_ZOOM': 13,
-'MAX_ZOOM': 18,
-'MINIMAP': True,
-'SPATIAL_EXTENT': (114, 22.2, 114.25, 22.35),
-}
-
 # string that can be passed to js to fix up the subdirectory url structure
 # this should be left empty here and only defined in settings_local
 LOCAL_URL = ''
@@ -142,6 +133,35 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR,"stairdb","static"),
 ]
+
+LEAFLET_CONFIG = {
+    'DEFAULT_CENTER': (22.28,114.15),
+    'DEFAULT_ZOOM': 14,
+    'MIN_ZOOM': 13,
+    'MAX_ZOOM': 18,
+    
+    'SPATIAL_EXTENT': (114, 22.2, 114.25, 22.35),
+    'SCALE': None,
+    'TILES': [],
+    'MINIMAP': False,
+    'PLUGINS': {
+        'fullscreen': {
+            'css': ['https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/leaflet.fullscreen.css'],
+            'js': 'https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/Leaflet.fullscreen.min.js',
+            'auto-include': True,
+        },
+        'markercluster': {
+            'css': ['https://unpkg.com/leaflet.markercluster@1.0.3/dist/MarkerCluster.Default.css','https://unpkg.com/leaflet.markercluster@1.0.3/dist/MarkerCluster.css'],
+            'js': 'https://unpkg.com/leaflet.markercluster@1.0.3/dist/leaflet.markercluster.js',
+            'auto-include': True,
+        },
+        'minimap': {
+            'css': [STATIC_URL + 'plugins/Control.MiniMap.min.css'],
+            'js': STATIC_URL + 'plugins/Control.MiniMap.min.js',
+            'auto-include': True,
+        },
+    }
+}
 
 try:
     from settings_local import *
