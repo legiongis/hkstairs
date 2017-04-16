@@ -45,7 +45,9 @@ window.addEventListener("map:init", function (event) {
     var map = event.detail.map;
     map.addControl(new L.Control.Fullscreen());
     
-    var markers = new L.MarkerClusterGroup();
+    // makimarker name list: https://raw.githubusercontent.com/mapbox/maki/master/layouts/all.json
+    L.MakiMarkers.accessToken = mapbox_api_key;
+    
     var polygons = new L.LayerGroup();
     
     //$.ajaxSetup( { "async": false } );  // remove line for (slow) async behaviour

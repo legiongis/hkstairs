@@ -69,6 +69,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'stairdb.context_processors.local_url',
+                'stairdb.context_processors.mapbox_api_key',
             ],
         },
     },
