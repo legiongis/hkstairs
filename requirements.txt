@@ -2,3 +2,4 @@ django
 django-leaflet
 pyshp
 pygeoif
+psycopg2
