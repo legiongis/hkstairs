@@ -10,7 +10,7 @@ Installing this app locally should be very straight-forward.
 
     `pip install -r requirements.txt`
     
-+ create a settings_local.py file that contains your necessary postgres credentials
++ create a settings_local.py file that contains your necessary postgres credentials AND a MAPBOX_API_KEY with your key
 
 + setup the database with
 
