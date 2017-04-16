@@ -99,3 +99,84 @@ html body {
     background-color: rgba(255,255,255,.75);
     border-radius: 5px;
 }
+
+.cluster-marker {
+	border-radius: 50%;
+    margin-top: -17px !important;
+    margin-left: -17px !important;
+    width: initial !important;
+	height: initial !important;
+    text-align: center;
+}
+
+.cluster-marker div {
+	background-clip: padding-box;
+	border-radius: 50%;
+    width: 35px;
+	height: 35px;
+    border: rgba(0,0,0,0) 4px solid;
+}
+
+.cluster-marker p {
+	font-family: 'Abel', Helvetica, Arial, Lucida, sans-serif;
+    line-height: 28px;
+    font-weight: 600;
+}
+
+.all-types, .all-types div {
+    background-color: rgba(240,150, 12, 0.6);
+    z-index: 450 !important;
+}
+
+.alley-stairs, .alley-stairs div {
+    background-color: rgba(221,45,22, 0.6);
+    z-index: 440 !important;
+}
+.building-access, .building-access div {
+    background-color: rgba(68,32,27, 0.6);
+    z-index: 441 !important;
+}
+.country-park-stairs, .country-park-stairs div {
+    background-color: rgba(170,0,102, 0.6);
+    z-index: 442 !important;
+}
+.curb-stairs, .curb-stairs div {
+    background-color: rgba(102,181,45, 0.6);
+    z-index: 443 !important;
+}
+.elevated-walkway, .elevated-walkway div {
+    background-color: rgba(175,221,22, 0.6);
+    z-index: 444 !important;
+}
+.escalator, .escalator div {
+    background-color: rgba(97,22,221, 0.6);
+    z-index: 445 !important;
+}
+.footpath, .footpath div {
+    background-color: rgba(43,27,68, 0.6);
+    z-index: 446 !important;
+}
+.maintenance-stairs, .maintenance-stairs div {
+    background-color: rgba(0,27,170, 0.6);
+    z-index: 447 !important;
+}
+.pier-stairs, .pier-stairs div {
+    background-color: rgba(181,137,53, 0.6);
+    z-index: 448 !important;
+}
+.park-stairs, .park-stairs div {
+    background-color: rgba(221,130,22, 0.6);
+    z-index: 448 !important;
+}
+.plaza-stairs, .plaza-stairs div {
+    background-color: rgba(53,150, 100, 0.6);
+    z-index: 448 !important;
+}
+.street-stairs, .street-stairs div {
+    background-color: rgba(53,150, 100, 0.6);
+    z-index: 448 !important;
+}
+.subway, .subway div {
+    background-color: rgba(53,150, 100, 0.6);
+    z-index: 448 !important;
+}
