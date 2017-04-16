@@ -1,0 +1,4 @@
+django
+django-leaflet
+pyshp
+pygeoif
