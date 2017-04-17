@@ -133,7 +133,7 @@ html body {
     z-index: 440 !important;
 }
 .building-access, .building-access div {
-    background-color: rgba(68,32,27, 0.6);
+    background-color: rgba(184,66,81, 0.6);
     z-index: 441 !important;
 }
 .country-park-stairs, .country-park-stairs div {
@@ -153,11 +153,11 @@ html body {
     z-index: 445 !important;
 }
 .footpath, .footpath div {
-    background-color: rgba(43,27,68, 0.6);
+    background-color: rgba(136,215,255, 0.6);
     z-index: 446 !important;
 }
 .maintenance-stairs, .maintenance-stairs div {
-    background-color: rgba(0,27,170, 0.6);
+    background-color: rgba(0,101,170, 0.6);
     z-index: 447 !important;
 }
 .pier-stairs, .pier-stairs div {
@@ -165,18 +165,18 @@ html body {
     z-index: 448 !important;
 }
 .park-stairs, .park-stairs div {
-    background-color: rgba(221,130,22, 0.6);
+    background-color: rgba(221,104,22, 0.6);
     z-index: 448 !important;
 }
 .plaza-stairs, .plaza-stairs div {
-    background-color: rgba(53,150, 100, 0.6);
+    background-color: rgba(209,191,0, 0.6);
     z-index: 448 !important;
 }
 .street-stairs, .street-stairs div {
-    background-color: rgba(53,150, 100, 0.6);
+    background-color: rgba(63,181,18, 0.6);
     z-index: 448 !important;
 }
 .subway, .subway div {
-    background-color: rgba(53,150, 100, 0.6);
+    background-color: rgba(234,0,22, 0.6);
     z-index: 448 !important;
 }

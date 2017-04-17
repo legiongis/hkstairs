@@ -53,7 +53,7 @@ window.addEventListener("map:init", function (event) {
             "markers": []
         },
         "Building Access": {
-            "color": "#44201B",
+            "color": "#B84251",
             "classname": "building-access",
             "markers": []
         },
@@ -78,12 +78,12 @@ window.addEventListener("map:init", function (event) {
             "markers": []
         },
         "Footpath": {
-            "color": "#2B1B44",
+            "color": "#88D7FF",
             "classname": "footpath",
             "markers": []
         },
         "Maintenance Stairs": {
-            "color": "#001BAA",
+            "color": "#0065AA",
             "classname": "maintenance-stairs",
             "markers": []
         },
@@ -93,46 +93,174 @@ window.addEventListener("map:init", function (event) {
             "markers": []
         },
         "Park Stairs": {
-            "color": "#DD8216",
+            "color": "#DD6816",
             "classname": "park-stairs",
             "markers": []
         },
         "Plaza Stairs": {
-            "color": "#ff000f",
+            "color": "#D1BF00",
             "classname": "plaza-stairs",
             "markers": []
         },
         "Street Stairs": {
-            "color": "#ff00ff",
+            "color": "#3FB512",
             "classname": "street-stairs",
             "markers": []
         },
         "Subway": {
-            "color": "#0000ff",
+            "color": "#EA0016",
             "classname": "subway",
             "markers": []
         },
     }
+
+    var getClusterRadius = function(zoom){
+        if (zoom < 17) {
+            return 80
+        }
+        if (zoom == 17) {
+            return 50
+        }
+        if (zoom == 18) {
+            return 20
+        }
+    }
     
-    overlaysDict = {}
-    
-    // PROBLEM HERE! DIV CLASS NOT PROPERLY PASSING TO FUNCTION
-    for (var i in colorDict) {
-        var divClass = colorDict[i].classname;
-        var typeLayer = new L.MarkerClusterGroup({
+    var overlaysDict = {
+        "Alley Stairs": new L.MarkerClusterGroup({
             iconCreateFunction: function(cluster) {
-                console.log(divClass);
                 return L.divIcon({
                     html: '<div><p>' + cluster.getChildCount() + '</p></div>',
-                    className: 'cluster-marker '+divClass
+                    className: 'cluster-marker '+colorDict["Alley Stairs"].classname
                 });
             },
-            
-            // disableClusteringAtZoom: 17,
-            // spiderfyOnMaxZoom: false
-        });
-        overlaysDict[i] = typeLayer;
+            maxClusterRadius: getClusterRadius,
+        }),
+        "Building Access": new L.MarkerClusterGroup({
+            iconCreateFunction: function(cluster) {
+                return L.divIcon({
+                    html: '<div><p>' + cluster.getChildCount() + '</p></div>',
+                    className: 'cluster-marker '+colorDict["Building Access"].classname
+                });
+            },
+            maxClusterRadius: getClusterRadius,
+        }),
+        "Country Park Stairs": new L.MarkerClusterGroup({
+            iconCreateFunction: function(cluster) {
+                return L.divIcon({
+                    html: '<div><p>' + cluster.getChildCount() + '</p></div>',
+                    className: 'cluster-marker '+colorDict["Country Park Stairs"].classname
+                });
+            },
+            maxClusterRadius: getClusterRadius,
+        }),
+        "Curb Stairs": new L.MarkerClusterGroup({
+            iconCreateFunction: function(cluster) {
+                return L.divIcon({
+                    html: '<div><p>' + cluster.getChildCount() + '</p></div>',
+                    className: 'cluster-marker '+colorDict["Curb Stairs"].classname
+                });
+            },
+            maxClusterRadius: getClusterRadius,
+        }),
+        "Elevated Walkway": new L.MarkerClusterGroup({
+            iconCreateFunction: function(cluster) {
+                return L.divIcon({
+                    html: '<div><p>' + cluster.getChildCount() + '</p></div>',
+                    className: 'cluster-marker '+colorDict["Elevated Walkway"].classname
+                });
+            },
+            maxClusterRadius: getClusterRadius,
+        }),
+        "Escalator": new L.MarkerClusterGroup({
+            iconCreateFunction: function(cluster) {
+                return L.divIcon({
+                    html: '<div><p>' + cluster.getChildCount() + '</p></div>',
+                    className: 'cluster-marker '+colorDict["Escalator"].classname
+                });
+            },
+            maxClusterRadius: getClusterRadius,
+        }),
+        "Footpath": new L.MarkerClusterGroup({
+            iconCreateFunction: function(cluster) {
+                return L.divIcon({
+                    html: '<div><p>' + cluster.getChildCount() + '</p></div>',
+                    className: 'cluster-marker '+colorDict["Footpath"].classname
+                });
+            },
+            maxClusterRadius: getClusterRadius,
+        }),
+        "Maintenance Stairs": new L.MarkerClusterGroup({
+            iconCreateFunction: function(cluster) {
+                return L.divIcon({
+                    html: '<div><p>' + cluster.getChildCount() + '</p></div>',
+                    className: 'cluster-marker '+colorDict["Maintenance Stairs"].classname
+                });
+            },
+            maxClusterRadius: getClusterRadius,
+        }),
+        "Pier Stairs": new L.MarkerClusterGroup({
+            iconCreateFunction: function(cluster) {
+                return L.divIcon({
+                    html: '<div><p>' + cluster.getChildCount() + '</p></div>',
+                    className: 'cluster-marker '+colorDict["Pier Stairs"].classname
+                });
+            },
+            maxClusterRadius: getClusterRadius,
+        }),
+        "Park Stairs": new L.MarkerClusterGroup({
+            iconCreateFunction: function(cluster) {
+                return L.divIcon({
+                    html: '<div><p>' + cluster.getChildCount() + '</p></div>',
+                    className: 'cluster-marker '+colorDict["Park Stairs"].classname
+                });
+            },
+            maxClusterRadius: getClusterRadius,
+        }),
+        "Plaza Stairs": new L.MarkerClusterGroup({
+            iconCreateFunction: function(cluster) {
+                return L.divIcon({
+                    html: '<div><p>' + cluster.getChildCount() + '</p></div>',
+                    className: 'cluster-marker '+colorDict["Plaza Stairs"].classname
+                });
+            },
+            maxClusterRadius: getClusterRadius,
+        }),
+        "Street Stairs": new L.MarkerClusterGroup({
+            iconCreateFunction: function(cluster) {
+                return L.divIcon({
+                    html: '<div><p>' + cluster.getChildCount() + '</p></div>',
+                    className: 'cluster-marker '+colorDict["Street Stairs"].classname
+                });
+            },
+            maxClusterRadius: getClusterRadius,
+        }),
+        "Subway": new L.MarkerClusterGroup({
+            iconCreateFunction: function(cluster) {
+                return L.divIcon({
+                    html: '<div><p>' + cluster.getChildCount() + '</p></div>',
+                    className: 'cluster-marker '+colorDict["Subway"].classname
+                });
+            },
+            maxClusterRadius: getClusterRadius,
+        })
     }
+    
+    // PROBLEM HERE! DIV CLASS NOT PROPERLY PASSING TO FUNCTION
+    // for (var i in colorDict) {
+        // var divClass = colorDict[i].classname;
+        // console.log(divClass);
+        // var typeLayer = new L.MarkerClusterGroup({
+            // iconCreateFunction: function(cluster) {
+                // console.log(divClass);
+                // return L.divIcon({
+                    // html: '<div><p>' + cluster.getChildCount() + '</p></div>',
+                    // className: 'cluster-marker '+divClass
+                // });
+            // },
+        // });
+        // overlaysDict[i] = typeLayer;
+    // }
     
     // makimarker name list: https://raw.githubusercontent.com/mapbox/maki/master/layouts/all.json
     L.MakiMarkers.accessToken = mapbox_api_key;
@@ -219,7 +347,7 @@ window.addEventListener("map:init", function (event) {
             return
         }
         var icon = L.MakiMarkers.icon({icon:null, color: colorDict[type].color, size: "s"});
-        var newMarker = new L.Marker(new L.LatLng(feature.properties.coords_y, feature.properties.coords_x),{icon:icon});
+        var newMarker = new L.Marker(new L.LatLng(feature.properties.coords_y, feature.properties.coords_x),{icon:icon,riseonhover:true});
         newMarker.bindPopup(popup);
         showPolygon(newMarker,polygon);
         colorDict[type].markers.push(newMarker);
@@ -236,15 +364,17 @@ window.addEventListener("map:init", function (event) {
                 var popup = makePopupContent(p);
                 layer.bindPopup(popup);
                 
-                var icon = L.MakiMarkers.icon({icon:null, color: "#e3e311", size: "s"});
-                var marker = new L.Marker(new L.LatLng(p.coords_y, p.coords_x),{icon:icon});
-                marker.bindPopup(popup);
-                
                 for (var i in overlaysDict) {
                     if (i == p.type) {
                         processCategory(feature,popup,layer,overlaysDict[i])
                     }
                 }
+                
+                var icon = L.MakiMarkers.icon({icon:null, color: "#e3e311", size: "s"});
+                var marker = new L.Marker(new L.LatLng(p.coords_y, p.coords_x),{icon:icon,riseonhover:true});
+                marker.bindPopup(popup);
+                
+                
 
                 markers.addLayer(marker);
                 showPolygon(marker,layer);
