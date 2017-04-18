@@ -3,8 +3,8 @@ function makePopupContent(properties) {
     return `
 <h4>${properties.type}</h4>
 <p>name = ${properties.name}<br>
-location = ${properties.loc}<br>
-stairid = ${properties.id}<br>
+location = ${properties.location}<br>
+stairid = ${properties.stairid}<br>
 </p>`
 }
 
@@ -47,6 +47,11 @@ window.addEventListener("map:init", function (event) {
     map.addControl(new L.Control.Fullscreen());
     
     var colorDict = {
+        "All Stairs": {
+            "color": "#888888",
+            "classname": "all-stairs",
+            "markers": []
+        },
         "Alley Stairs": {
             "color": "#DD2D16",
             "classname": "alley-stairs",
@@ -107,11 +112,11 @@ window.addEventListener("map:init", function (event) {
             "classname": "street-stairs",
             "markers": []
         },
-        "Subway": {
-            "color": "#EA0016",
-            "classname": "subway",
-            "markers": []
-        },
+        // "Subway": {
+            // "color": "#EA0016",
+            // "classname": "subway",
+            // "markers": []
+        // },
     }
 
     var getClusterRadius = function(zoom){
@@ -127,6 +132,15 @@ window.addEventListener("map:init", function (event) {
     }
     
     var overlaysDict = {
+        "All Stairs": new L.MarkerClusterGroup({
+            iconCreateFunction: function(cluster) {
+                return L.divIcon({
+                    html: '<div><p>' + cluster.getChildCount() + '</p></div>',
+                    className: 'cluster-marker '+colorDict["All Stairs"].classname
+                });
+            },
+            maxClusterRadius: getClusterRadius,
+        }),
         "Alley Stairs": new L.MarkerClusterGroup({
             iconCreateFunction: function(cluster) {
                 return L.divIcon({
@@ -235,15 +249,15 @@ window.addEventListener("map:init", function (event) {
             },
             maxClusterRadius: getClusterRadius,
         }),
-        "Subway": new L.MarkerClusterGroup({
-            iconCreateFunction: function(cluster) {
-                return L.divIcon({
-                    html: '<div><p>' + cluster.getChildCount() + '</p></div>',
-                    className: 'cluster-marker '+colorDict["Subway"].classname
-                });
-            },
-            maxClusterRadius: getClusterRadius,
-        })
+        // "Subway": new L.MarkerClusterGroup({
+            // iconCreateFunction: function(cluster) {
+                // return L.divIcon({
+                    // html: '<div><p>' + cluster.getChildCount() + '</p></div>',
+                    // className: 'cluster-marker '+colorDict["Subway"].classname
+                // });
+            // },
+            // maxClusterRadius: getClusterRadius,
+        // })
     }
     
     // PROBLEM HERE! DIV CLASS NOT PROPERLY PASSING TO FUNCTION
@@ -273,6 +287,7 @@ window.addEventListener("map:init", function (event) {
            return L.marker(latlng, {icon: icon});
         },
         onEachFeature: function onEachFeature(feature, layer) {
+            
             var popup = makePopupContent(feature.properties);
             layer.bindPopup(popup);
             var poly = L.geoJson(feature.properties.polygon);
@@ -332,8 +347,6 @@ window.addEventListener("map:init", function (event) {
                 className: 'cluster-marker all-types'
             });
         },
-        
-        
     });
     // map.addLayer(markers);
     var markerList = [];
@@ -361,8 +374,10 @@ window.addEventListener("map:init", function (event) {
             
             onEachFeature: function onEachFeature(feature, layer) {
                 var p = feature.properties;
+                // console.log(p);
                 var popup = makePopupContent(p);
-                layer.bindPopup(popup);
+                console.log(popup);
+                // layer.bindPopup(popup);
                 
                 for (var i in overlaysDict) {
                     if (i == p.type) {
@@ -370,16 +385,16 @@ window.addEventListener("map:init", function (event) {
                     }
                 }
                 
-                var icon = L.MakiMarkers.icon({icon:null, color: "#e3e311", size: "s"});
+                var icon = L.MakiMarkers.icon({icon:null, color: "#555555", size: "s"});
                 var marker = new L.Marker(new L.LatLng(p.coords_y, p.coords_x),{icon:icon,riseonhover:true});
                 marker.bindPopup(popup);
                 
                 
-
-                markers.addLayer(marker);
+                // markers.addLayer(marker);
                 showPolygon(marker,layer);
                 
-                allmarkersJSON.addData(makePointJson(feature));
+                colorDict["All Stairs"].markers.push(marker);
+                // allmarkersJSON.addData(makePointJson(feature));
 
             },
             style: function(feature){
@@ -396,7 +411,7 @@ window.addEventListener("map:init", function (event) {
                     case "Park Stairs": return {color: colorDict["Park Stairs"].color}; break;
                     case "Plaza Stairs": return {color: colorDict["Plaza Stairs"].color}; break;
                     case "Street Stairs": return {color: colorDict["Street Stairs"].color}; break;
-                    case "Subway": return {color: colorDict["Subway"].color}; break;
+                    // case "Subway": return {color: colorDict["Subway"].color}; break;
                 }
             }
         })
@@ -426,7 +441,7 @@ window.addEventListener("map:init", function (event) {
     
     var outdoors = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/outdoors-v10/tiles/256/{z}/{x}/{y}?access_token='+mapbox_api_key)
     
-    var osm = L.tileLayer('https://api.tiles.mapbox.com/v4/mapbox.streets/{z}/{x}/{y}.png?access_token='+mapbox_api_key)
+    var osm = L.tileLayer('https://api.tiles.mapbox.com/v4/mapbox.streets/{z}/{x}/{y}.png?access_token='+mapbox_api_key,{maxNativeZoom:18,maxZoom:19});
     map.addLayer(osm);
     
     // 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, '+
@@ -437,6 +452,8 @@ window.addEventListener("map:init", function (event) {
         "OpenStreetMap": osm,
         "OpenStreetMap Outdoor": outdoors
     };
+    
+    map.addLayer(overlaysDict["All Stairs"]);
 
     L.control.layers(baseLayers, overlaysDict).addTo(map);
     

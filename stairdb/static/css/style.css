@@ -123,9 +123,10 @@ html body {
     font-weight: 600;
 }
 
-.all-types, .all-types div {
-    background-color: rgba(240,150, 12, 0.6);
+.all-stairs, .all-stairs div {
+    background-color: rgba(50,50, 50, 0.6);
     z-index: 450 !important;
+    color: white;
 }
 
 .alley-stairs, .alley-stairs div {
