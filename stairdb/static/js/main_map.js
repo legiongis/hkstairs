@@ -439,25 +439,27 @@ window.addEventListener("map:init", function (event) {
 
     //$.ajaxSetup( { "async": true } );   // remove line for (slow) async behaviour
     
-    var outdoors = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/outdoors-v10/tiles/256/{z}/{x}/{y}?access_token='+mapbox_api_key)
-    
-    var osm = L.tileLayer('https://api.tiles.mapbox.com/v4/mapbox.streets/{z}/{x}/{y}.png?access_token='+mapbox_api_key,{maxNativeZoom:18,maxZoom:19});
-    map.addLayer(osm);
+    var outdoors = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/outdoors-v10/tiles/256/{z}/{x}/{y}?access_token='+mapbox_api_key,{maxNativeZoom:18,maxZoom:19})
+    var mapbox_osm = L.tileLayer('https://api.tiles.mapbox.com/v4/mapbox.streets/{z}/{x}/{y}.png?access_token='+mapbox_api_key,{maxNativeZoom:18,maxZoom:19});
+    var linemap = L.tileLayer('http://stairculture.com/tiles/hk_clr1_2/{z}/{x}/{y}.png',{maxZoom:19});
+    map.addLayer(outdoors);
     
     // 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, '+
 			// '<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, '+
 			// 'Imagery &copy; <a href="http://mapbox.com">Mapbox</a>'
 
     var baseLayers = {
-        "OpenStreetMap": osm,
-        "OpenStreetMap Outdoor": outdoors
+        "Open Street Map": outdoors,
+        "City Map": linemap
     };
-    
+
     map.addLayer(overlaysDict["All Stairs"]);
+    
+    overlaysDict["lines"] = linemap;
 
     L.control.layers(baseLayers, overlaysDict).addTo(map);
     
-    var osm_minimap = L.tileLayer('https://api.tiles.mapbox.com/v4/mapbox.streets/{z}/{x}/{y}.png?access_token='+mapbox_api_key)
+    var osm_minimap = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/outdoors-v10/tiles/256/{z}/{x}/{y}?access_token='+mapbox_api_key,{maxNativeZoom:18,maxZoom:19})
     map.addControl(new L.Control.MiniMap(osm_minimap));
 
     map.on('zoomend', function () {
