@@ -1,6 +1,6 @@
 # hkstairs
 
-Installing this app locally should be very straight-forward.
+You will need Postgres/PostGIS and Python 2.7, and then installing this app locally should be very straight-forward.
 
 + make a virtual environment and activate it
 
@@ -23,5 +23,3 @@ Installing this app locally should be very straight-forward.
 + run the django dev server as usual and view in browser at `localhost:8000`
 
     `python manage.py runserver`
-
-
