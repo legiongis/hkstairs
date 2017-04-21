@@ -455,7 +455,8 @@ window.addEventListener("map:init", function (event) {
 
     map.addLayer(overlaysDict["All Stairs"]);
     
-    overlaysDict["lines"] = linemap;
+    var linemap2 = L.tileLayer('http://stairculture.com/tiles/hk_clr1_2/{z}/{x}/{y}.png',{maxZoom:19});
+    overlaysDict["City Map"] = linemap2;
 
     L.control.layers(baseLayers, overlaysDict).addTo(map);
     
