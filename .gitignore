@@ -1,4 +1,5 @@
 hkstairs/settings_local.py
+media
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
