@@ -3,3 +3,4 @@ django-leaflet
 pyshp
 pygeoif
 psycopg2
+Pillow
