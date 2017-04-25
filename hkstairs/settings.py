@@ -164,6 +164,9 @@ LEAFLET_CONFIG = {
     }
 }
 
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
 try:
     from settings_local import *
 except ImportError:
