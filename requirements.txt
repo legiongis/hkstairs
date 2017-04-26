@@ -4,3 +4,4 @@ pyshp
 pygeoif
 psycopg2
 Pillow
+exifread
