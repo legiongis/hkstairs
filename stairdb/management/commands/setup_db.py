@@ -37,7 +37,10 @@ class Command(BaseCommand):
                         password=dbinfo['PASSWORD'], port=int(dbinfo['PORT']))
         conn.autocommit = True
         cursor = conn.cursor()
-        cursor.execute("DROP DATABASE " + dbinfo['NAME'])
+        try:
+            cursor.execute("DROP DATABASE " + dbinfo['NAME'])
+        except:
+            pass
         cursor.execute("CREATE DATABASE " + dbinfo['NAME'] + " WITH ENCODING 'UTF8'")
         
         management.call_command('makemigrations')
