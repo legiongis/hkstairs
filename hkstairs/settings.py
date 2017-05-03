@@ -30,6 +30,7 @@ ALLOWED_HOSTS = ['projects.legiongis.com','stairculture.com','localhost']
 # Application definition
 
 INSTALLED_APPS = [
+    'stairdb',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -38,7 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.gis',
     'leaflet',
-    'stairdb',
+    
 ]
 
 MIDDLEWARE = [
