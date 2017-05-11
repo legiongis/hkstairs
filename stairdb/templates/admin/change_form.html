@@ -77,7 +77,7 @@
                 data-model-name="{{ opts.model_name }}"
             {% endif %}>
     </script>
-    {% if opts.model_name == "photo" %}
+    
         <script>
             var local_url = "{{local_url}}";
             var mapbox_api_key = "{{mapbox_api_key}}"
@@ -86,6 +86,7 @@
         <script src="{% static 'plugins/Control.MiniMap.min.js' %}" type="text/javascript"></script>
         <script src="{% static 'plugins/Leaflet.MakiMarkers.js' %}" type="text/javascript"></script>
         <script src="http://code.jquery.com/jquery-latest.js"></script>
+    {% if opts.model_name == "photo" %}
         <script type="text/javascript"
                 id="django-admin-form-add-constants"
                 src="{% static 'js/admin-map.js' %}"
