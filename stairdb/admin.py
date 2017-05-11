@@ -1,17 +1,17 @@
 from django.contrib import admin
 from leaflet.admin import LeafletGeoAdmin
 from models import Stair, Photo
+from django.conf import settings
 
 class OverrideLeafletGeoAdmin(LeafletGeoAdmin):
     
-    # straight hint @https://github.com/makinacorpus/django-leaflet/pull/28#issuecomment-23943492
+    # straight hint @ https://github.com/makinacorpus/django-leaflet/pull/28#issuecomment-23943492
     settings_overrides = {
         'TILES': [
             # base layers by preference
-            ('OSM', 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', '<a href="http://www.openstreetmap.org/copyright" target="_blank"> OpenStreetMap</a> contributors'),
+            ('OSM', 'https://api.mapbox.com/styles/v1/mapbox/outdoors-v10/tiles/256/{z}/{x}/{y}?access_token='+settings.MAPBOX_API_KEY, '<a href="http://www.openstreetmap.org/copyright" target="_blank"> OpenStreetMap</a> contributors'),
             ('City Map','http://stairculture.com/tiles/hk_clr1_2/{z}/{x}/{y}.png',{'maxZoom':19})
         ],
-        'OVERLAYS': [],        
         'MINIMAP': False, # <--- here
     }
     

@@ -141,7 +141,6 @@ LEAFLET_CONFIG = {
     'DEFAULT_ZOOM': 14,
     'MIN_ZOOM': 13,
     'MAX_ZOOM': 19,
-    
     'SPATIAL_EXTENT': (114, 22.2, 114.25, 22.35),
     'SCALE': None,
     'TILES': [],
