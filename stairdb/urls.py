@@ -8,7 +8,8 @@ router.register(r'stair', views.StairViewSet)
 
 urlpatterns = [
     url(r'^$', views.index, name='index'),
-    url(r'^json/(?P<stairid>[\w-]+)/$', views.get_stairs, name='stair_json'),
-    url(r'^stairs/', views.stair_set, name='stair_set'),
     url(r'^', include(router.urls)),
+    # url(r'^json/(?P<stairid>[\w-]+)/$', views.get_stairs, name='stair_json'),
 ]
+
+

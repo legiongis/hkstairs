@@ -1,13 +1,15 @@
 function makePopupContent(properties) {
     //<img width="300" src="${props.picture_url}"/>
     var photo_html = "";
-    if (properties.photos != "") {
-        var photos = JSON.parse(properties.photos);
-        photo_html = `
-<a href="${local_url}${photos.image}" >
-    <img src="${local_url}${photos.thumbnail}"/>
-</a>
-        `
+    if (properties.photos != "") {        
+        for (var i=0; i < properties.photos.length; i++) {
+            var photos = JSON.parse(properties.photos[i]);
+            photo_html += `
+    <a href="${local_url}${photos.image}" >
+        <img src="${local_url}${photos.thumbnail}"/>
+    </a>
+            `
+        }            
 
     }
 
@@ -16,9 +18,22 @@ function makePopupContent(properties) {
 <p>name = ${properties.name}<br>
 location = ${properties.location}<br>
 stairid = ${properties.stairid}<br>
-
-photo = ${photo_html}<br>
-</p>`
+</p>
+<div class="col-xs-12">
+    <div id="blueimp-gallery" class="blueimp-gallery blueimp-gallery-controls">
+        <div class="slides"></div>
+        <p class="description"></p>
+        <a class="prev">‹</a>
+        <a class="next">›</a>
+        <a class="close">×</a>
+        <a class="play-pause"></a>
+        <ol class="indicator"></ol>
+    </div>
+    <div id="links">
+        photo = ${photo_html}<br>
+    </div>
+</div>
+`
 }
 
 // UNUSED STYLE FUNCTIONS
