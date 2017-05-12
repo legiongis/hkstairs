@@ -5,6 +5,7 @@ function makePopupContent(properties) {
 <p>name = ${properties.name}<br>
 location = ${properties.location}<br>
 stairid = ${properties.stairid}<br>
+photo = ${properties.photos}<br>
 </p>`
 }
 
@@ -374,7 +375,7 @@ window.addEventListener("map:init", function (event) {
             
             onEachFeature: function onEachFeature(feature, layer) {
                 var p = feature.properties;
-                // console.log(p);
+                console.log(p);
                 var popup = makePopupContent(p);
                 console.log(popup);
                 // layer.bindPopup(popup);

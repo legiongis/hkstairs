@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load leaflet_tags %}
+{% block header %}{% endblock %}
+{% block content %}
+
+<div>
+	
+	<ul class="pen-content mdl-list">
+
+	{% for e in data_points %}
+	  <li class="mdl-list__item-primary-content">
+	  <button id="point{{ forloop.counter }}" type="button" attr="{{ e.properties.lat }}, {{ e.properties.lon }}">
+	      {{ e.properties.name }}
+	  </button>
+	  </li>
+	{% endfor %}
+
+	</ul>
+
+</div>
+
+{% endblock %}

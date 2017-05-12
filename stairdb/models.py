@@ -40,26 +40,26 @@ class Stair(models.Model):
     def __str__(self):
         return str(self.stairid)
         
-    def as_json(self,centroid=False):
-        '''CURRENTLY NOT IN USE 3/7/17'''
-        """returns a feature dictionary that can be added to a FeatureCollection"""
+    # def as_json(self,centroid=False):
+    #     '''CURRENTLY NOT IN USE 3/7/17'''
+    #     """returns a feature dictionary that can be added to a FeatureCollection"""
 
-        jdict = {
-            'geometry': {
-                'type':"Polygon",
-                'coordinates':self.geom.coords
-            },
-            'type': "Feature",
-            'properties': {
-                'stairid': self.stairid,
-                'name': self.name,
-                'type': self.type,
-                'coords_x': self.coords_x,
-                'coords_y': self.coords_y
-            }
-        }
+    #     jdict = {
+    #         'geometry': {
+    #             'type':"Polygon",
+    #             'coordinates':self.geom.coords
+    #         },
+    #         'type': "Feature",
+    #         'properties': {
+    #             'stairid': self.stairid,
+    #             'name': self.name,
+    #             'type': self.type,
+    #             'coords_x': self.coords_x,
+    #             'coords_y': self.coords_y
+    #         }
+    #     }
         
-        return jdict
+    #     return jdict
         
     def save(self, *args, **kwargs):
         self.coords_x = self.geom.centroid.coords[0]
@@ -76,8 +76,8 @@ class Photo(models.Model):
         null=True,
         blank=True
     )
-    stairid = models.ForeignKey(Stair,null=True,blank=True, on_delete=models.CASCADE)
-    geom = models.PointField(null=True,blank=True)
+    stairid = models.ForeignKey(Stair,null=True, blank=True, related_name='photos', on_delete=models.CASCADE)
+    geom = models.PointField(null=True, blank=True)
     
     def __str__(self):
         return "{} - {} - {}".format(os.path.basename(self.image.url),
@@ -174,6 +174,9 @@ class Photo(models.Model):
         
         wkt = "POINT ({} {})".format(long,lat)
         return wkt
+
+    def __unicode__(self):
+        return '{thumbnail: %s, image: %s' % (self.thumbnail.url, self.image.url)
 
     def save(self, *args, **kwargs):
 
