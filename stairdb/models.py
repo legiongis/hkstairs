@@ -176,7 +176,7 @@ class Photo(models.Model):
         return wkt
 
     def __unicode__(self):
-        return '{thumbnail: %s, image: %s' % (self.thumbnail.url, self.image.url)
+        return '{"thumbnail": "%s", "image": "%s"}' % (self.thumbnail.url, self.image.url)
 
     def save(self, *args, **kwargs):
 

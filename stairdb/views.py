@@ -66,4 +66,4 @@ class StairList(APIView):
 
 class StairViewSet(viewsets.ModelViewSet):
     queryset = Stair.objects.all()
-    serializer_class = StairSerializer
+    serializer_class = MapSerializer

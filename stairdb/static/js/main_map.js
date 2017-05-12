@@ -1,11 +1,23 @@
 function makePopupContent(properties) {
     //<img width="300" src="${props.picture_url}"/>
+    var photo_html = "";
+    if (properties.photos != "") {
+        var photos = JSON.parse(properties.photos);
+        photo_html = `
+<a href="${local_url}${photos.image}" >
+    <img src="${local_url}${photos.thumbnail}"/>
+</a>
+        `
+
+    }
+
     return `
 <h4>${properties.type}</h4>
 <p>name = ${properties.name}<br>
 location = ${properties.location}<br>
 stairid = ${properties.stairid}<br>
-photo = ${properties.photos}<br>
+
+photo = ${photo_html}<br>
 </p>`
 }
 
@@ -367,7 +379,7 @@ window.addEventListener("map:init", function (event) {
         colorDict[type].markers.push(newMarker);
     }
     
-    $.getJSON(local_url+'/json/all', function(pois) {
+    $.getJSON(local_url+'/stair/?format=json', function(pois) {
         
         var start_time = new Date().getTime();
 
@@ -430,6 +442,7 @@ window.addEventListener("map:init", function (event) {
             var request_time = new Date().getTime() - start_time;
             console.log("getJSON request time:");
             console.log(request_time);
+            console.log(pois);
             // markers.addLayers(markerList);
             
             for (var i in colorDict) {
