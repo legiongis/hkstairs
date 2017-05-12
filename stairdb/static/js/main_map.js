@@ -19,7 +19,7 @@ function makePopupContent(properties) {
 location = ${properties.location}<br>
 stairid = ${properties.stairid}<br>
 </p>
-<div class="col-xs-12">
+
     <div id="blueimp-gallery" class="blueimp-gallery blueimp-gallery-controls">
         <div class="slides"></div>
         <p class="description"></p>
@@ -30,9 +30,38 @@ stairid = ${properties.stairid}<br>
         <ol class="indicator"></ol>
     </div>
     <div id="links">
-        photo = ${photo_html}<br>
-    </div>
-</div>
+        ${photo_html}
+    </div><br>
+
+
+
+<script type='text/javascript'>
+
+document.getElementById('links').onclick = function (event) {
+    event = event || window.event;
+    var target = event.target || event.srcElement,
+        link = target.src ? target.parentNode : target,
+        options = {index: link, event: event, titleElement: 'h',},
+        options = {
+          index: link, event: event,
+          onslide: function (index, slide) {
+            self = this;
+            var initializeAdditional = function (index, data, klass, self) {
+              var text = self.list[index].getAttribute(data),
+                node = self.container.find(klass);
+              node.empty();
+              if (text) {
+                node[0].appendChild(document.createTextNode(text));
+              }
+            };
+            initializeAdditional(index, 'data-description', '.description', self);
+          }
+        },
+        links = this.getElementsByTagName('a');
+    blueimp.Gallery(links, options);
+};
+
+</script>
 `
 }
 
@@ -336,7 +365,7 @@ window.addEventListener("map:init", function (event) {
         return jsonobj
     }
     
-    function showPolygon(marker, polygon) {
+    function showPolygon(marker, polygon, popup) {
         marker.on("mouseover", function (e) {
             map.addLayer(polygon);
         });
@@ -402,9 +431,9 @@ window.addEventListener("map:init", function (event) {
             
             onEachFeature: function onEachFeature(feature, layer) {
                 var p = feature.properties;
-                console.log(p);
+                // console.log(p);
                 var popup = makePopupContent(p);
-                console.log(popup);
+                // console.log(popup);
                 // layer.bindPopup(popup);
                 
                 for (var i in overlaysDict) {
@@ -457,7 +486,7 @@ window.addEventListener("map:init", function (event) {
             var request_time = new Date().getTime() - start_time;
             console.log("getJSON request time:");
             console.log(request_time);
-            console.log(pois);
+            // console.log(pois);
             // markers.addLayers(markerList);
             
             for (var i in colorDict) {

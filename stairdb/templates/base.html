@@ -194,13 +194,14 @@ var rlArgs = {"script":"prettyphoto","selector":"lightbox","customEvents":"","ac
 
 {% leaflet_js %}
 {% leaflet_css %}
-
+<link rel="stylesheet" type="text/css" href="{% static 'plugins/Gallery-2.21.3/css/blueimp-gallery.min.css' %}">
 <link rel='stylesheet' href="{% static 'css/style.css' %}" type='text/css' media='all' />
 
     <script>
         var local_url = "{{local_url}}";
         var mapbox_api_key = "{{mapbox_api_key}}"
     </script>
+    <script src="{% static 'plugins/Gallery-2.21.3/js/blueimp-gallery.min.js' %}" type="text/javascript"></script>
     <script src="{% static 'js/main_map.js' %}" type="text/javascript"></script>
     <script src="{% static 'plugins/Leaflet.MakiMarkers.js' %}" type="text/javascript"></script>
 
