@@ -1,11 +1,68 @@
 function makePopupContent(properties) {
     //<img width="300" src="${props.picture_url}"/>
+    var photo_html = "";
+    if (properties.photos != "") {        
+        for (var i=0; i < properties.photos.length; i++) {
+            var photos = JSON.parse(properties.photos[i]);
+            photo_html += `
+    <a href="${local_url}${photos.image}" >
+        <img src="${local_url}${photos.thumbnail}"/>
+    </a>
+            `
+        }            
+
+    }
+
     return `
 <h4>${properties.type}</h4>
 <p>name = ${properties.name}<br>
 location = ${properties.location}<br>
 stairid = ${properties.stairid}<br>
-</p>`
+</p>
+
+    <div id="blueimp-gallery" class="blueimp-gallery blueimp-gallery-controls">
+        <div class="slides"></div>
+        <p class="description"></p>
+        <a class="prev">‹</a>
+        <a class="next">›</a>
+        <a class="close">×</a>
+        <a class="play-pause"></a>
+        <ol class="indicator"></ol>
+    </div>
+    <div id="links">
+        ${photo_html}
+    </div><br>
+
+
+
+<script type='text/javascript'>
+
+document.getElementById('links').onclick = function (event) {
+    event = event || window.event;
+    var target = event.target || event.srcElement,
+        link = target.src ? target.parentNode : target,
+        options = {index: link, event: event, titleElement: 'h',},
+        options = {
+          index: link, event: event,
+          onslide: function (index, slide) {
+            self = this;
+            var initializeAdditional = function (index, data, klass, self) {
+              var text = self.list[index].getAttribute(data),
+                node = self.container.find(klass);
+              node.empty();
+              if (text) {
+                node[0].appendChild(document.createTextNode(text));
+              }
+            };
+            initializeAdditional(index, 'data-description', '.description', self);
+          }
+        },
+        links = this.getElementsByTagName('a');
+    blueimp.Gallery(links, options);
+};
+
+</script>
+`
 }
 
 // UNUSED STYLE FUNCTIONS
@@ -308,7 +365,7 @@ window.addEventListener("map:init", function (event) {
         return jsonobj
     }
     
-    function showPolygon(marker, polygon) {
+    function showPolygon(marker, polygon, popup) {
         marker.on("mouseover", function (e) {
             map.addLayer(polygon);
         });
@@ -366,7 +423,7 @@ window.addEventListener("map:init", function (event) {
         colorDict[type].markers.push(newMarker);
     }
     
-    $.getJSON(local_url+'/json/all', function(pois) {
+    $.getJSON(local_url+'/stair/?format=json', function(pois) {
         
         var start_time = new Date().getTime();
 
@@ -376,7 +433,7 @@ window.addEventListener("map:init", function (event) {
                 var p = feature.properties;
                 // console.log(p);
                 var popup = makePopupContent(p);
-                console.log(popup);
+                // console.log(popup);
                 // layer.bindPopup(popup);
                 
                 for (var i in overlaysDict) {
@@ -429,6 +486,7 @@ window.addEventListener("map:init", function (event) {
             var request_time = new Date().getTime() - start_time;
             console.log("getJSON request time:");
             console.log(request_time);
+            // console.log(pois);
             // markers.addLayers(markerList);
             
             for (var i in colorDict) {

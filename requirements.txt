@@ -5,3 +5,6 @@ pygeoif
 psycopg2
 Pillow
 exifread
+djangorestframework
+djangorestframework-gis
+django-geojson
