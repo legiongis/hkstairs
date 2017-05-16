@@ -1,69 +1,33 @@
 function makePopupContent(properties) {
     //<img width="300" src="${props.picture_url}"/>
-    var photo_html = "";
-    if (properties.photos != "") {        
+    var pics = properties.photos;
+    var photo_html = `
+        <h4>${properties.type}</h4>
+        <p>name = ${properties.name}<br>
+        location = ${properties.location}<br>
+        stairid = ${properties.stairid}<br>
+        </p>     
+
+        <div id="links">
+    `;
+
+    if (properties.photos != "") {       
         for (var i=0; i < properties.photos.length; i++) {
             var photos = JSON.parse(properties.photos[i]);
             photo_html += `
-    <a href="${local_url}${photos.image}" >
-        <img src="${local_url}${photos.thumbnail}"/>
-    </a>
-            `
+                <a href="${local_url}${photos.image}" title="${properties.type}" data-gallery>
+                    <img src="${local_url}${photos.thumbnail}"/>
+                </a>
+            `;
         }            
 
     }
 
-    return `
-<h4>${properties.type}</h4>
-<p>name = ${properties.name}<br>
-location = ${properties.location}<br>
-stairid = ${properties.stairid}<br>
-</p>
+    photo_html += "</div>";
 
-    <div id="blueimp-gallery" class="blueimp-gallery blueimp-gallery-controls">
-        <div class="slides"></div>
-        <p class="description"></p>
-        <a class="prev">‹</a>
-        <a class="next">›</a>
-        <a class="close">×</a>
-        <a class="play-pause"></a>
-        <ol class="indicator"></ol>
-    </div>
-    <div id="links">
-        ${photo_html}
-    </div><br>
-
-
-
-<script type='text/javascript'>
-
-document.getElementById('links').onclick = function (event) {
-    event = event || window.event;
-    var target = event.target || event.srcElement,
-        link = target.src ? target.parentNode : target,
-        options = {index: link, event: event, titleElement: 'h',},
-        options = {
-          index: link, event: event,
-          onslide: function (index, slide) {
-            self = this;
-            var initializeAdditional = function (index, data, klass, self) {
-              var text = self.list[index].getAttribute(data),
-                node = self.container.find(klass);
-              node.empty();
-              if (text) {
-                node[0].appendChild(document.createTextNode(text));
-              }
-            };
-            initializeAdditional(index, 'data-description', '.description', self);
-          }
-        },
-        links = this.getElementsByTagName('a');
-    blueimp.Gallery(links, options);
-};
-
-</script>
-`
+    return photo_html
 }
+
 
 // UNUSED STYLE FUNCTIONS
 function style1(feature) {
