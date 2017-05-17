@@ -11,7 +11,6 @@ from .serializers import StairSerializer, MapSerializer
 import time
 
 def index(request):
-
     return render(request, 'index.html')
 
 class StairList(APIView):
