@@ -8,10 +8,13 @@ function makePopupContent(properties) {
         stairid = ${properties.stairid}<br>
         </p>     
 
-        <div id="links">
+        
     `;
 
-    if (properties.photos != "") {       
+    if (properties.photos != "") {   
+        var divMaxWidth = 100 * properties.photos.length;
+        var divMinWidth = 70 * properties.photos.length;
+        photo_html += `<div id="links" style="min-width:${divMinWidth}px; max-width:${divMaxWidth}px; margin:0 auto;">`;   
         for (var i=0; i < properties.photos.length; i++) {
             var photos = JSON.parse(properties.photos[i]);
             photo_html += `
@@ -20,10 +23,8 @@ function makePopupContent(properties) {
                 </a>
             `;
         }            
-
-    }
-
-    photo_html += "</div>";
+        photo_html += "</div>";
+    }    
 
     return photo_html
 }
@@ -310,7 +311,9 @@ window.addEventListener("map:init", function (event) {
         onEachFeature: function onEachFeature(feature, layer) {
             
             var popup = makePopupContent(feature.properties);
-            layer.bindPopup(popup);
+            layer.bindPopup(popup, {
+                maxWidth: "auto"
+            });
             var poly = L.geoJson(feature.properties.polygon);
             showPolygon(layer,poly);
         }
