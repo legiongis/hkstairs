@@ -14,7 +14,7 @@ function makePopupContent(properties) {
     if (properties.photos != "") {   
         var divMaxWidth = 100 * properties.photos.length;
         var divMinWidth = 70 * properties.photos.length;
-        photo_html += `<div id="links" style="width:${divMaxWidth}px; margin:0 auto;">`;   
+        photo_html += `<div id="links" style="width:${divMaxWidth}px; margin:0 auto; text-align:center;">`;   
         for (var i=0; i < properties.photos.length; i++) {
             var photos = JSON.parse(properties.photos[i]);
             photo_html += `
