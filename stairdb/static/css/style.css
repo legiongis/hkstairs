@@ -186,3 +186,8 @@ html body {
     background-color: rgba(234,0,22, 0.6);
     z-index: 448 !important;
 }
+
+/* set bluimp gallery on top of fullscreen */
+.blueimp-gallery {
+    z-index: 2147483647 !important;
+}
