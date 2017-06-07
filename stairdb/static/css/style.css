@@ -66,8 +66,7 @@ html body {
 }
 
 .leaflet-popup {
-    min-width:350px;
-    min-height:250px;
+    min-height:100%;
     font-family: 'Abel', Helvetica, Arial, Lucida, sans-serif;
 }
 
