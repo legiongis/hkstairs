@@ -383,7 +383,9 @@ window.addEventListener("map:init", function (event) {
             errors.push(type);
             return
         }
-        var icon = L.MakiMarkers.icon({icon:null, color: colorDict[type].color, size: "s"});
+		var icon = null;
+		if (feature.properties.photos != ""){ var icon = "camera" };
+        var icon = L.MakiMarkers.icon({icon:icon, color: colorDict[type].color, size: "s"});
         var newMarker = new L.Marker(new L.LatLng(feature.properties.coords_y, feature.properties.coords_x),{icon:icon,riseonhover:true});
         newMarker.bindPopup(popup);
         showPolygon(newMarker,polygon);
@@ -404,12 +406,13 @@ window.addEventListener("map:init", function (event) {
                 // layer.bindPopup(popup);
                 
                 for (var i in overlaysDict) {
-                    if (i == p.type) {
-                        processCategory(feature,popup,layer,overlaysDict[i])
-                    }
-                }
+                    if (i == p.type) { processCategory(feature,popup,layer,overlaysDict[i]) }
+                };
+				
+				var icon = null;
+				if (p.photos != ""){ var icon = "camera" };
                 
-                var icon = L.MakiMarkers.icon({icon:null, color: "#555555", size: "s"});
+                var icon = L.MakiMarkers.icon({icon:icon,color:"#555555",size:"s"});
                 var marker = new L.Marker(new L.LatLng(p.coords_y, p.coords_x),{icon:icon,riseonhover:true});
                 marker.bindPopup(popup);
                 
