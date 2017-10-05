@@ -74,6 +74,29 @@ html body {
     height:100%;
 }
 
+/* using dl dt dd css from this great post */
+/* http://www.the-art-of-web.com/css/format-dl/ */
+.leaflet-popup dl {
+    font-size: 12pt;
+    margin: 15px 0px;
+}
+
+.leaflet-popup dt {
+    float: left;
+    clear: left;
+    width: 55px;
+    text-align: right;
+    font-weight: bold;
+}
+
+.leaflet-popup dt::after {
+    content: ":";
+}
+
+.leaflet-popup dd {
+    margin: 0 0 0 65px;
+}
+
 .leaflet-control-layers-overlays {
     overflow-y: auto;
     height: 250px;

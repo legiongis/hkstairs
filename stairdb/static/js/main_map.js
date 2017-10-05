@@ -1,32 +1,40 @@
 function makePopupContent(properties) {
-    //<img width="300" src="${props.picture_url}"/>
+    
+    var popup_html = "";
+    if (properties.name != "N/A" && properties.name != ""){
+        popup_html += `<h4 style="margin-top:15px;margin:15px auto 0px auto;padding:0px;">${properties.name}</h4>`;
+    }
+    
     var pics = properties.photos;
-    var photo_html = `
-        <h4>${properties.type}</h4>
-        <p>name = ${properties.name}<br>
-        location = ${properties.location}<br>
-        stairid = ${properties.stairid}<br>
-        </p>     
-
-        
-    `;
-
     if (properties.photos != "") {   
         var divMaxWidth = 100 * properties.photos.length;
         var divMinWidth = 70 * properties.photos.length;
-        photo_html += `<div id="links" style="width:${divMaxWidth}px; margin:0 auto; text-align:center;">`;   
+        popup_html += `<div id="links" style="width:${divMaxWidth}px; margin-top:15px; text-align:center;">`;   
         for (var i=0; i < properties.photos.length; i++) {
+            
+            // make only the first photo visible in the popup
+            var display = "";
+            if (i>0) {display = `style="display:none"`};
+            
             var photos = JSON.parse(properties.photos[i]);
-            photo_html += `
-                <a href="${local_url}${photos.image}" title="${properties.type}" data-gallery>
+            popup_html += `
+                <a href="${local_url}${photos.image}" ${display} title="${properties.name}" data-gallery>
                     <img src="${local_url}${photos.thumbnail}"/>
                 </a>
             `;
         }            
-        photo_html += "</div>";
-    }    
+        popup_html += "</div>";
+    }
+    
+    popup_html += `
+        <dl>
+            <dt>type</dt><dd>${properties.type}</dd>
+            <dt>location</dt><dd>${properties.location}</dd>
+            <dt>stairid</dt><dd>${properties.stairid}</dd>
+        </dl>
+    `;
 
-    return photo_html
+    return popup_html
 }
 
 
