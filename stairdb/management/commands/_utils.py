@@ -21,7 +21,7 @@ def refresh_csv(table_name=""):
     query = "SELECT * from {};".format(table_name)
     cur.execute(query)
 
-    with open(os.path.join(BASE_DIR,"stairdb","management","commands","tmp_data",table_name+'.csv'),'wb') as out_csv:
+    with open(os.path.join(settings.BASE_DIR,"stairdb","management","commands","tmp_data",table_name+'.csv'),'wb') as out_csv:
         write = csv.writer(out_csv)
         write.writerow(colnames)
         for row in cur:
