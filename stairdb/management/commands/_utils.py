@@ -35,6 +35,6 @@ def refresh_csv(table_name=""):
             ct+=1
             write.writerow(row)
 
-    print("  -- done. file has",ct,"rows".)
+    print("  -- done. file has",ct,"rows")
     
     return outfile
