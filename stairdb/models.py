@@ -27,11 +27,18 @@ class Stair(models.Model):
         ('Street Stairs','Street Stairs'),
         ('Subway','Subway'),
     )
+    
+    HANDRAIL_CHOICES = (
+        ('Yes','Yes'),
+        ('No','No')
+    )
 
     stairid = models.IntegerField()
     name = models.CharField(max_length=100,null=True,default="N/A")
     type = models.CharField(max_length=25,choices=TYPE_CHOICES,null=True,)
     location = models.CharField(max_length=100,null=True,default="N/A")
+    handrail = models.CharField(max_length=25,choices=HANDRAIL_CHOICES,null=True,)
+    stair_ct = models.IntegerField(null=True)
     geom = models.PolygonField(null=True)
     coords_x = models.FloatField(null=True,editable=False)
     coords_y = models.FloatField(null=True,editable=False)
