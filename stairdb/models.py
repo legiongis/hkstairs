@@ -37,7 +37,7 @@ class Stair(models.Model):
     name = models.CharField(max_length=100,null=True,default="N/A")
     type = models.CharField(max_length=25,choices=TYPE_CHOICES,null=True,)
     location = models.CharField(max_length=100,null=True,default="N/A")
-    handrail = models.CharField(max_length=25,choices=HANDRAIL_CHOICES,null=True,)
+    handrail = models.CharField(max_length=25,choices=HANDRAIL_CHOICES,null=True,default="N/A")
     stair_ct = models.IntegerField(null=True)
     geom = models.PolygonField(null=True)
     coords_x = models.FloatField(null=True,editable=False)
