@@ -30,9 +30,11 @@ def refresh_csv(table_name=""):
     with open(outfile,'wb') as out_csv:
         write = csv.writer(out_csv)
         write.writerow(colnames)
+        ct=0
         for row in cur:
+            ct+=1
             write.writerow(row)
 
-    print("  -- done")
+    print("  -- done. file has",ct,"rows".)
     
     return outfile

@@ -76,6 +76,7 @@ class Command(BaseCommand):
         ct=0
         for k,v in data.iteritems():
             item = Stair.objects.get(stairid=k)
+            ct+=1
             if fake:
                 print "stair",item.stairid," | handrail:",item.handrail,"stair_ct:",item.stair_ct
                 print "  -- new values | handrail:",v['handrail'],"stair_ct:",v['stair_ct']
@@ -85,9 +86,8 @@ class Command(BaseCommand):
                 item.stair_ct = int(v['stair_ct'])
                 
             if not fake:
-                ct+=1
                 item.save()
-        print " --",ct,"stair records updated"
+        print "\n",ct,"stair records {}updated".format("would be " if fake else "")
             
         return
 
