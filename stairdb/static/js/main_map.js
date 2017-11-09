@@ -6,17 +6,17 @@ function makePopupContent(properties) {
     }
     
     var pics = properties.photos;
-    if (properties.photos != "") {   
-        var divMaxWidth = 100 * properties.photos.length;
-        var divMinWidth = 70 * properties.photos.length;
+    if (pics != "") {   
+        var divMaxWidth = 100 * pics.length;
+        var divMinWidth = 70 * pics.length;
         popup_html += `<div id="links" style="width:${divMaxWidth}px; margin-top:15px; text-align:center;">`;   
-        for (var i=0; i < properties.photos.length; i++) {
+        for (var i=0; i < pics.length; i++) {
             
             // make only the first photo visible in the popup
             var display = "";
             if (i>0) {display = `style="display:none"`};
             
-            var photos = JSON.parse(properties.photos[i]);
+            var photos = JSON.parse(pics[i]);
             popup_html += `
                 <a href="${local_url}${photos.image}" ${display} title="${properties.name}" data-gallery>
                     <img src="${local_url}${photos.thumbnail}"/>
@@ -26,10 +26,20 @@ function makePopupContent(properties) {
         popup_html += "</div>";
     }
     
+    if (properties.handrail == null) {
+        properties.handrail = "N/A";
+    }
+    
+    if (properties.stair_ct == null) {
+        properties.stair_ct = "N/A";
+    }
+    
     popup_html += `
         <dl>
             <dt>type</dt><dd>${properties.type}</dd>
             <dt>location</dt><dd>${properties.location}</dd>
+            <dt>handrail</dt><dd>${properties.handrail}</dd>
+            <dt>steps</dt><dd>${properties.stair_ct}</dd>
             <dt>stairid</dt><dd>${properties.stairid}</dd>
         </dl>
     `;
