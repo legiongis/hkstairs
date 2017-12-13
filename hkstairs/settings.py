@@ -168,6 +168,13 @@ LEAFLET_CONFIG = {
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
+        'LOCATION': os.path.join(BASE_DIR,'stairdb','cache')
+    }
+}
+
 try:
     from settings_local import *
 except ImportError:

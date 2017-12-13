@@ -1,4 +1,5 @@
 hkstairs/settings_local.py
+stairdb/cache/*
 media
 
 # Byte-compiled / optimized / DLL files
