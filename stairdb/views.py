@@ -4,6 +4,8 @@ from django.template import loader
 from django.contrib.gis.db.models.functions import Centroid,AsGeoJSON
 from django.core.serializers import serialize
 import json
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
 from models import Stair
 from rest_framework.views import APIView
 from rest_framework import viewsets, response
@@ -28,6 +30,10 @@ class StairList(APIView):
 class StairViewSet(viewsets.ModelViewSet):
     queryset = Stair.objects.all()
     serializer_class = MapSerializer
+    
+    @method_decorator(cache_page(None))
+    def dispatch(self, *args, **kwargs):
+        return super(StairViewSet, self).dispatch(*args, **kwargs)
     
 # def get_stairs(self,stairid="all"):
 
