@@ -1,5 +1,6 @@
 import os
 import csv
+from datetime import datetime
 from django.core import management
 from django.core.management.base import BaseCommand, CommandError
 from django.conf import settings
@@ -9,21 +10,65 @@ from stairdb.models import Stair
 
 
 class Command(BaseCommand):
-    help = 'gets handrail and stair count info from stairquest and tranfers these values to stairdb objects.'
+    help = 'gets handrail and stair count info from stairquest, writes that to a  and tranfers these values to stairdb objects. run first with --stage to update the csv, and then with --run to actually modify values in the hkstairs db.'
 
     def add_arguments(self, parser):
-        parser.add_argument('--fake',action='store_true',
+        parser.add_argument('--stage',action='store_true',
             default=False,
-            help="updates the csv and prints the output, but doesn't modify the db",
+            help="updates the csv and prints the output, but doesn't modify the db.",
+        )
+        parser.add_argument('--run',action='store_true',
+            default=False,
+            help="uses the csv to modify values in the hkstairs db.",
+        )
+        parser.add_argument('--test_run',action='store_true',
+            default=False,
+            help="does a mock version of the run command with verbose messages, but doesn't modify the db.",
+        )
+        parser.add_argument('--verbose',action='store_true',
+            default=False,
+            help="adds a bunch of print statements.",
         )
 
     def handle(self, *args, **options):
 
-        src_csv = refresh_csv(table_name="wp_gq_stair_vote")
-        data = self.prepare_data(src_csv,verbose=options['fake'])
-        self.update_info(data,fake=options['fake'])
+        if not options['stage'] and not options['run'] and not options['test_run']:
+            print "you must use this command with either --stage or --run or --test-run. for more info, run with --help."
+            return
         
-    def prepare_data(self,csvfile,verbose=False):
+        if options['stage']:
+            refresh_csv(table_name="wp_gq_stair_vote")
+        
+        if options['test_run']:
+            data = self.prepare_data(table_name="wp_gq_stair_vote",verbose=True)
+            if data:
+                self.update_info(data,fake=True)
+            return
+            
+        if options['run']:
+            data = self.prepare_data(table_name="wp_gq_stair_vote",verbose=options['verbose'])
+            if data:
+                self.update_info(data)
+        
+    def prepare_data(self,table_name='',verbose=False):
+        
+        data_dir = os.path.join(settings.BASE_DIR,"stairdb","management","commands","tmp_data")
+        
+        files = [i for i in os.listdir(data_dir) if table_name in i]
+        dates = {}
+        for index,f in enumerate(files):
+            datestring = f[-12:-4]
+            try:
+                date = datetime.strptime(datestring, "%m%d%Y").date()
+            except ValueError:
+                continue
+            dates[date] = f
+        
+        if not dates:
+            print "no csv files found for this table:",table_name
+            return False
+        csvfile = os.path.join(data_dir,dates[max(dates.keys())])
+        print "pulling data from:\n"+csvfile
         
         data = {}
         with open(csvfile,"rb") as incsv:

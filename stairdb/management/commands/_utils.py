@@ -1,11 +1,13 @@
 import os
 import csv
+from datetime import datetime
 from django.conf import settings
 
 def refresh_csv(table_name=""):
     print("refreshing CSV from StairQuest database...")
     
-    outfile = os.path.join(settings.BASE_DIR,"stairdb","management","commands","tmp_data",table_name+'.csv')
+    filename = "{}_{}.csv".format(table_name,datetime.today().strftime("%m%d%Y"))
+    outfile = os.path.join(settings.BASE_DIR,"stairdb","management","commands","tmp_data",filename)
 
     try:
         import mysql.connector
