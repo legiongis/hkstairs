@@ -31,4 +31,7 @@ class Command(BaseCommand):
         ## created below
         req.add_header('Accept', 'application/json, text/javascript, */*; q=0.01')
         
+        if not settings.DEBUG:
+            req.add_headers('Host','stairculture.com')
+        
         response = urllib2.urlopen(req)
