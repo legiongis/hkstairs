@@ -19,7 +19,11 @@ class Command(BaseCommand):
             if f.endswith(".djcache"):
                 os.remove(os.path.join(cache_dir,f))
         
-        req = urllib2.Request(url='http://localhost:8000/stair/?format=json')
+        stair_json = 'http://localhost'+settings.LOCAL_URL+'/stair/?format=json'
+        if settings.DEBUG:
+            stair_json = 'http://localhost:8000'+settings.LOCAL_URL+'/stair/?format=json'
+       
+        req = urllib2.Request(url=stair_json)
         
         ## this header needs to be added to correctly mimic the ajax requests
         ## that are made in the map js. if absent, django will make a new
