@@ -18,8 +18,8 @@ function makePopupContent(properties) {
             
             var photos = JSON.parse(pics[i]);
             popup_html += `
-                <a href="${local_url}${photos.image}" ${display} title="${properties.name}" data-gallery>
-                    <img src="${local_url}${photos.thumbnail}"/>
+                <a href="${photos.image}" ${display} title="${properties.name}" data-gallery>
+                    <img src="${photos.thumbnail}"/>
                 </a>
             `;
         }            
