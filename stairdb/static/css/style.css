@@ -97,6 +97,10 @@ html body {
     margin: 0 0 0 65px;
 }
 
+.leaflet-control-layers {
+    min-width: 170px;
+}
+
 .leaflet-control-layers-overlays {
     overflow-y: auto;
     height: 250px;
