@@ -390,7 +390,7 @@ window.addEventListener("map:init", function (event) {
         {maxNativeZoom:18,maxZoom:19,attribution:mbAttributeText}
     );
 
-    var linemap = L.tileLayer('http://stairculture.com/tiles/hk_clr1_2/{z}/{x}/{y}.png',
+    var linemap = L.tileLayer('https://tiles.legiongis.com/hk_clr1_2/{z}/{x}/{y}.png',
         {maxZoom:19}
     );
 
