@@ -259,6 +259,16 @@ function makePopupContent(properties) {
     return popup_html
 }
 
+/**
+ * Open Popup by ID (stairid)
+ */
+function openPopupById(id) {
+    if( window.stairs[id] ) {
+        window.stairs[id].openPopup();
+        //console.log("opening stairid: " + id);
+    }
+}
+
 $(window).load(function () {
     var isIE = /*@cc_on!@*/false || !!document.documentMode;
     if (isIE) {
@@ -266,6 +276,9 @@ $(window).load(function () {
         $("#loader-content").addClass("loader-mask");
     }
 });
+
+// create array for accessing later
+window.stairs = {};
 
 window.addEventListener("map:init", function (event) {
 
@@ -282,10 +295,25 @@ window.addEventListener("map:init", function (event) {
         });
         marker.on("popupopen", function (e) {
             map.addLayer(polygon);
+            appendStairid(polygon.feature.properties.stairid); 
         });
         marker.on("popupclose", function (e) {
             map.removeLayer(polygon);
         });
+    }
+
+    function appendStairid(stairid) {   
+        var hash = window.location.hash;
+        //console.log(hash);
+        if(hash.indexOf('#') === 0) {
+            hash = hash.substr(1);
+        }
+        var args = hash.split("/");
+        if (args.length >= 3) {
+            args[3] = stairid
+
+            window.location.hash = args.join('/');
+        }
     }
 
     // make new marker from feature properties and then add to the correct colorDict array
@@ -296,7 +324,6 @@ window.addEventListener("map:init", function (event) {
             new L.LatLng(properties.coords_y, properties.coords_x),
             {icon:icon,riseonhover:true}
         );
-        newMarker.bindPopup(popup);
         showPolygon(newMarker,polygon);
         colorDict[properties.type].markers.push(newMarker);
         
@@ -306,7 +333,7 @@ window.addEventListener("map:init", function (event) {
     // no layers/markers are actually added to the map here, markers are just created and sorted.
     var start_time = new Date().getTime();
     $.getJSON(local_url+'/stair/?format=json', function(pois) {
-        L.geoJson(pois, {
+        window.geojson = L.geoJson(pois, {
             onEachFeature: function onEachFeature(feature, layer) {
 
                 var p = feature.properties;
@@ -331,6 +358,9 @@ window.addEventListener("map:init", function (event) {
 
                 var popup = makePopupContent(p);
                 marker.bindPopup(popup);
+
+                window.stairs[p.stairid] = marker;
+
                 showPolygon(marker,layer);
                 colorDict["All Stairs"].markers.push(marker);
 
@@ -373,6 +403,25 @@ window.addEventListener("map:init", function (event) {
             for (var i in colorDict) {
                 console.log(i+": "+colorDict[i].markers.length)
                 overlaysDict[i].addLayers(colorDict[i].markers)
+            }
+
+
+            var hash = window.location.hash;
+            //console.log(hash);
+            if(hash.indexOf('#') === 0) {
+                hash = hash.substr(1);
+            }
+            var args = hash.split("/");
+            if (args.length >= 3) {
+                var markerid = parseFloat(args[3]);
+                if (isNaN(markerid)) {
+                    return false;
+                } else {
+                    //console.log('markerid: '+markerid);
+                    openPopupById(markerid);
+                }
+            } else {
+                return false;
             }
     });
 
