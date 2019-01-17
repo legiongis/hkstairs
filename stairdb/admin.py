@@ -26,9 +26,13 @@ class PhotoInline(admin.TabularInline):
     exclude = ('thumbnail',)
 
 class StairAdmin(OverrideLeafletGeoAdmin):
+    list_display = ['stairid','name','type','handrail','stair_ct']
     search_fields = ['stairid','type','location']
     inlines = [PhotoInline,]
     ordering = ('stairid',)
+
+    # def stair_name(self, obj):
+    #     return obj.name
     
 class PhotoAdmin(OverrideLeafletGeoAdmin):
     fields = ('image_tag','image','stairid','geom')
