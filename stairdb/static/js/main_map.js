@@ -377,6 +377,7 @@ window.addEventListener("map:init", function (event) {
     });
 
     var map = event.detail.map;
+    var hash = new L.Hash(map);
     map.addControl(new L.Control.Fullscreen());
 
     // create the basemap layers

@@ -161,6 +161,11 @@ LEAFLET_CONFIG = {
             'js': STATIC_URL + 'plugins/Control.MiniMap.min.js',
             'auto-include': True,
         },
+        'leaflet-hash': {
+            'css': [],
+            'js': STATIC_URL + 'plugins/leaflet-hash.js',
+            'auto-include': True,
+        },
     }
 }
 
