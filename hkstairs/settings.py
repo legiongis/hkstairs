@@ -24,8 +24,7 @@ SECRET_KEY = 'XXX-XX-XXXX'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['projects.legiongis.com','stairculture.com','localhost']
-
+ALLOWED_HOSTS = ['localhost','projects.legiongis.com']
 
 # Application definition
 
@@ -178,4 +177,4 @@ CACHES = {
 try:
     from settings_local import *
 except ImportError:
-    pass
+    raise Exception("A local_settings.py file is required to run this project")
