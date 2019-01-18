@@ -263,11 +263,25 @@ function makePopupContent(properties) {
  * Open Popup by ID (stairid)
  */
 function openPopupById(id) {
+    //console.log('loaded stairs: '+Object.keys(window.stairs).length)
     if( window.stairs[id] ) {
-        window.stairs[id].openPopup();
-        //console.log("opening stairid: " + id);
+        if( ! window.stairs[id].openPopup() ) {
+            console.log("opening stairid: " + id);
+        } else {
+            console.log("changing lat/lng for: " + id);
+            var zoom = 19,
+                lat = parseFloat(window.stairs[id]._latlng.lat),
+                lng = parseFloat(window.stairs[id]._latlng.lng),
+                precision = Math.max(0, Math.ceil(Math.log(zoom) / Math.LN2));
+            var newhash = zoom+'/'+lat.toFixed(precision)+'/'+lng.toFixed(precision)
+            window.location.hash = newhash;
+            setTimeout( function() {
+                openPopupById(id);
+            }, 500 );
+        }
     }
 }
+
 
 $(window).load(function () {
     var isIE = /*@cc_on!@*/false || !!document.documentMode;
@@ -303,17 +317,26 @@ window.addEventListener("map:init", function (event) {
     }
 
     function appendStairid(stairid) {   
-        var hash = window.location.hash;
-        //console.log(hash);
-        if(hash.indexOf('#') === 0) {
-            hash = hash.substr(1);
-        }
-        var args = hash.split("/");
-        if (args.length >= 3) {
-            args[3] = stairid
+        const params = new URLSearchParams(location.search)
+        params.set('stairid', stairid);
 
-            window.location.hash = args.join('/');
+        var newurl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?' + params + window.location.hash;
+        if (history.pushState) {
+            window.history.pushState({path:newurl},'',newurl);
+        } else {
+            document.location.href = newurl;
         }
+        // var hash = window.location.hash;
+        // //console.log(hash);
+        // if(hash.indexOf('#') === 0) {
+        //     hash = hash.substr(1);
+        // }
+        // var args = hash.split("/");
+        // if (args.length >= 3) {
+        //     args[3] = stairid
+
+        //     window.location.hash = args.join('/');
+        // }
     }
 
     // make new marker from feature properties and then add to the correct colorDict array
@@ -401,28 +424,20 @@ window.addEventListener("map:init", function (event) {
             // now that all markers have been added to colorDict, push them
             // to the actual cluster layers that are stored in overlaysDict
             for (var i in colorDict) {
-                console.log(i+": "+colorDict[i].markers.length)
+                //console.log(i+": "+colorDict[i].markers.length)
                 overlaysDict[i].addLayers(colorDict[i].markers)
             }
 
+            const params = new URLSearchParams(document.location.search)
+            var stairid = params.get('stairid');
+            if(stairid) {
+                //console.log('found stairid: '+stairid)
+                // delay this call, in order to wait for everything to be loaded
+                setTimeout( function() {
+                    openPopupById(stairid);
+                }, 500 );
+            }
 
-            var hash = window.location.hash;
-            //console.log(hash);
-            if(hash.indexOf('#') === 0) {
-                hash = hash.substr(1);
-            }
-            var args = hash.split("/");
-            if (args.length >= 3) {
-                var markerid = parseFloat(args[3]);
-                if (isNaN(markerid)) {
-                    return false;
-                } else {
-                    //console.log('markerid: '+markerid);
-                    openPopupById(markerid);
-                }
-            } else {
-                return false;
-            }
     });
 
     var map = event.detail.map;
