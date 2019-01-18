@@ -276,7 +276,7 @@ function openPopupById(id) {
             var newhash = zoom+'/'+lat.toFixed(precision)+'/'+lng.toFixed(precision)
             window.location.hash = newhash;
             setTimeout( function() {
-                openPopupById(id);
+                window.stairs[id].openPopup();
             }, 500 );
         }
     }
