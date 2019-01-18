@@ -313,6 +313,7 @@ window.addEventListener("map:init", function (event) {
         });
         marker.on("popupclose", function (e) {
             map.removeLayer(polygon);
+            removeStairid();
         });
     }
 
@@ -326,17 +327,22 @@ window.addEventListener("map:init", function (event) {
         } else {
             document.location.href = newurl;
         }
-        // var hash = window.location.hash;
-        // //console.log(hash);
-        // if(hash.indexOf('#') === 0) {
-        //     hash = hash.substr(1);
-        // }
-        // var args = hash.split("/");
-        // if (args.length >= 3) {
-        //     args[3] = stairid
+    }
+    function removeStairid() {   
+        const params = new URLSearchParams(location.search)
+        params.delete('stairid');
 
-        //     window.location.hash = args.join('/');
-        // }
+        if( params.entries().length ) {
+            var search = '?' + params
+        } else {
+            var search = ''
+        }
+        var newurl = window.location.protocol + "//" + window.location.host + window.location.pathname + search + window.location.hash;
+        if (history.pushState) {
+            window.history.pushState({path:newurl},'',newurl);
+        } else {
+            document.location.href = newurl;
+        }
     }
 
     // make new marker from feature properties and then add to the correct colorDict array
