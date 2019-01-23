@@ -259,6 +259,30 @@ function makePopupContent(properties) {
     return popup_html
 }
 
+/**
+ * Open Popup by ID (stairid)
+ */
+function openPopupById(id) {
+    //console.log('loaded stairs: '+Object.keys(window.stairs).length)
+    if( window.stairs[id] ) {
+        if( ! window.stairs[id].openPopup() ) {
+            console.log("opening stairid: " + id);
+        } else {
+            console.log("changing lat/lng for: " + id);
+            var zoom = 19,
+                lat = parseFloat(window.stairs[id]._latlng.lat),
+                lng = parseFloat(window.stairs[id]._latlng.lng),
+                precision = Math.max(0, Math.ceil(Math.log(zoom) / Math.LN2));
+            var newhash = zoom+'/'+lat.toFixed(precision)+'/'+lng.toFixed(precision)
+            window.location.hash = newhash;
+            setTimeout( function() {
+                window.stairs[id].openPopup();
+            }, 500 );
+        }
+    }
+}
+
+
 $(window).load(function () {
     var isIE = /*@cc_on!@*/false || !!document.documentMode;
     if (isIE) {
@@ -266,6 +290,9 @@ $(window).load(function () {
         $("#loader-content").addClass("loader-mask");
     }
 });
+
+// create array for accessing later
+window.stairs = {};
 
 window.addEventListener("map:init", function (event) {
 
@@ -282,10 +309,40 @@ window.addEventListener("map:init", function (event) {
         });
         marker.on("popupopen", function (e) {
             map.addLayer(polygon);
+            appendStairid(polygon.feature.properties.stairid); 
         });
         marker.on("popupclose", function (e) {
             map.removeLayer(polygon);
+            removeStairid();
         });
+    }
+
+    function appendStairid(stairid) {   
+        const params = new URLSearchParams(location.search)
+        params.set('stairid', stairid);
+
+        var newurl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?' + params + window.location.hash;
+        if (history.pushState) {
+            window.history.pushState({path:newurl},'',newurl);
+        } else {
+            document.location.href = newurl;
+        }
+    }
+    function removeStairid() {   
+        const params = new URLSearchParams(location.search)
+        params.delete('stairid');
+
+        if( params.entries().length ) {
+            var search = '?' + params
+        } else {
+            var search = ''
+        }
+        var newurl = window.location.protocol + "//" + window.location.host + window.location.pathname + search + window.location.hash;
+        if (history.pushState) {
+            window.history.pushState({path:newurl},'',newurl);
+        } else {
+            document.location.href = newurl;
+        }
     }
 
     // make new marker from feature properties and then add to the correct colorDict array
@@ -296,7 +353,6 @@ window.addEventListener("map:init", function (event) {
             new L.LatLng(properties.coords_y, properties.coords_x),
             {icon:icon,riseonhover:true}
         );
-        newMarker.bindPopup(popup);
         showPolygon(newMarker,polygon);
         colorDict[properties.type].markers.push(newMarker);
         
@@ -306,7 +362,7 @@ window.addEventListener("map:init", function (event) {
     // no layers/markers are actually added to the map here, markers are just created and sorted.
     var start_time = new Date().getTime();
     $.getJSON(local_url+'/stair/?format=json', function(pois) {
-        L.geoJson(pois, {
+        window.geojson = L.geoJson(pois, {
             onEachFeature: function onEachFeature(feature, layer) {
 
                 var p = feature.properties;
@@ -331,6 +387,9 @@ window.addEventListener("map:init", function (event) {
 
                 var popup = makePopupContent(p);
                 marker.bindPopup(popup);
+
+                window.stairs[p.stairid] = marker;
+
                 showPolygon(marker,layer);
                 colorDict["All Stairs"].markers.push(marker);
 
@@ -371,12 +430,24 @@ window.addEventListener("map:init", function (event) {
             // now that all markers have been added to colorDict, push them
             // to the actual cluster layers that are stored in overlaysDict
             for (var i in colorDict) {
-                console.log(i+": "+colorDict[i].markers.length)
+                //console.log(i+": "+colorDict[i].markers.length)
                 overlaysDict[i].addLayers(colorDict[i].markers)
             }
+
+            const params = new URLSearchParams(document.location.search)
+            var stairid = params.get('stairid');
+            if(stairid) {
+                //console.log('found stairid: '+stairid)
+                // delay this call, in order to wait for everything to be loaded
+                setTimeout( function() {
+                    openPopupById(stairid);
+                }, 500 );
+            }
+
     });
 
     var map = event.detail.map;
+    var hash = new L.Hash(map);
     map.addControl(new L.Control.Fullscreen());
 
     // create the basemap layers

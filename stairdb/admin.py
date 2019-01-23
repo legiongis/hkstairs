@@ -9,7 +9,7 @@ class OverrideLeafletGeoAdmin(LeafletGeoAdmin):
     settings_overrides = {
         'TILES': [
             # base layers by preference
-            ('City Map','http://stairculture.com/tiles/hk_clr1_2/{z}/{x}/{y}.png',{
+            ('City Map','https://tiles.legiongis.com/hk_clr1_2/{z}/{x}/{y}.png',{
                 'maxZoom':19
             }),
             ('OSM', 'https://api.mapbox.com/styles/v1/mapbox/outdoors-v10/tiles/256/{z}/{x}/{y}?access_token='+settings.MAPBOX_API_KEY,{
@@ -26,9 +26,13 @@ class PhotoInline(admin.TabularInline):
     exclude = ('thumbnail',)
 
 class StairAdmin(OverrideLeafletGeoAdmin):
+    list_display = ['stairid','name','type','handrail','stair_ct']
     search_fields = ['stairid','type','location']
     inlines = [PhotoInline,]
     ordering = ('stairid',)
+
+    # def stair_name(self, obj):
+    #     return obj.name
     
 class PhotoAdmin(OverrideLeafletGeoAdmin):
     fields = ('image_tag','image','stairid','geom')

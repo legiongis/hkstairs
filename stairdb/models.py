@@ -108,7 +108,7 @@ class Photo(models.Model):
         # Set our max thumbnail size in a tuple (max width, max height)
         THUMBNAIL_SIZE = (99, 66)
 
-        if self.image.name.lower().endswith(".jpg"):
+        if self.image.name.lower().endswith(".jpg") or self.image.name.lower().endswith(".jpeg"):
             PIL_TYPE = 'jpeg'
             FILE_EXTENSION = 'jpg'
             DJANGO_TYPE = 'image/jpeg'

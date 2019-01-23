@@ -84,7 +84,8 @@ html body {
 .leaflet-popup dt {
     float: left;
     clear: left;
-    width: 55px;
+    width: 70px;
+    margin-right: 10px;
     text-align: right;
     font-weight: bold;
 }
