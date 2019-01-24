@@ -10,14 +10,17 @@ class OverrideLeafletGeoAdmin(LeafletGeoAdmin):
         'TILES': [
             # base layers by preference
             ('City Map','https://tiles.legiongis.com/hk_clr1_2/{z}/{x}/{y}.png',{
-                'maxZoom':19
+                'maxNativeZoom':19,
+                'maxZoom':21
             }),
             ('OSM', 'https://api.mapbox.com/styles/v1/mapbox/outdoors-v10/tiles/256/{z}/{x}/{y}?access_token='+settings.MAPBOX_API_KEY,{
-                'maxZoom':19,
+                'maxNativeZoom':20,
+                'maxZoom':21,
                 'attribution':'<a href="http://www.openstreetmap.org/copyright" target="_blank"> OpenStreetMap</a> contributors'
             }),
         ],
         'MINIMAP': False, # instantiate this later in the admin-map.js file to set basemap
+        'MAX_ZOOM': 21,
     }
     
 class PhotoInline(admin.TabularInline):

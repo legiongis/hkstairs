@@ -15,7 +15,7 @@ window.addEventListener("map:init", function (event) {
 
     var osm_minimap = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/outdoors-v10/tiles/256/{z}/{x}/{y}?access_token='+mapbox_api_key,{
         maxNativeZoom:18,
-        maxZoom:19
+        maxZoom:21
     });
     
     map.addControl(new L.Control.MiniMap(osm_minimap));
