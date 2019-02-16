@@ -45,7 +45,6 @@ class StairAdmin(OverrideLeafletGeoAdmin):
         ])
     featured_photo.short_description = "Photos"
     featured_photo.allow_tags = True
-    featured_photo.empty_value_display = '???'
 
     
 class PhotoAdmin(OverrideLeafletGeoAdmin):

@@ -106,8 +106,14 @@ class Photo(models.Model):
         if not self.image:
             return
 
+        # Delete Thumbnail if it exists
+        image_path = settings.BASE_DIR+self.thumbnail.url
+        if os.path.isfile(image_path):
+            #print "deleting existing thumbnail: "+image_path
+            os.remove(image_path)
+
         # Set our max thumbnail size in a tuple (max width, max height)
-        THUMBNAIL_SIZE = (99, 66)
+        THUMBNAIL_SIZE = (150, 150)
 
         if self.image.name.lower().endswith(".jpg") or self.image.name.lower().endswith(".jpeg"):
             PIL_TYPE = 'jpeg'
