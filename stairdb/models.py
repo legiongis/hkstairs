@@ -190,9 +190,9 @@ class Photo(models.Model):
         return wkt
 
     def __unicode__(self):
-        return mark_safe(self.image_tag())
-        #return '{"thumbnail": "%s", "image": "%s"}' % (self.thumbnail.url, self.image.url)
-    __unicode__.allow_tags = True
+        #return mark_safe(self.image_tag())
+        return '{"thumbnail": "%s", "image": "%s"}' % (self.thumbnail.url, self.image.url)
+    #__unicode__.allow_tags = True
 
     def save(self, *args, **kwargs):
 
