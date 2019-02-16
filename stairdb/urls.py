@@ -11,5 +11,3 @@ urlpatterns = [
     url(r'^', include(router.urls)),
     # url(r'^json/(?P<stairid>[\w-]+)/$', views.get_stairs, name='stair_json'),
 ]
-
-

@@ -1,6 +1,7 @@
 from __future__ import unicode_literals
 
 from django.contrib.gis.db import models
+from django.utils.html import mark_safe
 from django.core.serializers import serialize
 from django.core.files.uploadedfile import SimpleUploadedFile
 
@@ -183,7 +184,9 @@ class Photo(models.Model):
         return wkt
 
     def __unicode__(self):
-        return '{"thumbnail": "%s", "image": "%s"}' % (self.thumbnail.url, self.image.url)
+        return mark_safe(self.image_tag())
+        #return '{"thumbnail": "%s", "image": "%s"}' % (self.thumbnail.url, self.image.url)
+    __unicode__.allow_tags = True
 
     def save(self, *args, **kwargs):
 

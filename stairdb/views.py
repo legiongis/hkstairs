@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.template import loader
@@ -6,7 +7,7 @@ from django.core.serializers import serialize
 import json
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
-from models import Stair
+from models import Stair, Photo
 from rest_framework.views import APIView
 from rest_framework import viewsets, response
 from .serializers import StairSerializer, MapSerializer
@@ -28,12 +29,17 @@ class StairList(APIView):
 
 
 class StairViewSet(viewsets.ModelViewSet):
-    queryset = Stair.objects.all()
+    #queryset = Stair.objects.all()
+    ### use prefetch_related to avoid N+1 select problem ###
+    queryset = Stair.objects.prefetch_related('photos').all()
+
     serializer_class = MapSerializer
     
-    @method_decorator(cache_page(None))
-    def dispatch(self, *args, **kwargs):
-        return super(StairViewSet, self).dispatch(*args, **kwargs)
+    # Implement the Cache
+    if settings.USE_CACHE:
+        @method_decorator(cache_page(None))
+        def dispatch(self, *args, **kwargs):
+            return super(StairViewSet, self).dispatch(*args, **kwargs)
     
 # def get_stairs(self,stairid="all"):
 

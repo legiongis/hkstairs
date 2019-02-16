@@ -24,6 +24,9 @@ SECRET_KEY = 'XXX-XX-XXXX'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+# Enables cache
+USE_CACHE = True
+
 ALLOWED_HOSTS = ['localhost','projects.legiongis.com']
 
 # Application definition
@@ -39,7 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.gis',
     'leaflet',
     'rest_framework',
-    'rest_framework_gis',    
+    'rest_framework_gis',
 ]
 
 MIDDLEWARE = [

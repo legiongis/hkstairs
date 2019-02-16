@@ -19,7 +19,7 @@ class OverrideLeafletGeoAdmin(LeafletGeoAdmin):
                 'attribution':'<a href="http://www.openstreetmap.org/copyright" target="_blank"> OpenStreetMap</a> contributors'
             }),
         ],
-        'MINIMAP': False, # instantiate this later in the admin-map.js file to set basemap
+        'MINIMAP': False, # instantiate this later in  the admin-map.js file to set basemap
         'MAX_ZOOM': 21,
     }
     
@@ -29,13 +29,24 @@ class PhotoInline(admin.TabularInline):
     exclude = ('thumbnail',)
 
 class StairAdmin(OverrideLeafletGeoAdmin):
-    list_display = ['stairid','name','type','handrail','stair_ct']
+    list_display = ['stairid','name','type','handrail','stair_ct','featured_photo']
+    fields = ['stairid','name','type','handrail','stair_ct','geom']
     search_fields = ['stairid','type','location']
     inlines = [PhotoInline,]
     ordering = ('stairid',)
+    readonly_fields = ['stairid','featured_photo']
 
     # def stair_name(self, obj):
     #     return obj.name
+
+    def featured_photo(self, obj):
+        return " ".join([
+            u'<img src="{}" style="height:100px;max-width:100%;"/>'.format(child.image.url) for child in obj.photos.all()
+        ])
+    featured_photo.short_description = "Photos"
+    featured_photo.allow_tags = True
+    featured_photo.empty_value_display = '???'
+
     
 class PhotoAdmin(OverrideLeafletGeoAdmin):
     fields = ('image_tag','image','stairid','geom')
