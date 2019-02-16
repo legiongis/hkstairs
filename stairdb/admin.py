@@ -11,7 +11,7 @@ class OverrideLeafletGeoAdmin(LeafletGeoAdmin):
             # base layers by preference
             ('City Map','https://tiles.legiongis.com/hk_clr1_2/{z}/{x}/{y}.png',{
                 'maxNativeZoom':19,
-                'maxZoom':21
+                'maxZoom':21,
             }),
             ('OSM', 'https://api.mapbox.com/styles/v1/mapbox/outdoors-v10/tiles/256/{z}/{x}/{y}?access_token='+settings.MAPBOX_API_KEY,{
                 'maxNativeZoom':20,
@@ -30,7 +30,7 @@ class PhotoInline(admin.TabularInline):
 
 class StairAdmin(OverrideLeafletGeoAdmin):
     list_display = ['stairid','name','type','handrail','stair_ct','featured_photo']
-    fields = ['stairid','name','type','handrail','stair_ct','geom']
+    fields = ['stairid','name','type','location','handrail','stair_ct','geom']
     search_fields = ['stairid','name','type','location']
     inlines = [PhotoInline,]
     ordering = ('stairid',)
