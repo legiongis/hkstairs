@@ -31,7 +31,7 @@ class PhotoInline(admin.TabularInline):
 class StairAdmin(OverrideLeafletGeoAdmin):
     list_display = ['stairid','name','type','handrail','stair_ct','featured_photo']
     fields = ['stairid','name','type','handrail','stair_ct','geom']
-    search_fields = ['stairid','type','location']
+    search_fields = ['stairid','name','type','location']
     inlines = [PhotoInline,]
     ordering = ('stairid',)
     readonly_fields = ['stairid','featured_photo']
@@ -50,6 +50,7 @@ class StairAdmin(OverrideLeafletGeoAdmin):
     
 class PhotoAdmin(OverrideLeafletGeoAdmin):
     fields = ('image_tag','image','stairid','geom')
+    search_fields = ['image']
     readonly_fields = ('image_tag',)
     ordering = ('geom','stairid')
 
