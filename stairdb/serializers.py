@@ -10,8 +10,7 @@ class StairSerializer(serializers.HyperlinkedModelSerializer):
 		fields = ('url', 'name', 'type', 'coords_x', 'coords_y', 'stairid', 'location', 'photos', 'geom')
 
 class MapSerializer(GeoFeatureModelSerializer):
-	# not sure what this is doing, so I commented it out
-	#photos = serializers.StringRelatedField(many=True)
+	photos = serializers.StringRelatedField(many=True)
 
 	class Meta:
 		model = Stair
