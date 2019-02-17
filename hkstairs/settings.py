@@ -43,7 +43,6 @@ INSTALLED_APPS = [
     'leaflet',
     'rest_framework',
     'rest_framework_gis',
-    'corsheaders',
 ]
 
 MIDDLEWARE = [
@@ -54,8 +53,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
-    'django.middleware.common.CommonMiddleware',
 ]
 
 ROOT_URLCONF = 'hkstairs.urls'
@@ -190,10 +187,7 @@ CACHES = {
     }
 }
 
-CORS_ORIGIN_WHITELIST = (
-    'stairculture.com',
-    '127.0.0.1:8000'
-)
+X_FRAME_OPTIONS = 'ALLOWALL' #'ALLOW-FROM https://stairculture.com/'
 
 try:
     from settings_local import *
