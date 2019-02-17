@@ -229,6 +229,11 @@
 
 
 
+.leaflet-control-minimap {
+    width: 150px !important;
+    height: 150px !important;
+}
+
 
 
 /* Responsive Styles Tablet And Below */
