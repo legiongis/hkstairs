@@ -28,13 +28,18 @@ class PhotoInline(admin.TabularInline):
     extra = 0
     exclude = ('thumbnail',)
 
+def make_featured(modeladmin, request, queryset):
+    queryset.update(featured=True)
+make_featured.short_description = "Mark selected stairs as featured"
+
 class StairAdmin(OverrideLeafletGeoAdmin):
-    list_display = ['stairid','name','type','handrail','stair_ct','featured_photo']
-    fields = ['stairid','name','type','location','handrail','stair_ct','geom']
+    list_display = ['stairid','name','type','location','featured','handrail','stair_ct','featured_photo']
+    fields = ['stairid','name','type','location','featured','handrail','stair_ct','geom']
     search_fields = ['stairid','name','type','location']
     inlines = [PhotoInline,]
     ordering = ('stairid',)
     readonly_fields = ['stairid','featured_photo']
+    actions = [make_featured]
 
     # def stair_name(self, obj):
     #     return obj.name

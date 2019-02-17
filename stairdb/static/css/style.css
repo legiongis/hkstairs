@@ -160,7 +160,11 @@ html body {
     z-index: 450 !important;
     color: white;
 }
-
+.featured, .featured div {
+    background-color: rgba(255, 105, 180, 0.6);
+    z-index: 450 !important;
+    color: white;
+}
 .alley-stairs, .alley-stairs div {
     background-color: rgba(221,45,22, 0.6);
     z-index: 440 !important;

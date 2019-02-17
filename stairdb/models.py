@@ -4,6 +4,7 @@ from django.contrib.gis.db import models
 from django.utils.html import mark_safe
 from django.core.serializers import serialize
 from django.core.files.uploadedfile import SimpleUploadedFile
+from django.core.cache import cache
 
 from PIL import Image
 from cStringIO import StringIO
@@ -44,6 +45,7 @@ class Stair(models.Model):
     coords_x = models.FloatField(null=True,editable=False)
     coords_y = models.FloatField(null=True,editable=False)
     objects = models.GeoManager()
+    featured = models.BooleanField(default=False)
     
     def __str__(self):
         return str(self.stairid)
@@ -70,6 +72,9 @@ class Stair(models.Model):
     #     return jdict
         
     def save(self, *args, **kwargs):
+        cache.clear()
+        print "cache cleared after update"
+
         self.coords_x = self.geom.centroid.coords[0]
         self.coords_y = self.geom.centroid.coords[1]
         super(Stair, self).save(*args, **kwargs)

@@ -23,6 +23,11 @@ var colorDict = {
         "classname": "all-stairs",
         "markers": []
     },
+    "Featured": {
+        "color": "#FF69B4",
+        "classname": "featured",
+        "markers": []
+    },
     "Alley Stairs": {
         "color": "#DD2D16",
         "classname": "alley-stairs",
@@ -95,6 +100,15 @@ var overlaysDict = {
             return L.divIcon({
                 html: '<div><p>' + cluster.getChildCount() + '</p></div>',
                 className: 'cluster-marker '+colorDict["All Stairs"].classname
+            });
+        },
+        maxClusterRadius: getClusterRadius,
+    }),
+    "Featured": new L.MarkerClusterGroup({
+        iconCreateFunction: function(cluster) {
+            return L.divIcon({
+                html: '<div><p>' + cluster.getChildCount() + '</p></div>',
+                className: 'cluster-marker '+colorDict["Featured"].classname
             });
         },
         maxClusterRadius: getClusterRadius,
@@ -303,9 +317,11 @@ window.addEventListener("map:init", function (event) {
             map.addLayer(polygon);
         });
         marker.on("mouseout", function (e) {
-            if (marker._popup.isOpen() === false) {
+            // this is throwing an error
+            console.log(marker)
+            //if (marker._popup.isOpen() === false) {
                 map.removeLayer(polygon);
-            };
+            //};
         });
         marker.on("popupopen", function (e) {
             map.addLayer(polygon);
@@ -353,10 +369,12 @@ window.addEventListener("map:init", function (event) {
             new L.LatLng(properties.coords_y, properties.coords_x),
             {icon:icon,riseonhover:true}
         );
+        newMarker.bindPopup(popup);
         showPolygon(newMarker,polygon);
         colorDict[properties.type].markers.push(newMarker);
         
     }
+
 
     // get all the stair features as geojson from the database, iterate and process each one.
     // no layers/markers are actually added to the map here, markers are just created and sorted.
@@ -370,10 +388,11 @@ window.addEventListener("map:init", function (event) {
                 // skip if this is an invalid stair type
                 if (!colorDict.hasOwnProperty(p.type)){
                     if (p.type != "Subway") {
-                        console.log("invalid type:"+p.type+" "+p.stairid);
+                        console.log("invalid type: "+p.type+" for stairid: "+p.stairid);
                     }
                     return
                 }
+
 
                 // set icon symbol based on presence of photo, set color based on layer
                 if (p.photos != ""){ var iconSymbol = "camera" } else { var iconSymbol = null };
@@ -393,6 +412,19 @@ window.addEventListener("map:init", function (event) {
                 showPolygon(marker,layer);
                 colorDict["All Stairs"].markers.push(marker);
 
+                // Set featured
+                if (p.featured == true) {        
+                    var icon = L.MakiMarkers.icon({icon:iconSymbol,color:colorDict['Featured'].color,size:"s"});
+                    var newMarker = new L.Marker(
+                        new L.LatLng(p.coords_y, p.coords_x),
+                        {icon:icon,riseonhover:true}
+                    );                
+                    newMarker.bindPopup(popup);
+                    showPolygon(newMarker,layer);
+                    colorDict["Featured"].markers.push(newMarker);
+                }
+
+
                 // now send the properties off to be made in to a new marker that is added to the
                 // correct colorDict markers array. pass the "layer" (which is the polygon) along to be
                 // bound to this new marker with the showPolygon function
@@ -404,6 +436,7 @@ window.addEventListener("map:init", function (event) {
             // this style function is applied to the polygon that is represented in the geojson
             style: function(feature){
                 switch(feature.properties.type){
+                    case "Featured": return {color: colorDict["Featured"].color}; break;
                     case "Alley Stairs": return {color: colorDict["Alley Stairs"].color}; break;
                     case "Building Access": return {color: colorDict["Building Access"].color}; break;
                     case "Country Park Stairs": return {color: colorDict["Country Park Stairs"].color}; break;
@@ -430,7 +463,7 @@ window.addEventListener("map:init", function (event) {
             // now that all markers have been added to colorDict, push them
             // to the actual cluster layers that are stored in overlaysDict
             for (var i in colorDict) {
-                //console.log(i+": "+colorDict[i].markers.length)
+                console.log(i+": "+colorDict[i].markers.length)
                 overlaysDict[i].addLayers(colorDict[i].markers)
             }
 

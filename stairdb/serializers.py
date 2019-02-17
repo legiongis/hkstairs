@@ -15,4 +15,4 @@ class MapSerializer(GeoFeatureModelSerializer):
 	class Meta:
 		model = Stair
 		geo_field = "geom"
-		fields = ('url', 'name','type','coords_x','coords_y','stairid','location', 'photos', 'geom','handrail','stair_ct')
+		fields = ('url', 'name', 'type', 'coords_x', 'coords_y', 'stairid', 'location', 'photos', 'geom', 'handrail', 'stair_ct', 'featured')
