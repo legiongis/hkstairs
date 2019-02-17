@@ -508,7 +508,19 @@ window.addEventListener("map:init", function (event) {
 
     // add default layers to map
     map.addLayer(outdoors);
-    map.addLayer(overlaysDict["All Stairs"]);
+
+    // override default layers from parameters
+    var search_params = new URLSearchParams(window.location.search);
+    var layers = search_params.getAll('layer');
+    if(layers) {
+        for (var i in layers) {
+            console.log('show '+layers[i]+' layer')
+            map.addLayer(overlaysDict[layers[i]]);
+        }
+    } else {
+        map.addLayer(overlaysDict["All Stairs"]);
+        map.addLayer(overlaysDict["Featured"]);
+    }
 
     // create second osm basemap layer for minimap and add minimap
     var osm_minimap = L.tileLayer(outdoorsUrl,
