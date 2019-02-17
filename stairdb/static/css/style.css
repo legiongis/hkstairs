@@ -1,6 +1,11 @@
-/*html body {
-    height: 100vh;
-}*/
+body {
+    padding: 0;
+    margin: 0;
+}
+html, body, #map {
+    height: 100%;
+    width: 100vw;
+}
 
 .leaflet-container {
     height: 100vh !important;
@@ -13,6 +18,7 @@
     width: 100%;
     border-radius: 0;
     border: 0;
+    border-bottom: 1px solid #cccccc;
 }
 
 .nav li {
@@ -76,6 +82,10 @@
 
 .leaflet-popup-content-wrapper {
     height:100%;
+}
+
+.leaflet-popup-content {
+    width: 200px;
 }
 
 /* using dl dt dd css from this great post */

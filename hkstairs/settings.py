@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'leaflet',
     'rest_framework',
     'rest_framework_gis',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
@@ -53,6 +54,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
 ]
 
 ROOT_URLCONF = 'hkstairs.urls'
@@ -169,6 +172,11 @@ LEAFLET_CONFIG = {
             'js': STATIC_URL + 'plugins/leaflet-hash.js',
             'auto-include': True,
         },
+        'leaflet-search': {
+            'css': [STATIC_URL + 'plugins/leaflet-search/leaflet-search.min.css'],
+            'js': STATIC_URL + 'plugins/leaflet-search/leaflet-search.src.js',
+            'auto-include': True,
+        },
     }
 }
 
@@ -181,6 +189,11 @@ CACHES = {
         'LOCATION': os.path.join(BASE_DIR,'stairdb','cache')
     }
 }
+
+CORS_ORIGIN_WHITELIST = (
+    'stairculture.com',
+    '127.0.0.1:8000'
+)
 
 try:
     from settings_local import *
