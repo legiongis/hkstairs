@@ -1,5 +1,9 @@
-html body {
+/*html body {
     height: 100vh;
+}*/
+
+.leaflet-container {
+    height: 100vh !important;
 }
 
 .navbar {
@@ -221,4 +225,43 @@ html body {
 /* set bluimp gallery on top of fullscreen */
 .blueimp-gallery {
     z-index: 2147483647 !important;
+}
+
+
+
+
+
+/* Responsive Styles Tablet And Below */
+
+/* styles for narrow desktop browsers and iPad landscape */
+@media all and (max-width: 1024px) {
+
+}
+
+
+/* styles for narrower desktop browsers and iPad portrait */
+@media all and (max-width: 980px) {
+
+}
+
+
+/* styles for mobile */
+@media all and (max-width: 767px) {
+
+    .nav-container {
+        width: 100%;
+    }
+
+    .navbar-toggle {
+        margin-right: 0px;
+    }
+
+    .navbar-collapse {
+        border-top: none;
+    }
+
+    .leaflet-control-minimap {
+        width: 100px !important;
+        height: 100px !important;
+    }
 }

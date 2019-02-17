@@ -512,7 +512,7 @@ window.addEventListener("map:init", function (event) {
     // override default layers from parameters
     var search_params = new URLSearchParams(window.location.search);
     var layers = search_params.getAll('layer');
-    if(layers) {
+    if(layers.length) {
         for (var i in layers) {
             console.log('show '+layers[i]+' layer')
             map.addLayer(overlaysDict[layers[i]]);
@@ -527,5 +527,7 @@ window.addEventListener("map:init", function (event) {
         {maxNativeZoom:18,maxZoom:19}
     );
     map.addControl(new L.Control.MiniMap(osm_minimap));
+
+    setTimeout(function () { window.scrollTo(0, 1); }, 1000);
 
 });
