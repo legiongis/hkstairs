@@ -33,8 +33,8 @@ def make_featured(modeladmin, request, queryset):
 make_featured.short_description = "Mark selected stairs as featured"
 
 class StairAdmin(OverrideLeafletGeoAdmin):
-    list_display = ['stairid','name','type','location','featured','handrail','stair_ct','featured_photo']
-    fields = ['stairid','name','type','location','featured','handrail','stair_ct','geom']
+    list_display = ['stairid','name','type','location','featured','materials','handrail','stair_ct','featured_photo']
+    fields = ['stairid','name','type','location','featured','materials','handrail','stair_ct','geom']
     search_fields = ['stairid','name','type','location']
     inlines = [PhotoInline,]
     ordering = ('stairid',)

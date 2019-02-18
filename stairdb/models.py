@@ -5,6 +5,7 @@ from django.utils.html import mark_safe
 from django.core.serializers import serialize
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.core.cache import cache
+from multiselectfield import MultiSelectField
 
 from PIL import Image
 from cStringIO import StringIO
@@ -29,6 +30,16 @@ class Stair(models.Model):
         ('Street Stairs','Street Stairs'),
         ('Subway','Subway'),
     )
+
+    MATERIALS = (('stone', 'Stone'),
+              ('pre-cast', 'Pre-cast concrete'),
+              ('cast-in-place', 'Cast in place concrete (CIP)'),
+              ('tile', 'Tile'),
+              ('brick', 'Brick'),
+              ('wood', 'Wood'),
+              ('metal', 'Metal'),
+              ('plastic', 'Plastic/composite'),
+              ('other', 'Other'))
     
     HANDRAIL_CHOICES = (
         ('Yes','Yes'),
@@ -46,6 +57,7 @@ class Stair(models.Model):
     coords_y = models.FloatField(null=True,editable=False)
     objects = models.GeoManager()
     featured = models.BooleanField(default=False)
+    materials = MultiSelectField(choices=MATERIALS)
     
     def __str__(self):
         return str(self.stairid)
