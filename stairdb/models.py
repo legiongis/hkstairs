@@ -46,6 +46,7 @@ class Stair(models.Model):
         ('No','No')
     )
 
+    id = models.AutoField(primary_key=True)
     stairid = models.IntegerField()
     name = models.CharField(max_length=100,null=True,default="N/A",blank=True)
     type = models.CharField(max_length=25,choices=TYPE_CHOICES,null=True,blank=True)
@@ -57,10 +58,19 @@ class Stair(models.Model):
     coords_y = models.FloatField(null=True,editable=False)
     objects = models.GeoManager()
     featured = models.BooleanField(default=False)
-    materials = MultiSelectField(choices=MATERIALS)
+    materials = MultiSelectField(choices=MATERIALS,null=True,blank=True)
     
     def __str__(self):
         return str(self.stairid)
+
+    def materials_formatted(self):
+        if self.materials is not None:
+            MATERIALS_DICT = dict(self.MATERIALS)
+            return ", ".join([
+                MATERIALS_DICT[material] for material in self.materials
+            ])
+        else:
+            return []
         
     # def as_json(self,centroid=False):
     #     '''CURRENTLY NOT IN USE 3/7/17'''
@@ -101,7 +111,8 @@ class Photo(models.Model):
         null=True,
         blank=True
     )
-    stairid = models.ForeignKey(Stair,null=True, blank=True, related_name='photos', on_delete=models.CASCADE)
+    id = models.AutoField(primary_key=True)
+    stairid = models.ForeignKey(Stair, null=True, blank=True, related_name='photos', on_delete=models.CASCADE)
     geom = models.PointField(null=True, blank=True)
     
     def __str__(self):

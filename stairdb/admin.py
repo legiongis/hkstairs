@@ -33,7 +33,7 @@ def make_featured(modeladmin, request, queryset):
 make_featured.short_description = "Mark selected stairs as featured"
 
 class StairAdmin(OverrideLeafletGeoAdmin):
-    list_display = ['stairid','name','type','location','featured','materials','handrail','stair_ct','featured_photo']
+    list_display = ['stairid','name','type','location','featured','materials_formatted','handrail','stair_ct','featured_photo']
     fields = ['stairid','name','type','location','featured','materials','handrail','stair_ct','geom']
     search_fields = ['stairid','name','type','location']
     inlines = [PhotoInline,]
@@ -46,13 +46,24 @@ class StairAdmin(OverrideLeafletGeoAdmin):
 
     def featured_photo(self, obj):
         return " ".join([
-            u'<img src="{}" style="height:100px;max-width:100%;"/>'.format(child.image.url) for child in obj.photos.all()
+            u'<a href="/admin/stairdb/photo/{}/change/"><img src="{}" style="height:100px;max-width:100%;"/></a>'.format(child.id,child.image.url) for child in obj.photos.all()
         ])
     featured_photo.short_description = "Photos"
     featured_photo.allow_tags = True
 
+
+    # def material_formatted(self, obj):
+    #     if obj.materials is not None:
+    #         MATERIALS_DICT = dict(obj.MATERIALS)
+    #         return ", ".join([
+    #             MATERIALS_DICT[material] for material in obj.materials
+    #         ])
+    #     else:
+    #         return []
+
     
 class PhotoAdmin(OverrideLeafletGeoAdmin):
+    list_display = ['id','image']
     fields = ('image_tag','image','stairid','geom')
     search_fields = ['image']
     readonly_fields = ('image_tag',)
