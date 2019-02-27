@@ -538,3 +538,8 @@ form .related-widget-wrapper ul {
 	width: 300px !important;
 	height: 200px !important;
 }
+
+.field-materials ul li {
+    float: left;
+    margin-right: 10px;
+}

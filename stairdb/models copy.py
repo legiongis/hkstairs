@@ -1,12 +1,10 @@
 from __future__ import unicode_literals
 
-from django.conf import settings
 from django.contrib.gis.db import models
 from django.utils.html import mark_safe
 from django.core.serializers import serialize
 from django.core.files.uploadedfile import SimpleUploadedFile
-from django.core.cache import cache
-from multiselectfield import MultiSelectField
+from django.conf import settings
 
 from PIL import Image
 from cStringIO import StringIO
@@ -31,23 +29,12 @@ class Stair(models.Model):
         ('Street Stairs','Street Stairs'),
         ('Subway','Subway'),
     )
-
-    MATERIALS = (('stone', 'Stone'),
-              ('pre-cast', 'Pre-cast concrete'),
-              ('cast-in-place', 'Cast in place concrete (CIP)'),
-              ('tile', 'Tile'),
-              ('brick', 'Brick'),
-              ('wood', 'Wood'),
-              ('metal', 'Metal'),
-              ('plastic', 'Plastic/composite'),
-              ('other', 'Other'))
     
     HANDRAIL_CHOICES = (
         ('Yes','Yes'),
         ('No','No')
     )
 
-    id = models.AutoField(primary_key=True)
     stairid = models.IntegerField()
     name = models.CharField(max_length=100,null=True,default="N/A",blank=True)
     type = models.CharField(max_length=25,choices=TYPE_CHOICES,null=True,blank=True)
@@ -59,19 +46,9 @@ class Stair(models.Model):
     coords_y = models.FloatField(null=True,editable=False)
     objects = models.GeoManager()
     featured = models.BooleanField(default=False)
-    materials = MultiSelectField(choices=MATERIALS,null=True,blank=True)
     
     def __str__(self):
         return str(self.stairid)
-
-    def materials_formatted(self):
-        if self.materials is not None:
-            MATERIALS_DICT = dict(self.MATERIALS)
-            return ", ".join([
-                MATERIALS_DICT[material] for material in self.materials
-            ])
-        else:
-            return []
         
     # def as_json(self,centroid=False):
     #     '''CURRENTLY NOT IN USE 3/7/17'''
@@ -95,29 +72,21 @@ class Stair(models.Model):
     #     return jdict
         
     def save(self, *args, **kwargs):
-        cache.clear()
-        print "cache cleared after update"
-
         self.coords_x = self.geom.centroid.coords[0]
         self.coords_y = self.geom.centroid.coords[1]
         super(Stair, self).save(*args, **kwargs)
 
 class Photo(models.Model):
     image = models.ImageField(
-        # this is the way to specify a dated directory structure
-        #upload_to='photos/%Y/%m/',
         upload_to='photos'
     )
     thumbnail = models.ImageField(
-        # this is the way to specify a dated directory structure
-        #upload_to='photos/%Y/%m/',
         upload_to='photos',
         max_length=500,
         null=True,
         blank=True
     )
-    id = models.AutoField(primary_key=True)
-    stairid = models.ForeignKey(Stair, null=True, blank=True, related_name='photos', on_delete=models.CASCADE)
+    stairid = models.ForeignKey(Stair,null=True, blank=True, related_name='photos', on_delete=models.CASCADE)
     geom = models.PointField(null=True, blank=True)
     
     def __str__(self):
@@ -159,34 +128,36 @@ class Photo(models.Model):
             DJANGO_TYPE = 'image/png'
 
         # Open original photo which we want to thumbnail using PIL's Image
-        #image_file = StringIO(self.image.read())
-        with Image.open(settings.BASE_DIR+self.image.url) as image:
+        file_handle = StringIO(self.image.read())
+        image = Image.open(file_handle)
         
-            # We use our PIL Image object to create the thumbnail, which already
-            # has a thumbnail() convenience method that contrains proportions.
-            # Additionally, we use Image.ANTIALIAS to make the image look better.
-            # Without antialiasing the image pattern artifacts may result.
-            image.thumbnail(THUMBNAIL_SIZE, Image.ANTIALIAS)
+        # We use our PIL Image object to create the thumbnail, which already
+        # has a thumbnail() convenience method that contrains proportions.
+        # Additionally, we use Image.ANTIALIAS to make the image look better.
+        # Without antialiasing the image pattern artifacts may result.
+        image.thumbnail(THUMBNAIL_SIZE, Image.ANTIALIAS)
 
-            # Save the thumbnail
-            temp_handle = StringIO()
-            image.save(temp_handle, PIL_TYPE)
-            temp_handle.seek(0)
+        # Save the thumbnail
+        # temp_handle = StringIO()
+        # image.save(temp_handle, PIL_TYPE)
+        # temp_handle.seek(0)
 
-            # Save the thumbnail field (save to SimpleUploadedFile which can be saved into
-            # ImageField
-            suf = SimpleUploadedFile(os.path.split(self.image.name)[-1],
-                    temp_handle.read(), content_type=DJANGO_TYPE)
-            # Save SimpleUploadedFile into image field
-            self.thumbnail.save(
-                '%s_thumbnail.%s' % (os.path.splitext(suf.name)[0], FILE_EXTENSION),
-                suf,
-                save=False
-            )
+        # Save image to a SimpleUploadedFile which can be saved into
+        # ImageField
+        suf = SimpleUploadedFile(os.path.split(self.image.name)[-1],
+                file_handle.read(), content_type=DJANGO_TYPE)
 
-            temp_handle.close()
+        # temp_handle.close
 
-            image.close()
+        # Save SimpleUploadedFile into image field       
+        self.thumbnail.save(
+            '%s_thumbnail.%s' % (os.path.splitext(suf.name)[0], FILE_EXTENSION),
+            suf,
+            save=False
+        )
+
+        file_handle.close()
+        image.close()
 
 
     def get_geotags(self):
@@ -229,9 +200,9 @@ class Photo(models.Model):
         return wkt
 
     def __unicode__(self):
-        #return mark_safe(self.image_tag())
-        return '{"thumbnail": "%s", "image": "%s"}' % (self.thumbnail.url, self.image.url)
-    #__unicode__.allow_tags = True
+        return mark_safe(self.image_tag())
+        #return '{"thumbnail": "%s", "image": "%s"}' % (self.thumbnail.url, self.image.url)
+    __unicode__.allow_tags = True
 
     def save(self, *args, **kwargs):
 

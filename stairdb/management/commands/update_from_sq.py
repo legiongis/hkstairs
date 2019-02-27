@@ -5,7 +5,7 @@ from django.core import management
 from django.core.management.base import BaseCommand, CommandError
 from django.conf import settings
 import psycopg2 as db
-from _utils import refresh_csv
+from _utils import refresh_csv, getStairs
 from stairdb.models import Stair
 
 
@@ -51,70 +51,79 @@ class Command(BaseCommand):
                 self.update_info(data)
         
     def prepare_data(self,table_name='',verbose=False):
-        
-        data_dir = os.path.join(settings.BASE_DIR,"stairdb","management","commands","tmp_data")
-        
-        files = [i for i in os.listdir(data_dir) if table_name in i]
-        dates = {}
-        for index,f in enumerate(files):
-            datestring = f[-12:-4]
-            try:
-                date = datetime.strptime(datestring, "%m%d%Y").date()
-            except ValueError:
-                continue
-            dates[date] = f
-        
-        if not dates:
-            print "no csv files found for this table:",table_name
-            return False
-        csvfile = os.path.join(data_dir,dates[max(dates.keys())])
-        print "pulling data from:\n"+csvfile
-        
-        data = {}
-        with open(csvfile,"rb") as incsv:
-            reader = csv.reader(incsv)
-            headers = reader.next()
-            id_i = headers.index('stair_id')
-            vt_i = headers.index('type')
-            n_i = headers.index('number_value')
-            tv_i = headers.index('text_value')
-            
-            for row in reader:
-                stairid = row[id_i]
-                ## prepare entry in the dictionary if it doesn't yet exist
-                try:
-                    data[stairid]
-                except KeyError:
-                    data[stairid] = {'handrail':[],'stair_ct':[]}
 
-                ## process row differently depending on what type of vote it is
-                vt = row[vt_i]
-                ## if 1 this is a vote on handrail presence, use text value
-                if vt == "1":
-                    val = row[tv_i]
-                    data[stairid]['handrail'].append(val)
-                ## if 2 this is a vote on tread count, use number value
-                elif vt == "2":
-                    val = row[n_i]
-                    data[stairid]['stair_ct'].append(val)
-                ## if 3 this is a vote on stair type, not implemented here at this time
-                elif vt == "3":
-                    pass
-                else:
-                    pass
+        stairs = getStairs();
+
+        for stair in stairs:
+            print str(stair.get('stair_id'))+' '+str(stair.get('name'))+' '+str(stair.get('current_name'))+' '+str(stair.get('stepcount'))+' '+str(stair.get('handrails'))
+
+        exit()
+
+
         
-        ## evaluate and transform all values in data from vote lists to single strings
-        ## in both cases use the mode of the list
-        for k,v in data.iteritems():
-            for cat,votes in v.iteritems():
-                if len(votes) == 0:
-                    data[k][cat] = ''
-                else:
-                    data[k][cat] = max(set(votes), key=votes.count)
-        if verbose:
-            print "---prepared dictionary---"
-            print data
-        return data
+        # data_dir = os.path.join(settings.BASE_DIR,"stairdb","management","commands","tmp_data")
+        
+        # files = [i for i in os.listdir(data_dir) if table_name in i]
+        # dates = {}
+        # for index,f in enumerate(files):
+        #     datestring = f[-12:-4]
+        #     try:
+        #         date = datetime.strptime(datestring, "%m%d%Y").date()
+        #     except ValueError:
+        #         continue
+        #     dates[date] = f
+        
+        # if not dates:
+        #     print "no csv files found for this table:",table_name
+        #     return False
+        # csvfile = os.path.join(data_dir,dates[max(dates.keys())])
+        # print "pulling data from:\n"+csvfile
+        
+        # data = {}
+        # with open(csvfile,"rb") as incsv:
+        #     reader = csv.reader(incsv)
+        #     headers = reader.next()
+        #     id_i = headers.index('stair_id')
+        #     vt_i = headers.index('type')
+        #     n_i = headers.index('number_value')
+        #     tv_i = headers.index('text_value')
+            
+        #     for row in reader:
+        #         stairid = row[id_i]
+        #         ## prepare entry in the dictionary if it doesn't yet exist
+        #         try:
+        #             data[stairid]
+        #         except KeyError:
+        #             data[stairid] = {'handrail':[],'stair_ct':[]}
+
+        #         ## process row differently depending on what type of vote it is
+        #         vt = row[vt_i]
+        #         ## if 1 this is a vote on handrail presence, use text value
+        #         if vt == "1":
+        #             val = row[tv_i]
+        #             data[stairid]['handrail'].append(val)
+        #         ## if 2 this is a vote on tread count, use number value
+        #         elif vt == "2":
+        #             val = row[n_i]
+        #             data[stairid]['stair_ct'].append(val)
+        #         ## if 3 this is a vote on stair type, not implemented here at this time
+        #         elif vt == "3":
+        #             pass
+        #         else:
+        #             pass
+        
+        # ## evaluate and transform all values in data from vote lists to single strings
+        # ## in both cases use the mode of the list
+        # for k,v in data.iteritems():
+        #     for cat,votes in v.iteritems():
+        #         if len(votes) == 0:
+        #             data[k][cat] = ''
+        #         else:
+        #             data[k][cat] = max(set(votes), key=votes.count)
+        # if verbose:
+        #     print "---prepared dictionary---"
+        #     print data
+        # return data
         
     def update_info(self,data,fake=False):
         print("\nupdating handrail and stair count information")

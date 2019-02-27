@@ -2,13 +2,15 @@ body {
     padding: 0;
     margin: 0;
 }
-html, body, #map {
+html, body, .leaflet-container {
     height: 100%;
-    width: 100vw;
+    width: 100%;
 }
 
-.leaflet-container {
-    height: 100vh !important;
+
+#header-nav .container-fluid {
+    padding-left: 6px;
+    padding-right: 6px;
 }
 
 .navbar {
@@ -19,6 +21,18 @@ html, body, #map {
     border-radius: 0;
     border: 0;
     border-bottom: 1px solid #cccccc;
+}
+
+.popup-fixed {
+  position: fixed;
+  top: auto;
+  bottom: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  transform: none !important;
+  margin: 0;
+  border-radius: 0;
+  width: 70%;
 }
 
 .nav li {
@@ -34,6 +48,8 @@ html, body, #map {
     display: table-cell;
     vertical-align: middle;
 }
+
+:active, :focus { outline: none; -moz-outline-style: none; }
 
 .nav-container {
     width:80%;
@@ -63,8 +79,10 @@ html, body, #map {
     
 }
 
-.leaflet-container {
-    height: 100%;
+.leaflet-sidebar, .leaflet-fusesearch-panel {
+    top: 50px;    
+    bottom: 0px;
+    height: auto;
 }
 
 .leaflet-top {
@@ -76,7 +94,7 @@ html, body, #map {
 }
 
 .leaflet-popup {
-    min-height:100%;
+    /*min-height:100%;*/
     font-family: 'Abel', Helvetica, Arial, Lucida, sans-serif;
 }
 
@@ -85,17 +103,28 @@ html, body, #map {
 }
 
 .leaflet-popup-content {
-    width: 200px;
+    width: 150px;
+}
+
+
+.leaflet-sidebar .close {
+    z-index: 1001;
+    top: 10px;
+    right: 6px;
+    font-size:36px;
+}
+.leaflet-sidebar h1 {
+    font-size: 32px;
 }
 
 /* using dl dt dd css from this great post */
 /* http://www.the-art-of-web.com/css/format-dl/ */
-.leaflet-popup dl {
+.leaflet-popup dl, .leaflet-sidebar dl {
     font-size: 12pt;
     margin: 15px 0px;
 }
 
-.leaflet-popup dt {
+.leaflet-popup dt, .leaflet-sidebar dt {
     float: left;
     clear: left;
     width: 70px;
@@ -104,11 +133,11 @@ html, body, #map {
     font-weight: bold;
 }
 
-.leaflet-popup dt::after {
+.leaflet-popup dt::after, .leaflet-sidebar dt::after {
     content: ":";
 }
 
-.leaflet-popup dd {
+.leaflet-popup dd, .leaflet-sidebar dd {
     margin: 0 0 0 65px;
 }
 
@@ -120,6 +149,11 @@ html, body, #map {
     overflow-y: auto;
     height: 250px;
 }
+
+.leaflet-control-about-button {
+
+}
+
 
 .loader-mask {
     background-color: rgba(0,0,0,.5)
@@ -246,6 +280,45 @@ html, body, #map {
 
 
 
+
+.edit-button {
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+}
+
+
+/* Fuse Search Panel */
+
+.leaflet-fusesearch-panel {
+    top: 106px;
+}
+.leaflet-fusesearch-control .button {
+    background-image: url(../plugins/images/search.png);
+}
+
+.leaflet-fusesearch-panel .search-image {
+    background-image: url(../plugins/images/search_input.png);
+}
+.leaflet-fusesearch-panel .header {
+    height: 40px;
+}
+.leaflet-fusesearch-panel .search-input {
+    width: 230px;
+}
+
+.leaflet-fusesearch-panel .search-input {
+  -webkit-appearance: searchfield;
+}
+.leaflet-fusesearch-panel .search-input::-webkit-search-cancel-button {
+  -webkit-appearance: searchfield-cancel-button;
+}
+
+.leaflet-fusesearch-panel .close {
+    right: 15px;
+    top: 10px;
+}
+
 /* Responsive Styles Tablet And Below */
 
 /* styles for narrow desktop browsers and iPad landscape */
@@ -279,4 +352,46 @@ html, body, #map {
         width: 100px !important;
         height: 100px !important;
     }
+
+    .leaflet-sidebar, .leaflet-fusesearch-panel {
+        top: auto;
+        bottom: 0px;
+        width: 100%;
+        height: 200px;
+        /*padding-top: 0;*/
+    }
+    .leaflet-sidebar {
+        overflow: auto;
+    }
+
+    .leaflet-fusesearch-panel .content {
+        overflow: hidden;
+    }
+    .leaflet-fusesearch-panel .result-list {
+        overflow: auto;
+        height: 100%;
+    }
+
+    .leaflet-sidebar .close {
+        top: 0px;
+    }
+
+    /* full-screen does not work on mobile */
+    .leaflet-control-fullscreen {
+        display: none;
+    }
+
+    /* prevent pan in mobile */
+    .leaflet-map-pane {
+        transform: none !important;
+    }
+    .leaflet-sidebar.left.visible ~ .leaflet-left {
+        left: auto;
+    }
+
+    .leaflet-fusesearch-panel .close {
+        right: 10px;
+        top: 0px;
+    }
+
 }

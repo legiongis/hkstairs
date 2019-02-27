@@ -28,6 +28,9 @@
 	<!-- Latest compiled JavaScript -->
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 
+    <script src="{% static 'js/underscore-min.js' %}" type="text/javascript"></script>
+
+
 	{% leaflet_js %}
 	{% leaflet_css %}
 
@@ -41,10 +44,16 @@
     <!-- <script src="{% static 'js/main_map.js' %}" type="text/javascript"></script> -->
     <script src="{% static 'plugins/Leaflet.MakiMarkers.js' %}" type="text/javascript"></script>
 
-<link rel="stylesheet" type="text/css" href="{% static 'plugins/Gallery-2.21.3/css/blueimp-gallery.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'plugins/Gallery-2.21.3/css/blueimp-gallery.min.css' %}">
 
-  </head>
-  <body >
+    <script type="text/javascript">
+        {% if user.is_superuser %}
+        var admin = true;
+        {% endif %}
+    </script>
+
+</head>
+<body >
         <!-- add these classes to #header-nav to enable the shrinkage:  navbar-inverse navbar-fixed-top -->
         <!--<div class="row">-->
             {% block header %}
@@ -73,6 +82,7 @@
             {% endblock %}
             {% block content %}
             {% endblock %}
-    </div>
+        <!--  </div> -->
+
 </body>
 </html>

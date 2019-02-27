@@ -40,3 +40,23 @@ def refresh_csv(table_name=""):
     print("  -- done. file has",ct,"rows")
     
     return outfile
+
+
+def getStairs():
+    import requests
+    from requests_oauthlib import OAuth1
+    import json
+
+    url = settings.SQ_HOST+"/wp-json/stairquest/v1/stairs"
+    oauth_consumer_key = settings.SQ_CONSUMER_KEY
+    oauth_consumer_secret = settings.SQ_CONSUMER_SECRET
+    oauth_token = "A9HPkYFtM8Yw5HCGxfcYB6Sc"
+    oauth_token_secret = "8hYLZPVGu6R7TTsrf0o0fDk67Ic8WLNhIM5o2dnQBB1x2FKh"
+
+    auth = OAuth1(oauth_consumer_key, oauth_consumer_secret, oauth_token, oauth_token_secret)
+
+    ## move CA into repo
+    r = requests.get(url, verify = "/Users/darcy/Drive/Aporia/Server/CA/Aporia.pem")
+    stairs = r.json()
+
+    return stairs

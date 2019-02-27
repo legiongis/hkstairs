@@ -7,7 +7,6 @@ ExifRead==2.1.2
 gunicorn==19.9.0
 mysql-connector==2.1.6
 Pillow==5.4.1
-pkg-resources==0.0.0
 psycopg2==2.7.6.1
 psycopg2-binary==2.7.6.1
 pygeoif==0.7

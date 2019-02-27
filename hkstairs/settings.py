@@ -169,9 +169,17 @@ LEAFLET_CONFIG = {
             'js': STATIC_URL + 'plugins/leaflet-hash.js',
             'auto-include': True,
         },
-        'leaflet-search': {
-            'css': [STATIC_URL + 'plugins/leaflet-search/leaflet-search.min.css'],
-            'js': STATIC_URL + 'plugins/leaflet-search/leaflet-search.src.js',
+        'leaflet-sidebar': {
+            'css': [STATIC_URL + 'plugins/leaflet-sidebar/src/L.Control.Sidebar.css'],
+            'js': STATIC_URL + 'plugins/leaflet-sidebar/src/L.Control.Sidebar.js',
+            'auto-include': True,
+        },
+        'leaflet-fusesearch': {
+            'css': [STATIC_URL + 'plugins/leaflet.fusesearch.css'],
+            'js': [
+                STATIC_URL + 'plugins/fuse.min.js',
+                STATIC_URL + 'plugins/leaflet.fusesearch.js',
+            ],
             'auto-include': True,
         },
     }

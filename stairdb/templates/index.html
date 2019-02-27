@@ -39,11 +39,11 @@
 <div class="info-box" id="accuracy-box" style="display:none">
     <em>The process of placing historic maps on current maps ("georeferencing") is done by matching points on the historic map to corresponding points on a current basemap.  It is not an exact process.  One can see above how the historical documents fit well in some places, and badly in others.  This is to say that the historic maps are best considered as showing features in their current day </em>vicinity<em>, not their exact location.</em>
 </div>
-<p>
+<!-- <p>
 {% for p in players %}
     {% if not forloop.first %} | {% endif %}{{ p }}
 {% endfor %}
-</p>
+</p> -->
 <input type="hidden" id="col_json" name="col_json" value="{{ col_json }}">
 
     
@@ -63,9 +63,7 @@
 </div>
 
 
-<div id="sidebar">
-    <h1>leaflet-sidebar</h1>
-</div>
+<div id="sidebar"></div>
 
 <!-- <script>
 document.getElementById('links').onclick = function (event) {
