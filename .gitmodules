@@ -1,3 +1,6 @@
+[submodule "stairdb/static/plugins/--force"]
+	path = stairdb/static/plugins/--force
+	url = https://github.com/Turbo87/leaflet-sidebar.git
 [submodule "stairdb/static/plugins/leaflet-sidebar"]
 	path = stairdb/static/plugins/leaflet-sidebar
-	url = git@github.com:Turbo87/leaflet-sidebar.git
+	url = https://github.com/Turbo87/leaflet-sidebar.git
