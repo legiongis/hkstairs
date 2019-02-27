@@ -212,9 +212,10 @@ L.Control.FuseSearch = L.Control.extend({
             L.DomUtil.removeClass(this._panel, 'visible');
             // Move back the map centre - only if we still hold this._map
             // as this might already have been cleared up by removeFrom()
-            if (null !== this._map) {
-                this._map.panBy([this.getOffset() * -0.5, 0], {duration: 0.5});
-            };
+            // commented this out so the page is not shifted back - dwc
+            // if (null !== this._map) {
+            //     this._map.panBy([this.getOffset() * -0.5, 0], {duration: 0.5});
+            // };
             this.fire('hide');
             if(e) {
                 L.DomEvent.stopPropagation(e);
@@ -261,6 +262,7 @@ L.Control.FuseSearch = L.Control.extend({
             listItems[i].remove();
         }
 
+        // clear visual results
         for( var i in searchLayer._layers ) {
             searchLayer._layers[i].setOpacity(0);
         }
@@ -270,15 +272,16 @@ L.Control.FuseSearch = L.Control.extend({
         var resultList = document.querySelector('.result-list');
         var num = 0;
         var max = this.options.maxResultLength;
+        this.arrayOfLatLngs = []
         for (var i in result) {
             var props = result[i];
             var feature = props._feature;
-            feature.layer.setOpacity(1);
-            // add latlng to arrayOfLatLngs for zooming - dwc
-            this.arrayOfLatLngs.push(feature.layer._latlng);
             var popup = this._getFeaturePopupIfVisible(feature);
             
             if (undefined !== popup || this.options.showInvisibleFeatures) {
+                feature.layer.setOpacity(1);
+                // add latlng to arrayOfLatLngs for zooming - dwc
+                this.arrayOfLatLngs.push(feature.layer._latlng);
                 this.createResultItem(props, resultList, popup);
                 if (undefined !== max && ++num === max)
                     break;
@@ -286,14 +289,15 @@ L.Control.FuseSearch = L.Control.extend({
         }
 
         // zoom on search results set - dwc
-        this.throttledUpdatePosition();
+        if(result.length) this.throttledUpdatePosition();
     },
 
     updatePosition: function() {
         if(this.arrayOfLatLngs.length) {
             //console.log('adjusting center');
             var bounds = new L.LatLngBounds(this.arrayOfLatLngs);
-            map.fitBounds(bounds);
+            //L.rectangle(bounds, {color: "#ff7800", weight: 1}).addTo(map);
+            map.fitBounds(bounds, {padding: [50,50]});
             //map.panTo(bounds.getCenter());
         }
     },
@@ -330,8 +334,10 @@ L.Control.FuseSearch = L.Control.extend({
                 } else {
                     _this._panAndPopup(feature, popup);
                 }
-                feature.layer.setOpacity(1);
+                //feature.layer.setOpacity(1);
             };
+        } else {
+            console.log('There is no popup for '+props[this._keys[0]]+' '+props[this._keys[1]]);
         }
 
         // Fill in the container with the user-supplied function if any,

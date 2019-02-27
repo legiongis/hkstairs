@@ -289,7 +289,12 @@ html, body, .leaflet-container {
 
 
 /* Fuse Search Panel */
-
+.leaflet-fusesearch-control {
+    border: 2px solid rgba(0,0,0,0.2);
+    box-shadow: none;
+    border-radius: 5px;
+    background-clip: padding-box;
+}
 .leaflet-fusesearch-panel {
     top: 106px;
 }
@@ -305,6 +310,7 @@ html, body, .leaflet-container {
 }
 .leaflet-fusesearch-panel .search-input {
     width: 230px;
+    font-size: 28px;
 }
 
 .leaflet-fusesearch-panel .search-input {

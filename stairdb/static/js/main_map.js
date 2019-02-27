@@ -23,7 +23,7 @@ var colorDict = {
         "classname": "all-stairs",
         "markers": []
     },
-    "Featured": {
+    "Search": {
         "color": "#FF69B4",
         "classname": "featured",
         "markers": []
@@ -104,15 +104,16 @@ var overlaysDict = {
         },
         maxClusterRadius: getClusterRadius,
     }),
-    "Featured": new L.MarkerClusterGroup({
-        iconCreateFunction: function(cluster) {
-            return L.divIcon({
-                html: '<div><p>' + cluster.getChildCount() + '</p></div>',
-                className: 'cluster-marker '+colorDict["Featured"].classname
-            });
-        },
-        maxClusterRadius: getClusterRadius,
-    }),
+    // "Search": new L.LayerGroup(),
+    // "Featured": new L.MarkerClusterGroup({
+    //     iconCreateFunction: function(cluster) {
+    //         return L.divIcon({
+    //             html: '<div><p>' + cluster.getChildCount() + '</p></div>',
+    //             className: 'cluster-marker '+colorDict["Featured"].classname
+    //         });
+    //     },
+    //     maxClusterRadius: getClusterRadius,
+    // }),
     "Alley Stairs": new L.MarkerClusterGroup({
         iconCreateFunction: function(cluster) {
             return L.divIcon({
@@ -472,7 +473,7 @@ window.addEventListener("map:init", function (event) {
 
                 var p = feature.properties;
 
-                feature.layer = layer;
+                feature.polygon = layer;
 
                 // skip if this is an invalid stair type
                 if (!colorDict.hasOwnProperty(p.type)){
@@ -497,7 +498,6 @@ window.addEventListener("map:init", function (event) {
                 var popup = makePopupContent(p);
                 //var popup = L.popup(makePopupContent(p));
                 marker.bindPopup(popup);
-                feature.layer = marker;
 
                 // marker.on("click", function(e) {
                 //     openSidePanel(p);
@@ -508,20 +508,33 @@ window.addEventListener("map:init", function (event) {
                 showPolygon(marker,layer);
                 colorDict["All Stairs"].markers.push(marker);
 
+
+                // create search layer
+                var icon = L.MakiMarkers.icon({icon:null,color:colorDict['Search'].color,size:"s"});
+                var newMarker = new L.Marker(
+                    new L.LatLng(p.coords_y, p.coords_x),
+                    {icon:icon,riseonhover:true,title:p.name}
+                );                
+                newMarker.bindPopup(popup);
+                feature.layer = newMarker;
+                showPolygon(newMarker,layer);
+                colorDict["Search"].markers.push(newMarker);
+
+
                 // Set featured
-                if (p.featured == true) {        
-                    var icon = L.MakiMarkers.icon({icon:iconSymbol,color:colorDict['Featured'].color,size:"s"});
-                    var newMarker = new L.Marker(
-                        new L.LatLng(p.coords_y, p.coords_x),
-                        {icon:icon,riseonhover:true,title:p.name}
-                    );                
-                    newMarker.bindPopup(popup);
-                    // newMarker.on("click", function(e) {
-                    //     openSidePanel(p);
-                    // });
-                    showPolygon(newMarker,layer);
-                    colorDict["Featured"].markers.push(newMarker);
-                }
+                // if (p.featured == true) {        
+                //     var icon = L.MakiMarkers.icon({icon:iconSymbol,color:colorDict['Featured'].color,size:"s"});
+                //     var newMarker = new L.Marker(
+                //         new L.LatLng(p.coords_y, p.coords_x),
+                //         {icon:icon,riseonhover:true,title:p.name}
+                //     );                
+                //     newMarker.bindPopup(popup);
+                //     // newMarker.on("click", function(e) {
+                //     //     openSidePanel(p);
+                //     // });
+                //     showPolygon(newMarker,layer);
+                //     colorDict["Featured"].markers.push(newMarker);
+                // }
 
 
                 // now send the properties off to be made in to a new marker that is added to the
@@ -562,17 +575,17 @@ window.addEventListener("map:init", function (event) {
             // now that all markers have been added to colorDict, push them
             // to the actual cluster layers that are stored in overlaysDict
             for (var i in colorDict) {
-                //console.log(i+": "+colorDict[i].markers.length)
-                overlaysDict[i].addLayers(colorDict[i].markers)
+                if(overlaysDict[i]) {
+                    //console.log(i+": "+colorDict[i].markers.length)
+                    overlaysDict[i].addLayers(colorDict[i].markers);
+                }
             }
 
             // Create an unclustered version of All Stairs
-            var icon = L.MakiMarkers.icon({icon:null,color:'#FF69B4',size:'s'});
-            for (var m in colorDict["All Stairs"].markers) {
-                var marker = colorDict["All Stairs"].markers[m];
-                marker.setIcon(icon);
-                marker.setOpacity(0);
-                searchLayer.addLayer(marker);
+            for (var m in colorDict["Search"].markers) {
+                // set all search markers to transparent
+                colorDict["Search"].markers[m].setOpacity(0);
+                searchLayer.addLayer(colorDict["Search"].markers[m]);
             }
 
             // Look for a stairid parameter and if it exists, open the popup
@@ -585,76 +598,16 @@ window.addEventListener("map:init", function (event) {
                 }, 500 );
             }
 
+
+            // preload search from params
+            var searchTerm = search_params.getAll('s');
+            if(searchTerm.length) {
+                $('.search-input').val(searchTerm[0]);
+                fuseSearchCtrl.searchFeatures(searchTerm[0]);
+                fuseSearchCtrl.showPanel();
+            }
+
     });
-
-    // var categories = {
-    //     101 : {desc: "MusÃ©es & ChÃ¢teaux", icon:"museum_archeological.png"},
-    //     103 : {desc: "MÃ©diathÃ¨que", icon:"library.png"},
-    //     104 : {desc: "Monument", icon:"mural.png"},
-    //     105 : {desc: "Ecole Culturelle", icon:"music_choral.png"},
-    //     106 : {desc: "Salle d'exposition", icon:"museum_art.png"},
-    //     107 : {desc: "Salle de spectacle", icon:"theater.png"},
-    //     108 : {desc: "CinÃ©ma", icon:"cinema.png"}
-    // };
-
-    // var setupIcons = function() {
-
-    //     var icons = {};
-    //     for (var cat in categories) {
-    //         var icon = categories[cat].icon;
-    //         var url = "images/" + icon;
-     
-    //         var icon = L.icon({
-    //             iconUrl: url,
-    //             iconSize: [32, 32],
-    //             iconAnchor: [16, 37],
-    //             popupAnchor: [0, -28]
-    //         });
-    //         icons[cat] = icon;
-    //     }
-        
-    //     return icons;
-    // };
-
-    // // 
-    // function displayFeatures(features, layers, icons) {
-
-    //     var popup = L.DomUtil.create('div', 'tiny-popup', map.getContainer());
-                        
-    //     for (var id in features) {
-    //         var feat = features[id];
-    //         var cat = feat.properties.categorie;
-    //         var site = L.geoJson(feat, {
-    //             pointToLayer: function(feature, latLng) {
-    //                 var icon = icons[cat];
-    //                 var marker = L.marker(latLng, {
-    //                     icon: icon,
-    //                     keyboard: false,
-    //                     riseOnHover: true
-    //                 });
-    //                 if (! L.touch) {
-    //                     marker.on('mouseover', function(e) {
-    //                         var nom = e.target.feature.properties.nom_comple;
-    //                         var pos = map.latLngToContainerPoint(e.latlng);
-    //                         popup.innerHTML = nom;
-    //                         L.DomUtil.setPosition(popup, pos);
-    //                         L.DomUtil.addClass(popup, 'visible');
-
-    //                     }).on('mouseout', function(e) {
-    //                         L.DomUtil.removeClass(popup, 'visible');
-    //                     });
-    //                 }
-    //                 return marker;
-    //             },
-    //             onEachFeature: bindPopup
-    //         });
-    //         var layer = layers[cat];
-    //         if (layer !== undefined) {
-    //             layer.addLayer(site);
-    //         }
-    //     }
-    //     return layers;
-    // }
 
     // Create control for About panel
     var AboutControl =  L.Control.extend({        
@@ -802,8 +755,10 @@ window.addEventListener("map:init", function (event) {
                 //feature.layer.openPopup();
                 //feature.layer.setOpacity(1);
                 //window.map.addLayer(feature.layer);
+                //window.map.addLayer(feature.layer.polygon);
             });
             name.addEventListener('mouseout', function(){
+                //feature.layer.closePopup();
                 //feature.layer.setOpacity(0);
                 //window.map.removeLayer(feature.layer);
             });
@@ -827,6 +782,7 @@ window.addEventListener("map:init", function (event) {
     fuseSearchCtrl.on('show', function() {
         //console.log('show search panel');
         for(var i in overlaysDict) {
+            //console.log('removing '+i)
             if( map.hasLayer(overlaysDict[i]) ) {
                 storedLayers.push(overlaysDict[i]);
                 map.removeLayer(overlaysDict[i]);
@@ -839,9 +795,9 @@ window.addEventListener("map:init", function (event) {
             map.addLayer(storedLayers[i]);
         }
         // hide searchLayer icons
-        for( var i in searchLayer._layers ) {
-            searchLayer._layers[i].setOpacity(0);
-        }
+        // for( var i in searchLayer._layers ) {
+        //     searchLayer._layers[i].setOpacity(0);
+        // }
     });
     map.addControl( fuseSearchCtrl );
 
