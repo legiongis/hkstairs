@@ -72,7 +72,8 @@ class Command(BaseCommand):
                 if os.path.isfile(fp.replace(" (1)","")):
                     continue
             with open(fp,"rb") as imgfile:
-                img = ImageFile(name=os.path.basename(fp),file=imgfile)
+                # make sure the image is placed into the photos dir
+                img = ImageFile(name='photos/'+str(os.path.basename(fp)),file=imgfile)
                 obj = Photo(image=img)
                 obj.save()
                 if obj.geom:
