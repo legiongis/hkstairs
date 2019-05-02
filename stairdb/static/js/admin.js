@@ -1,5 +1,5 @@
-(function($){
-
+(function(jQuery) {
+    window.$ = jQuery.noConflict();
 
 	$('.pull-stairquest-data').click(function(e) {
 		e.preventDefault();
