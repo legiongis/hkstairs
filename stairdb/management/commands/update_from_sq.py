@@ -13,15 +13,15 @@ class Command(BaseCommand):
     help = 'gets handrail and stair count info from stairquest, writes that to a  and tranfers these values to stairdb objects. run first with --stage to update the csv, and then with --run to actually modify values in the hkstairs db.'
 
     def add_arguments(self, parser):
-        parser.add_argument('--stage',action='store_true',
+        parser.add_argument('--stage', action='store_true',
             default=False,
             help="updates the csv and prints the output, but doesn't modify the db.",
         )
-        parser.add_argument('--run',action='store_true',
+        parser.add_argument('--run', action='store_true',
             default=False,
             help="uses the csv to modify values in the hkstairs db.",
         )
-        parser.add_argument('--test_run',action='store_true',
+        parser.add_argument('--test_run', action='store_true',
             default=False,
             help="does a mock version of the run command with verbose messages, but doesn't modify the db.",
         )
@@ -31,38 +31,65 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
-
         if not options['stage'] and not options['run'] and not options['test_run']:
             print "you must use this command with either --stage or --run or --test-run. for more info, run with --help."
             return
-        
+
         if options['stage']:
             refresh_csv(table_name="wp_gq_stair_vote")
-        
+
         if options['test_run']:
-            data = self.prepare_data(table_name="wp_gq_stair_vote",verbose=True)
+            data = self.prepare_data(table_name="wp_gq_stair_vote", verbose=True)
             if data:
-                self.update_info(data,fake=True)
+                self.update_info(data, fake=True)
             return
-            
+
         if options['run']:
-            data = self.prepare_data(table_name="wp_gq_stair_vote",verbose=options['verbose'])
+            data = self.prepare_data(table_name="wp_gq_stair_vote", verbose=options['verbose'])
             if data:
                 self.update_info(data)
+
+    def prepare_data(self, table_name='', verbose=False):
+        sq_stairs = getStairs()
         
-    def prepare_data(self,table_name='',verbose=False):
+        for sq_stair in sq_stairs:
+            # print str(sq_stair.get('stair_id'))+' '+str(sq_stair.get('name'))+' '+str(sq_stair.get('current_name'))+' '+str(sq_stair.get('stepcount'))+' '+str(sq_stair.get('handrails'))
+            #print str(sq_stair.get('stair_id'))
+            stair_id = int(sq_stair.get('stair_id'))
+            try:
+                item = Stair.objects.get(stairid=stair_id)
+            except Stair.DoesNotExist:
+                # print "does not exist"
+                continue
 
-        stairs = getStairs();
+            update = False
 
-        for stair in stairs:
-            print str(stair.get('stair_id'))+' '+str(stair.get('name'))+' '+str(stair.get('current_name'))+' '+str(stair.get('stepcount'))+' '+str(stair.get('handrails'))
+            if(item):
+                if(item.name != sq_stair.get('name') and sq_stair.get('name') != 'Stair '+str(stair_id)):
+                    print('  updating name for '+str(stair_id)+' - from '+str(item.name)+' to '+str(sq_stair.get('name')))
+                    item.name = sq_stair.get('name')
+                    update = True
+
+                if(item.stair_ct != sq_stair.get('stepcount') and sq_stair.get('stepcount') != 'Unknown'):
+                    print('  updating stair_ct for '+str(stair_id)+' - from '+str(item.stair_ct)+' to '+str(sq_stair.get('stepcount')))
+                    item.stair_ct = sq_stair.get('stepcount')
+                    update = True
+
+                if(item.handrail != sq_stair.get('handrails') and sq_stair.get('handrails') != 'Unknown'):
+                    print('  updating handrails for '+str(stair_id)+' - from '+str(item.handrail)+' to '+str(sq_stair.get('handrails')))
+                    item.handrail = sq_stair.get('handrails')
+                    update = True
+
+                if update:
+                    item.save()
+
+        print('')
+        print('Total: '+str(len(sq_stairs)))
 
         exit()
 
-
-        
         # data_dir = os.path.join(settings.BASE_DIR,"stairdb","management","commands","tmp_data")
-        
+
         # files = [i for i in os.listdir(data_dir) if table_name in i]
         # dates = {}
         # for index,f in enumerate(files):
@@ -72,13 +99,13 @@ class Command(BaseCommand):
         #     except ValueError:
         #         continue
         #     dates[date] = f
-        
+
         # if not dates:
         #     print "no csv files found for this table:",table_name
         #     return False
         # csvfile = os.path.join(data_dir,dates[max(dates.keys())])
         # print "pulling data from:\n"+csvfile
-        
+
         # data = {}
         # with open(csvfile,"rb") as incsv:
         #     reader = csv.reader(incsv)
@@ -87,7 +114,7 @@ class Command(BaseCommand):
         #     vt_i = headers.index('type')
         #     n_i = headers.index('number_value')
         #     tv_i = headers.index('text_value')
-            
+
         #     for row in reader:
         #         stairid = row[id_i]
         #         ## prepare entry in the dictionary if it doesn't yet exist
@@ -111,7 +138,7 @@ class Command(BaseCommand):
         #             pass
         #         else:
         #             pass
-        
+
         # ## evaluate and transform all values in data from vote lists to single strings
         # ## in both cases use the mode of the list
         # for k,v in data.iteritems():
@@ -124,24 +151,23 @@ class Command(BaseCommand):
         #     print "---prepared dictionary---"
         #     print data
         # return data
-        
-    def update_info(self,data,fake=False):
+
+    def update_info(self, data, fake=False):
         print("\nupdating handrail and stair count information")
-        ct=0
-        for k,v in data.iteritems():
+        ct = 0
+        for k, v in data.iteritems():
             item = Stair.objects.get(stairid=k)
-            ct+=1
+            ct += 1
             if fake:
-                print "stair",item.stairid," | handrail:",item.handrail,"stair_ct:",item.stair_ct
-                print "  -- new values | handrail:",v['handrail'],"stair_ct:",v['stair_ct']
+                print "stair", item.stairid, " | handrail:", item.handrail, "stair_ct:", item.stair_ct
+                print "  -- new values | handrail:", v['handrail'], "stair_ct:", v['stair_ct']
             if v['handrail']:
                 item.handrail = v['handrail']
             if v['stair_ct']:
                 item.stair_ct = int(v['stair_ct'])
-                
+
             if not fake:
                 item.save()
-        print "\n",ct,"stair records {}updated".format("would be " if fake else "")
-            
-        return
+        print "\n", ct, "stair records {}updated".format("would be " if fake else "")
 
+        return

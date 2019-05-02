@@ -325,6 +325,17 @@ html, body, .leaflet-container {
     top: 10px;
 }
 
+
+.stair-properties dd:after {
+    display: table;
+    content: "";
+    clear: both;
+}
+
+
+
+
+
 /* Responsive Styles Tablet And Below */
 
 /* styles for narrow desktop browsers and iPad landscape */

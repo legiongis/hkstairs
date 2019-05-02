@@ -6,13 +6,17 @@ from django.contrib.gis.db.models.functions import Centroid,AsGeoJSON
 from django.core.serializers import serialize
 import json
 from django.utils.decorators import method_decorator
-from django.views.decorators.cache import cache_page
+from django.views.decorators.cache import cache_page, never_cache
 from models import Stair, Photo
 from rest_framework.views import APIView
+from rest_framework.response import Response
 from rest_framework import viewsets, response
 from .serializers import StairSerializer, MapSerializer
 import time
+from management.commands._utils import getSQStair
+from django.views.generic import View
 
+#@never_cache
 def index(request):
     return render(request, 'index.html')
 
@@ -40,7 +44,18 @@ class StairViewSet(viewsets.ModelViewSet):
         @method_decorator(cache_page(None))
         def dispatch(self, *args, **kwargs):
             return super(StairViewSet, self).dispatch(*args, **kwargs)
-    
+
+
+class StairQuestView(APIView):
+    #queryset = Stair.objects.prefetch_related('photos').all()
+
+    def get(self, request, *args, **kwargs):
+        sq_stair = getSQStair(1272)
+
+        print(sq_stair)
+        return Response(sq_stair[0])
+
+
 # def get_stairs(self,stairid="all"):
 
 #     start = time.time()

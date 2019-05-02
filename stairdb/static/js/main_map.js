@@ -359,10 +359,10 @@ window.addEventListener("map:init", function (event) {
         }
 
         popup_html += `
-            <dl>
+            <dl class="stair-properties">
                 <dt>type</dt><dd>${properties.type}</dd>
                 <dt>location</dt><dd>${properties.location}</dd>
-                <dt>materials</dt><dd>${properties.materials_formatted}</dd>
+                <dt>materials</dt><dd>${properties.materials_formatted} </dd>
                 <dt>handrail</dt><dd>${properties.handrail}</dd>
                 <dt>steps</dt><dd>${properties.stair_ct}</dd>
             </dl>
