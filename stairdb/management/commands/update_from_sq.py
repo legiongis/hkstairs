@@ -64,7 +64,7 @@ class Command(BaseCommand):
         print('Processing '+str(len(sq_stairs)))+' SQ Stairs:'
         for sq_stair in sq_stairs:
             # print str(sq_stair.get('stair_id'))+' '+str(sq_stair.get('name'))+' '+str(sq_stair.get('current_name'))+' '+str(sq_stair.get('stepcount'))+' '+str(sq_stair.get('handrails'))
-            print str(sq_stair.get('stair_id'))
+            # print str(sq_stair.get('stair_id'))
             stair_id = int(sq_stair.get('stair_id'))
 
             # if stair_id != 2180:
@@ -106,7 +106,7 @@ class Command(BaseCommand):
 
                 for photo in sq_stair.get('photos'):
                     filename = photo['orig_url']
-                    # print " saving "+str(filename)
+                    print " saving "+str(filename)
 
                     # Save original to photos
                     response = requests.get(photo['orig_url'])
