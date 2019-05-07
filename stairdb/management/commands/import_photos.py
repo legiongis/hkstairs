@@ -1,5 +1,6 @@
 from django.core.management.base import BaseCommand, CommandError
 from django.conf import settings
+from django.core.files import File
 from django.core.files.images import ImageFile
 import os
 import shapefile
@@ -11,7 +12,7 @@ from cStringIO import StringIO
 import shutil
 
 class Command(BaseCommand):
-    help = 'bulk load geotagged photos into database.'
+    help = 'import photos into media/photos and database.'
 
     def add_arguments(self, parser):
         
@@ -27,26 +28,12 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
-
         if options['flush']:
             self.flush()
 
         self.load_photos(options['source'])
-        
-    ## DEPRECATED NOT NECESSARY RIGHT NOW
-    ## all geo stuff is handled by the Photo.save()
-    def get_geotags(self,exif_tags):
-        geotags = {}
-        for k,v in exif_tags.iteritems():
-            if k.startswith("GPS"):
-                geotags[k] = v
-        if len(geotags) == 0:
-            return False
-        else:
-            return geotags
 
     def load_photos(self,topdir):
-
         if not os.path.isdir(topdir):
             print "invalid source directory"
             return
@@ -62,7 +49,7 @@ class Command(BaseCommand):
         print "total images to load:",n_photos
         print "loading photos..."
 
-        ct=0
+        ct = 0
         geoms=0
         dupes=0
         for fp in filelist:
@@ -72,7 +59,15 @@ class Command(BaseCommand):
                 if os.path.isfile(fp.replace(" (1)","")):
                     continue
             with open(fp,"rb") as imgfile:
-                img = ImageFile(name=os.path.basename(fp),file=imgfile)
+                # make sure the file is saved into the media/photo dir
+                photofilepath = settings.MEDIA_ROOT+'/photos/'+str(os.path.basename(fp))
+                with open(photofilepath, "w") as photofile:
+                    for line in imgfile:
+                        photofile.write(line)
+                photofile.close()
+
+                # prepend 'photos/' to name
+                img = ImageFile(name='photos/'+str(os.path.basename(fp)),file=imgfile)
                 obj = Photo(image=img)
                 obj.save()
                 if obj.geom:
@@ -83,7 +78,7 @@ class Command(BaseCommand):
         print "total images loaded:",ct
         print "images with valid geolocation:",geoms
         
+
     def flush(self):
-        
         print "removing all existing photos in database"
         Photo.objects.all().delete()

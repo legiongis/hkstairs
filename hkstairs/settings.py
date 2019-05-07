@@ -42,8 +42,11 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.gis',
     'leaflet',
+    'sorl.thumbnail',
+    'sorl_thumbnail_serializer',
     'rest_framework',
     'rest_framework_gis',
+    'reversion',
 ]
 
 MIDDLEWARE = [

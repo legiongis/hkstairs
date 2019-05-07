@@ -548,3 +548,7 @@ form .related-widget-wrapper ul {
 .form-row input.unsaved-changes {
     background-color: #90EE90;
 }
+
+.thumbnails img {
+    max-width: 100%;
+}

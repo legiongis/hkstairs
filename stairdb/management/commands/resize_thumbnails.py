@@ -14,8 +14,7 @@ import shutil
 class Command(BaseCommand):
     help = 'resize thumbnails'
 
-	#def add_arguments(self, parser):
-        
+    # def add_arguments(self, parser):
         #parser.add_argument('source',nargs="?",type=str)
     
         # parser.add_argument(
@@ -28,21 +27,15 @@ class Command(BaseCommand):
         # )
 
     def handle(self, *args, **options):
-
         # if options['flush']:
         #     self.flush()
 
-		self.resize_thumbnails()
-
+        self.resize_thumbnails()
 
     def resize_thumbnails(self):
-		allphotos = Photo.objects.all()
+        allphotos = Photo.objects.all()
 
-		for p in allphotos:
-			print "resizing "+str(p.image)
-			p.create_thumbnail(p.image)
-			#exit()
-
-
-
-
+        for p in allphotos:
+            print "resizing "+str(p.image)
+            p.create_thumbnail(p.image)
+            #exit()

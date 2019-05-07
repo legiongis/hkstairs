@@ -106,6 +106,10 @@ html, body, .leaflet-container {
     width: 150px;
 }
 
+.leaflet-popup-content img {
+    max-width: 100%;
+}
+
 
 .leaflet-sidebar .close {
     z-index: 1001;

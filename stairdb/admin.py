@@ -1,10 +1,11 @@
 from django.contrib import admin
+from reversion.admin import VersionAdmin
 from leaflet.admin import LeafletGeoAdmin
 from models import Stair, Photo
 from django.conf import settings
 
+
 class OverrideLeafletGeoAdmin(LeafletGeoAdmin):
-    
     # straight hint @ https://github.com/makinacorpus/django-leaflet/pull/28#issuecomment-23943492
     settings_overrides = {
         'TILES': [
@@ -19,20 +20,25 @@ class OverrideLeafletGeoAdmin(LeafletGeoAdmin):
                 'attribution':'<a href="http://www.openstreetmap.org/copyright" target="_blank"> OpenStreetMap</a> contributors'
             }),
         ],
-        'MINIMAP': False, # instantiate this later in  the admin-map.js file to set basemap
+        'MINIMAP': False,  # instantiate this later in  the admin-map.js file to set basemap
         'MAX_ZOOM': 21,
+        'DEFAULT_ZOOM': 21,
     }
     
+
 class PhotoInline(admin.TabularInline):
     model = Photo
+    fields = ('id','display_thumbnail','has_geodata')
+    readonly_fields = ['id','display_thumbnail','has_geodata']
     extra = 0
-    exclude = ('thumbnail',)
+
 
 def make_featured(modeladmin, request, queryset):
     queryset.update(featured=True)
 make_featured.short_description = "Mark selected stairs as featured"
 
-class StairAdmin(OverrideLeafletGeoAdmin):
+
+class StairAdmin(VersionAdmin, OverrideLeafletGeoAdmin):
     list_display = ['stairid','name','type','location','featured','materials_formatted','handrail','stair_ct','featured_photo']
     fields = ['stairid','name','type','location','featured','materials','handrail','stair_ct','geom']
     search_fields = ['stairid','name','type','location']
@@ -62,12 +68,13 @@ class StairAdmin(OverrideLeafletGeoAdmin):
     #         return []
 
     
-class PhotoAdmin(OverrideLeafletGeoAdmin):
+class PhotoAdmin(VersionAdmin, OverrideLeafletGeoAdmin):
     list_display = ['id','image']
     fields = ('image_tag','image','stairid','geom')
     search_fields = ['image']
     readonly_fields = ('image_tag',)
     ordering = ('geom','stairid')
+
 
 admin.site.register(Stair,StairAdmin)
 admin.site.register(Photo,PhotoAdmin)

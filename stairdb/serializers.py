@@ -1,10 +1,24 @@
 from .models import Stair, Photo
 from rest_framework import serializers
 from rest_framework_gis.serializers import GeoFeatureModelSerializer
+from sorl_thumbnail_serializer.fields import HyperlinkedSorlImageField
+
+
+class PhotoSerializer(serializers.ModelSerializer):
+    thumbnail = HyperlinkedSorlImageField(
+        '128x128',
+        # options={"crop": "center"},
+        source='image',
+        read_only=True
+    )
+
+    class Meta:
+        model = Photo
+        fields = ('image','thumbnail')
 
 
 class StairSerializer(serializers.HyperlinkedModelSerializer):
-    # photos = serializers.StringRelatedField(many=True)
+    photos = PhotoSerializer(many=True)
 
     class Meta:
         model = Stair
@@ -12,7 +26,8 @@ class StairSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class MapSerializer(GeoFeatureModelSerializer):
-    photos = serializers.StringRelatedField(many=True)
+    photos = PhotoSerializer(many=True)
+    #photos = serializers.StringRelatedField(many=True)
 
     class Meta:
         model = Stair

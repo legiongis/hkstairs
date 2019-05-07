@@ -1,12 +1,15 @@
 import os
-import csv
 from datetime import datetime
-from django.core import management
-from django.core.management.base import BaseCommand, CommandError
-from django.conf import settings
-import psycopg2 as db
+# from django.core import management
+from django.core.management.base import BaseCommand
+# from django.conf import settings
+# import psycopg2 as db
 from _utils import refresh_csv, getStairs
-from stairdb.models import Stair
+from stairdb.models import Stair, Photo
+import requests
+from django.core.files.base import ContentFile
+from PIL import Image
+import tempfile
 
 
 class Command(BaseCommand):
@@ -50,12 +53,23 @@ class Command(BaseCommand):
                 self.update_info(data)
 
     def prepare_data(self, table_name='', verbose=False):
-        sq_stairs = getStairs()
-        
+        from django.core.cache import cache
+
+        if not cache.get('sq_stairs'):
+            sq_stairs = getStairs()
+            cache.set('sq_stairs', sq_stairs)
+        else:
+            sq_stairs = cache.get('sq_stairs')
+
+        print('Processing '+str(len(sq_stairs)))+' SQ Stairs:'
         for sq_stair in sq_stairs:
             # print str(sq_stair.get('stair_id'))+' '+str(sq_stair.get('name'))+' '+str(sq_stair.get('current_name'))+' '+str(sq_stair.get('stepcount'))+' '+str(sq_stair.get('handrails'))
-            #print str(sq_stair.get('stair_id'))
+            print str(sq_stair.get('stair_id'))
             stair_id = int(sq_stair.get('stair_id'))
+
+            # if stair_id != 2180:
+            #     continue
+
             try:
                 item = Stair.objects.get(stairid=stair_id)
             except Stair.DoesNotExist:
@@ -80,77 +94,56 @@ class Command(BaseCommand):
                     item.handrail = sq_stair.get('handrails')
                     update = True
 
+                if(item.location != sq_stair.get('location') and sq_stair.get('location') != 'Unknown'):
+                    print('  updating location for '+str(stair_id)+' - from '+str(item.location)+' to '+str(sq_stair.get('location')))
+                    item.handrail = sq_stair.get('location')
+                    update = True
+                    
+                if(item.type != sq_stair.get('type') and sq_stair.get('type') is not False):
+                    print('  updating type for '+str(stair_id)+' - from '+str(item.type)+' to '+str(sq_stair.get('type')))
+                    item.type = sq_stair.get('type')
+                    update = True
+
+                for photo in sq_stair.get('photos'):
+                    filename = photo['orig_url']
+                    # print " saving "+str(filename)
+
+                    # Save original to photos
+                    response = requests.get(photo['orig_url'])
+                    tempimagefile = tempfile.NamedTemporaryFile()
+                    tempimagefile.write(response.content)
+
+                    if self.validateImage(tempimagefile.name):
+                        year = datetime.now().strftime('%Y')
+                        month = datetime.now().strftime('%m')
+                        # Add stair_id to name
+                        photofilename = year+'/'+month+'/stairid_'+str(stair_id)+'-'+str(os.path.basename(filename))
+
+                        # Create Photo
+                        stair = Stair.objects.get(stairid=stair_id)
+                        newphoto = Photo(stairid=stair)
+                        # Save File in media directory
+                        newphoto.image.save(photofilename, tempimagefile, save=False)
+                        print " saving "+str(photofilename)
+                        newphoto.save()
+
+                    tempimagefile.close()
+
                 if update:
                     item.save()
 
-        print('')
-        print('Total: '+str(len(sq_stairs)))
-
-        exit()
-
-        # data_dir = os.path.join(settings.BASE_DIR,"stairdb","management","commands","tmp_data")
-
-        # files = [i for i in os.listdir(data_dir) if table_name in i]
-        # dates = {}
-        # for index,f in enumerate(files):
-        #     datestring = f[-12:-4]
-        #     try:
-        #         date = datetime.strptime(datestring, "%m%d%Y").date()
-        #     except ValueError:
-        #         continue
-        #     dates[date] = f
-
-        # if not dates:
-        #     print "no csv files found for this table:",table_name
-        #     return False
-        # csvfile = os.path.join(data_dir,dates[max(dates.keys())])
-        # print "pulling data from:\n"+csvfile
-
-        # data = {}
-        # with open(csvfile,"rb") as incsv:
-        #     reader = csv.reader(incsv)
-        #     headers = reader.next()
-        #     id_i = headers.index('stair_id')
-        #     vt_i = headers.index('type')
-        #     n_i = headers.index('number_value')
-        #     tv_i = headers.index('text_value')
-
-        #     for row in reader:
-        #         stairid = row[id_i]
-        #         ## prepare entry in the dictionary if it doesn't yet exist
-        #         try:
-        #             data[stairid]
-        #         except KeyError:
-        #             data[stairid] = {'handrail':[],'stair_ct':[]}
-
-        #         ## process row differently depending on what type of vote it is
-        #         vt = row[vt_i]
-        #         ## if 1 this is a vote on handrail presence, use text value
-        #         if vt == "1":
-        #             val = row[tv_i]
-        #             data[stairid]['handrail'].append(val)
-        #         ## if 2 this is a vote on tread count, use number value
-        #         elif vt == "2":
-        #             val = row[n_i]
-        #             data[stairid]['stair_ct'].append(val)
-        #         ## if 3 this is a vote on stair type, not implemented here at this time
-        #         elif vt == "3":
-        #             pass
-        #         else:
-        #             pass
-
-        # ## evaluate and transform all values in data from vote lists to single strings
-        # ## in both cases use the mode of the list
-        # for k,v in data.iteritems():
-        #     for cat,votes in v.iteritems():
-        #         if len(votes) == 0:
-        #             data[k][cat] = ''
-        #         else:
-        #             data[k][cat] = max(set(votes), key=votes.count)
-        # if verbose:
-        #     print "---prepared dictionary---"
-        #     print data
-        # return data
+    def validateImage(self, file):
+        try:
+            img = Image.open(file)
+            try:
+                if img.verify():
+                    return True
+                else:
+                    return False
+            except Exception:
+                return False
+        except IOError:
+            return False
 
     def update_info(self, data, fake=False):
         print("\nupdating handrail and stair count information")

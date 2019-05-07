@@ -306,7 +306,8 @@ window.addEventListener("map:init", function (event) {
                 var display = "";
                 if (i>0) {display = `style="display:none"`};
 
-                var photos = JSON.parse(pics[i]);
+                var photos = pics[i];
+                //var photos = JSON.parse(pics[i]);
                 popup_html += `
                     <a href="${photos.image}" ${display} title="${properties.name}" data-gallery>
                         <img src="${photos.thumbnail}"/>

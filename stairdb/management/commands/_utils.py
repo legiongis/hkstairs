@@ -2,6 +2,8 @@ import os
 import csv
 from datetime import datetime
 from django.conf import settings
+from PIL import Image
+from PIL.ExifTags import TAGS
 
 
 def refresh_csv(table_name=""):
@@ -40,7 +42,26 @@ def refresh_csv(table_name=""):
     print("  -- done. file has", ct, "rows")
 
     return outfile
+    
+def rotate_image(filepath):
+    try:
+        image = Image.open(filepath)
+        for orientation in TAGS.keys():
+            if ExifTags.TAGS[orientation] == 'Orientation':
+                break
+        exif = dict(image._getexif().items())
 
+        if exif[orientation] == 3:
+            image = image.rotate(180, expand=True)
+        elif exif[orientation] == 6:
+            image = image.rotate(270, expand=True)
+        elif exif[orientation] == 8:
+            image = image.rotate(90, expand=True)
+        image.save(filepath)
+        image.close()
+    except (AttributeError, KeyError, IndexError):
+        # cases: image don't have getexif
+        pass
 
 def getSQStair(stair_id):
     import requests
@@ -54,7 +75,7 @@ def getSQStair(stair_id):
     # auth = OAuth1(oauth_consumer_key, oauth_consumer_secret, oauth_token, oauth_token_secret)
 
     # move CA into repo
-    r = requests.get(url, verify="/Users/darcy/Drive/Aporia/Server/CA/Aporia.pem")
+    r = requests.get(url) #, verify="/Users/darcy/Drive/Aporia/Server/CA/Aporia.pem")
 
     return r.json()
 
@@ -65,6 +86,7 @@ def getStairs():
     # import json
 
     url = settings.SQ_REST_API + '?per_page=100'
+    #url = settings.SQ_REST_API + '?after=2019-04-01T00:00:00&date_query_column=post_modified&per_page=100'
     # oauth_consumer_key = settings.SQ_CONSUMER_KEY
     # oauth_consumer_secret = settings.SQ_CONSUMER_SECRET
     # oauth_token = "A9HPkYFtM8Yw5HCGxfcYB6Sc"
@@ -73,7 +95,7 @@ def getStairs():
     # auth = OAuth1(oauth_consumer_key, oauth_consumer_secret, oauth_token, oauth_token_secret)
 
     # move CA into repo
-    r = requests.get(url, verify="/Users/darcy/Drive/Aporia/Server/CA/Aporia.pem")
+    r = requests.get(url) #, verify="/Users/darcy/Drive/Aporia/Server/CA/Aporia.pem")
     # print('Total: '+str(r.headers['X-WP-Total']))
     # print('Total pages: '+str(r.headers['X-WP-TotalPages']))
 
@@ -83,7 +105,7 @@ def getStairs():
         while( len(stairs) != int(r.headers['X-WP-Total']) ):
             offset = len(stairs)
             print('getting '+str(offset)+' out of '+str(r.headers['X-WP-Total'])+'...')
-            r = requests.get(url+"&offset="+str(offset), verify="/Users/darcy/Drive/Aporia/Server/CA/Aporia.pem")
+            r = requests.get(url+"&offset="+str(offset)) #, verify="/Users/darcy/Drive/Aporia/Server/CA/Aporia.pem")
             stairs.extend(r.json())
 
     return stairs
