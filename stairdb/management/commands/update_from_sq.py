@@ -10,6 +10,8 @@ import requests
 from django.core.files.base import ContentFile
 from PIL import Image
 import tempfile
+from StringIO import StringIO
+import io
 
 
 class Command(BaseCommand):
@@ -105,44 +107,48 @@ class Command(BaseCommand):
                     update = True
 
                 for photo in sq_stair.get('photos'):
-                    filename = photo['orig_url']
-                    print " saving "+str(filename)
+                    remotefilename = photo['orig_url']
+                    basename = os.path.basename(remotefilename)
+                    localfilename = "/tmp/"+basename
+                    # print remotefilename+' '+localfilename
 
                     # Save original to photos
-                    response = requests.get(photo['orig_url'])
-                    tempimagefile = tempfile.NamedTemporaryFile()
-                    tempimagefile.write(response.content)
+                    response = requests.get(remotefilename)
 
-                    if self.validateImage(tempimagefile.name):
+                    try:
+                        tempimagefile = Image.open(io.BytesIO(response.content))
+                        pass
+                    except IOError as e:
+                        continue
+
+                    if self.validateImage(tempimagefile):
                         year = datetime.now().strftime('%Y')
                         month = datetime.now().strftime('%m')
                         # Add stair_id to name
-                        photofilename = year+'/'+month+'/stairid_'+str(stair_id)+'-'+str(os.path.basename(filename))
+                        photofilename = year+'/'+month+'/stairid_'+str(stair_id)+'-'+basename
 
                         # Create Photo
                         stair = Stair.objects.get(stairid=stair_id)
                         newphoto = Photo(stairid=stair)
                         # Save File in media directory
-                        newphoto.image.save(photofilename, tempimagefile, save=False)
-                        print " saving "+str(photofilename)
+                        print " Saving "+str(photofilename)+' '+str(localfilename)
+                        newphoto.image.save(photofilename, ContentFile(response.content), save=False)
                         newphoto.save()
+                    else:
+                        print " Not saving - not valid: "+str(photofilename)+' '+str(localfilename)
 
                     tempimagefile.close()
 
                 if update:
                     item.save()
 
-    def validateImage(self, file):
+    def validateImage(self, imagefile):
         try:
-            img = Image.open(file)
-            try:
-                if img.verify():
-                    return True
-                else:
-                    return False
-            except Exception:
-                return False
-        except IOError:
+            imagefile.verify()
+            # print('Valid image')
+            return True
+        except Exception:
+            # print('Invalid image')
             return False
 
     def update_info(self, data, fake=False):

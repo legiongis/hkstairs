@@ -20,7 +20,8 @@ import exifread
 
 class PrepareStorage(FileSystemStorage):
     def _save(self, name, content):
-        dirpath = os.path.dirname(name)       
+        # print "preparing dirs for "+name
+        dirpath = os.path.dirname(name)
         try:
             os.makedirs(dirpath)
         except OSError:
@@ -251,16 +252,19 @@ class Photo(models.Model):
             update = False
             if exif[orientation] == 3:
                 image = image.rotate(180, expand=True)
+                degrees = 180
                 update = True
             elif exif[orientation] == 6:
                 image = image.rotate(270, expand=True)
+                degrees = 270
                 update = True
             elif exif[orientation] == 8:
                 image = image.rotate(90, expand=True)
+                degrees = 90
                 update = True
 
             if update:
-                print "rotating image"
+                print " Rotating image by "+str(degrees)
                 image.save(filepath)
             
             Image.close(image)
