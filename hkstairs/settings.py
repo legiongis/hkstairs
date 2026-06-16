@@ -204,6 +204,7 @@ CACHES = {
 X_FRAME_OPTIONS = 'ALLOWALL' #'ALLOW-FROM https://stairculture.com/'
 
 try:
-    from settings_local import *
-except ImportError:
-    raise Exception("A local_settings.py file is required to run this project")
+    from .settings_local import *  # noqa: F403
+except ImportError as e:
+    print("Error encountered will importing settings_local.py (this file is required)")
+    raise e
