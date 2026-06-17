@@ -162,6 +162,11 @@ html, body, .leaflet-container {
     font: 12px/1.5 "Helvetica Neue", Arial, Helvetica, sans-serif !important;
 }
 
+/* fix missing icon bug described here: https://github.com/makinacorpus/django-leaflet/issues/390 */
+.leaflet-control-zoom-out.leaflet-bar-part {
+    background-image: url("../leaflet/images/reset-view.png");
+}
+
 
 .loader-mask {
     background-color: rgba(0,0,0,.5)
