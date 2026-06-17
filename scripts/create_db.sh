@@ -1,5 +1,7 @@
 #! /usr/bin/bash
 
-psql -U postgres -h localhost -c "DROP DATABASE IF EXISTS hkstairs;"
-psql -U postgres -h localhost -c "CREATE DATABASE hkstairs;"
-psql -U postgres -h localhost -d hkstairs -c "CREATE EXTENSION PostGIS;"
+DBNAME=hkstairs
+
+psql -U postgres -c "DROP DATABASE IF EXISTS $DBNAME;"
+psql -U postgres -c "CREATE DATABASE $DBNAME;"
+psql -U postgres -d hkstairs -c "CREATE EXTENSION PostGIS;"
