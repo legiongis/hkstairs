@@ -1,6 +1,6 @@
 import os
 import csv
-from datetime import datetime
+from datetime import datetime, timedelta
 from django.conf import settings
 from PIL import Image
 from PIL.ExifTags import TAGS
@@ -85,7 +85,14 @@ def getStairs():
     # from requests_oauthlib import OAuth1
     # import json
 
-    url = settings.SQ_REST_API + '?per_page=100'
+    # Subtract 1 hour from the current time
+    one_hour_ago = datetime.now() - timedelta(hours=1)
+
+    # Format into '2019-04-01T00:00:00'
+    date_string = one_hour_ago.strftime("%Y-%m-%dT%H:%M:%S")
+
+    url = settings.SQ_REST_API + '?modified_after='+date_string+'&per_page=100'
+    print(url)
     #url = settings.SQ_REST_API + '?after=2019-04-01T00:00:00&date_query_column=post_modified&per_page=100'
     # oauth_consumer_key = settings.SQ_CONSUMER_KEY
     # oauth_consumer_secret = settings.SQ_CONSUMER_SECRET
