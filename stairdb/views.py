@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.template import loader
@@ -5,13 +6,17 @@ from django.contrib.gis.db.models.functions import Centroid,AsGeoJSON
 from django.core.serializers import serialize
 import json
 from django.utils.decorators import method_decorator
-from django.views.decorators.cache import cache_page
-from models import Stair
+from django.views.decorators.cache import cache_page, never_cache
+from .models import Stair, Photo
 from rest_framework.views import APIView
+from rest_framework.response import Response
 from rest_framework import viewsets, response
 from .serializers import StairSerializer, MapSerializer
 import time
+from .management.commands._utils import getSQStair
+from django.views.generic import View
 
+#@never_cache
 def index(request):
     return render(request, 'index.html')
 
@@ -28,13 +33,29 @@ class StairList(APIView):
 
 
 class StairViewSet(viewsets.ModelViewSet):
-    queryset = Stair.objects.all()
+    #queryset = Stair.objects.all()
+    ### use prefetch_related to avoid N+1 select problem ###
+    queryset = Stair.objects.prefetch_related('photos').all()
+
     serializer_class = MapSerializer
     
-    @method_decorator(cache_page(None))
-    def dispatch(self, *args, **kwargs):
-        return super(StairViewSet, self).dispatch(*args, **kwargs)
-    
+    # Implement the Cache
+    if settings.USE_CACHE:
+        @method_decorator(cache_page(None))
+        def dispatch(self, *args, **kwargs):
+            return super(StairViewSet, self).dispatch(*args, **kwargs)
+
+
+class StairQuestView(APIView):
+    #queryset = Stair.objects.prefetch_related('photos').all()
+
+    def get(self, request, *args, **kwargs):
+        sq_stair = getSQStair(1272)
+
+        print(sq_stair)
+        return Response(sq_stair[0])
+
+
 # def get_stairs(self,stairid="all"):
 
 #     start = time.time()

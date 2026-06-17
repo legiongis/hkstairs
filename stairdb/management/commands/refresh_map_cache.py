@@ -1,7 +1,7 @@
 from django.core.management.base import BaseCommand, CommandError
 from django.conf import settings
 import os
-import urllib2
+import urllib.request, urllib.error, urllib.parse
 
 class Command(BaseCommand):
     help = 'refreshes the cache'
@@ -23,7 +23,7 @@ class Command(BaseCommand):
         if settings.DEBUG:
             stair_json = 'http://localhost:8000'+settings.LOCAL_URL+'/stair/?format=json'
        
-        req = urllib2.Request(url=stair_json)
+        req = urllib.request.Request(url=stair_json)
         
         ## this header needs to be added to correctly mimic the ajax requests
         ## that are made in the map js. if absent, django will make a new
@@ -34,4 +34,4 @@ class Command(BaseCommand):
         if not settings.DEBUG:
             req.add_header('Host','stairculture.com')
         
-        response = urllib2.urlopen(req)
+        response = urllib.request.urlopen(req)

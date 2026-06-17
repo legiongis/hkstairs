@@ -1,5 +1,16 @@
-html body {
-    height: 100vh;
+body {
+    padding: 0;
+    margin: 0;
+}
+html, body, .leaflet-container {
+    height: 100%;
+    width: 100%;
+}
+
+
+#header-nav .container-fluid {
+    padding-left: 6px;
+    padding-right: 6px;
 }
 
 .navbar {
@@ -9,6 +20,19 @@ html body {
     width: 100%;
     border-radius: 0;
     border: 0;
+    border-bottom: 1px solid #cccccc;
+}
+
+.popup-fixed {
+  position: fixed;
+  top: auto;
+  bottom: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  transform: none !important;
+  margin: 0;
+  border-radius: 0;
+  width: 70%;
 }
 
 .nav li {
@@ -24,6 +48,8 @@ html body {
     display: table-cell;
     vertical-align: middle;
 }
+
+:active, :focus { outline: none; -moz-outline-style: none; }
 
 .nav-container {
     width:80%;
@@ -53,8 +79,10 @@ html body {
     
 }
 
-.leaflet-container {
-    height: 100%;
+.leaflet-sidebar, .leaflet-fusesearch-panel {
+    top: 50px;    
+    bottom: 0px;
+    height: auto;
 }
 
 .leaflet-top {
@@ -66,7 +94,7 @@ html body {
 }
 
 .leaflet-popup {
-    min-height:100%;
+    /*min-height:100%;*/
     font-family: 'Abel', Helvetica, Arial, Lucida, sans-serif;
 }
 
@@ -74,14 +102,33 @@ html body {
     height:100%;
 }
 
+.leaflet-popup-content {
+    width: 150px;
+}
+
+.leaflet-popup-content img {
+    max-width: 100%;
+}
+
+
+.leaflet-sidebar .close {
+    z-index: 1001;
+    top: 10px;
+    right: 6px;
+    font-size:36px;
+}
+.leaflet-sidebar h1 {
+    font-size: 32px;
+}
+
 /* using dl dt dd css from this great post */
 /* http://www.the-art-of-web.com/css/format-dl/ */
-.leaflet-popup dl {
+.leaflet-popup dl, .leaflet-sidebar dl {
     font-size: 12pt;
     margin: 15px 0px;
 }
 
-.leaflet-popup dt {
+.leaflet-popup dt, .leaflet-sidebar dt {
     float: left;
     clear: left;
     width: 70px;
@@ -90,11 +137,11 @@ html body {
     font-weight: bold;
 }
 
-.leaflet-popup dt::after {
+.leaflet-popup dt::after, .leaflet-sidebar dt::after {
     content: ":";
 }
 
-.leaflet-popup dd {
+.leaflet-popup dd, .leaflet-sidebar dd {
     margin: 0 0 0 65px;
 }
 
@@ -106,6 +153,20 @@ html body {
     overflow-y: auto;
     height: 250px;
 }
+
+.leaflet-control-about-button {
+
+}
+
+.leaflet-container {
+    font: 12px/1.5 "Helvetica Neue", Arial, Helvetica, sans-serif !important;
+}
+
+/* fix missing icon bug described here: https://github.com/makinacorpus/django-leaflet/issues/390 */
+.leaflet-control-zoom-out.leaflet-bar-part {
+    background-image: url("../leaflet/images/reset-view.png");
+}
+
 
 .loader-mask {
     background-color: rgba(0,0,0,.5)
@@ -160,7 +221,11 @@ html body {
     z-index: 450 !important;
     color: white;
 }
-
+.featured, .featured div {
+    background-color: rgba(255, 105, 180, 0.6);
+    z-index: 450 !important;
+    color: white;
+}
 .alley-stairs, .alley-stairs div {
     background-color: rgba(221,45,22, 0.6);
     z-index: 440 !important;
@@ -217,4 +282,146 @@ html body {
 /* set bluimp gallery on top of fullscreen */
 .blueimp-gallery {
     z-index: 2147483647 !important;
+}
+
+
+
+.leaflet-control-minimap {
+    width: 150px !important;
+    height: 150px !important;
+}
+
+
+
+
+.edit-button {
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+}
+
+
+/* Fuse Search Panel */
+.leaflet-fusesearch-control {
+    border: 2px solid rgba(0,0,0,0.2);
+    box-shadow: none;
+    border-radius: 5px;
+    background-clip: padding-box;
+}
+.leaflet-fusesearch-panel {
+    top: 106px;
+}
+.leaflet-fusesearch-control .button {
+    background-image: url(../plugins/images/search.png);
+}
+
+.leaflet-fusesearch-panel .search-image {
+    background-image: url(../plugins/images/search_input.png);
+}
+.leaflet-fusesearch-panel .header {
+    height: 40px;
+}
+.leaflet-fusesearch-panel .search-input {
+    width: 230px;
+    font-size: 28px;
+}
+
+.leaflet-fusesearch-panel .search-input {
+  -webkit-appearance: searchfield;
+}
+.leaflet-fusesearch-panel .search-input::-webkit-search-cancel-button {
+  -webkit-appearance: searchfield-cancel-button;
+}
+
+.leaflet-fusesearch-panel .close {
+    right: 15px;
+    top: 10px;
+}
+
+
+.stair-properties dd:after {
+    display: table;
+    content: "";
+    clear: both;
+}
+
+
+
+
+
+/* Responsive Styles Tablet And Below */
+
+/* styles for narrow desktop browsers and iPad landscape */
+@media all and (max-width: 1024px) {
+
+}
+
+
+/* styles for narrower desktop browsers and iPad portrait */
+@media all and (max-width: 980px) {
+
+}
+
+
+/* styles for mobile */
+@media all and (max-width: 767px) {
+
+    .nav-container {
+        width: 100%;
+    }
+
+    .navbar-toggle {
+        margin-right: 0px;
+    }
+
+    .navbar-collapse {
+        border-top: none;
+    }
+
+    .leaflet-control-minimap {
+        width: 100px !important;
+        height: 100px !important;
+    }
+
+    .leaflet-sidebar, .leaflet-fusesearch-panel {
+        top: auto;
+        bottom: 0px;
+        width: 100%;
+        height: 200px;
+        /*padding-top: 0;*/
+    }
+    .leaflet-sidebar {
+        overflow: auto;
+    }
+
+    .leaflet-fusesearch-panel .content {
+        overflow: hidden;
+    }
+    .leaflet-fusesearch-panel .result-list {
+        overflow: auto;
+        height: 100%;
+    }
+
+    .leaflet-sidebar .close {
+        top: 0px;
+    }
+
+    /* full-screen does not work on mobile */
+    .leaflet-control-fullscreen {
+        display: none;
+    }
+
+    /* prevent pan in mobile */
+    .leaflet-map-pane {
+        transform: none !important;
+    }
+    .leaflet-sidebar.left.visible ~ .leaflet-left {
+        left: auto;
+    }
+
+    .leaflet-fusesearch-panel .close {
+        right: 10px;
+        top: 0px;
+    }
+
 }

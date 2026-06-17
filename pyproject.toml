@@ -1,0 +1,21 @@
+[project]
+name = "hkstairs"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "django>=5.2,<5.3",
+    "django-leaflet>=0.33.0",
+    "django-multiselectfield>=1.0.1",
+    "django-reversion>=6.3.0",
+    "djangorestframework>=3.17.1",
+    "djangorestframework-gis>=1.2.1",
+    "exifread>=3.5.1",
+    "gunicorn>=26.0.0",
+    "pillow>=12.2.0",
+    "psycopg[binary]>=3.3.4",
+    "requests>=2.34.2",
+    "sorl-thumbnail>=13.0.0",
+    "sorl-thumbnail-serializer-field>=0.2.1",
+]

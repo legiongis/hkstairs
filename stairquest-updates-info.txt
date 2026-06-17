@@ -1,0 +1,17 @@
+there are two commands in the hkstairs app that must be run to transfer new information
+from the StairQuest mysql database to the django database.
+
+python manage.py update_from_sq --stage
+
+This command reads all of the relevant info from the mysql tables and writes a CSV file
+in a diretory in the hkstairs app.
+
+python manage.py update_from_sq --run
+
+This command reads the CSV and transfers the attributes to the django db objects.
+
+These two commands are combined in a shell script, update_from_sq.sh, which is set to
+run via a cron job at 2:45 am on the first day of every month. This is a cron job listed
+under the 'adam' user.
+
+--adam 10-16-18

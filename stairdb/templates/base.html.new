@@ -1,0 +1,74 @@
+{% load static %}
+{% load leaflet_tags %}
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8" />
+			
+	<link rel="pingback" href="https://stairculture.com/archive/xmlrpc.php" />
+
+	<!--[if lt IE 9]>
+	<script src="https://stairculture.com/archive/wp-content/themes/Divi/js/html5.js" type="text/javascript"></script>
+	<![endif]-->
+
+	<title>Stairs | Hong Kong Stair Archive</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+
+
+	<!-- JQuery JS -->
+	<script src="https://code.jquery.com/jquery-latest.js"></script>
+
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+
+	<!-- Latest compiled JavaScript -->
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+	{% leaflet_js %}
+	{% leaflet_css %}
+
+    <script>
+        var local_url = "{{local_url}}";
+        var mapbox_api_key = "{{mapbox_api_key}}"
+    </script>
+    
+    <link rel='stylesheet' href="{% static 'css/style.css' %}" type='text/css' media='all' />
+
+    <!-- <script src="{% static 'js/main_map.js' %}" type="text/javascript"></script> -->
+    <script src="{% static 'plugins/Leaflet.MakiMarkers.js' %}" type="text/javascript"></script>
+
+<link rel="stylesheet" type="text/css" href="{% static 'plugins/Gallery-2.21.3/css/blueimp-gallery.min.css' %}">
+
+  </head>
+  <body >
+        <!-- add these classes to #header-nav to enable the shrinkage:  navbar-inverse navbar-fixed-top -->
+        <!--<div class="row">-->
+            {% block header %}
+            <!-- <nav id="header-nav" class="navbar navbar-inverse" role="navigation">
+                <div class="container-fluid">
+                    <div class="nav-container">
+                        <a class="navbar-brand hidden-xs" href="https://stairculture.com/archive/">
+                            <img id="header-logo" style="height:75px" src="{% static 'img/cropped-Symbol-Line-Final_HKSA_2016_smsq_trans.png' %}" alt="Hong Kong Stair Archive"/>
+                        </a>
+                        <button class="navbar-toggle" data-toggle="collapse" data-target="#mynavbar">
+                          <span class="icon-bar"></span>
+                          <span class="icon-bar"></span>
+                          <span class="icon-bar"></span>
+                        </button>
+                        <div class="collapse navbar-collapse" id="mynavbar">
+                          <ul class="nav navbar-nav navbar-right">
+                            <li><a href="https://stairculture.com/archive/">Home</a></li>
+                            <li><a href="https://stairculture.com/archive/stairs/">Stairs</a></li>
+                            <li><a href="https://stairculture.com/archive/news">News</a></li>
+                            <li style="padding-right:0px;"><a href="https://stairculture.com/archive/about">About</a></li>
+                          </ul>
+                        </div>
+                    </div>
+                </div>
+            </nav> -->
+            {% endblock %}
+            {% block content %}
+            {% endblock %}
+    </div>
+</body>
+</html>

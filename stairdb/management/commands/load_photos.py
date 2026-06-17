@@ -1,14 +1,7 @@
-from django.core.management.base import BaseCommand, CommandError
-from django.conf import settings
+from django.core.management.base import BaseCommand
 from django.core.files.images import ImageFile
 import os
-import shapefile
-import pygeoif
 from stairdb.models import Photo
-import exifread
-from PIL import Image
-from cStringIO import StringIO
-import shutil
 
 class Command(BaseCommand):
     help = 'bulk load geotagged photos into database.'
@@ -37,7 +30,7 @@ class Command(BaseCommand):
     ## all geo stuff is handled by the Photo.save()
     def get_geotags(self,exif_tags):
         geotags = {}
-        for k,v in exif_tags.iteritems():
+        for k,v in exif_tags.items():
             if k.startswith("GPS"):
                 geotags[k] = v
         if len(geotags) == 0:
@@ -48,7 +41,7 @@ class Command(BaseCommand):
     def load_photos(self,topdir):
 
         if not os.path.isdir(topdir):
-            print "invalid source directory"
+            print("invalid source directory")
             return
     
         filelist = []
@@ -58,9 +51,9 @@ class Command(BaseCommand):
                     filelist.append(os.path.join(path,f))
         n_photos = len(filelist)
         
-        print "loading images from:",topdir
-        print "total images to load:",n_photos
-        print "loading photos..."
+        print("loading images from:",topdir)
+        print("total images to load:",n_photos)
+        print("loading photos...")
 
         ct=0
         geoms=0
@@ -79,11 +72,11 @@ class Command(BaseCommand):
                     geoms+=1
                 ct += 1
         
-        print "    done."
-        print "total images loaded:",ct
-        print "images with valid geolocation:",geoms
+        print("    done.")
+        print("total images loaded:",ct)
+        print("images with valid geolocation:",geoms)
         
     def flush(self):
         
-        print "removing all existing photos in database"
+        print("removing all existing photos in database")
         Photo.objects.all().delete()

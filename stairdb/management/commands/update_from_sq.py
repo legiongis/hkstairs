@@ -1,27 +1,30 @@
 import os
-import csv
 from datetime import datetime
-from django.core import management
-from django.core.management.base import BaseCommand, CommandError
-from django.conf import settings
-import psycopg2 as db
-from _utils import refresh_csv
-from stairdb.models import Stair
+# from django.core import management
+from django.core.management.base import BaseCommand
+# from django.conf import settings
+# import psycopg2 as db
+from ._utils import refresh_csv, getStairs
+from stairdb.models import Stair, Photo
+import requests
+from django.core.files.base import ContentFile
+from PIL import Image
+import io
 
 
 class Command(BaseCommand):
     help = 'gets handrail and stair count info from stairquest, writes that to a  and tranfers these values to stairdb objects. run first with --stage to update the csv, and then with --run to actually modify values in the hkstairs db.'
 
     def add_arguments(self, parser):
-        parser.add_argument('--stage',action='store_true',
+        parser.add_argument('--stage', action='store_true',
             default=False,
             help="updates the csv and prints the output, but doesn't modify the db.",
         )
-        parser.add_argument('--run',action='store_true',
+        parser.add_argument('--run', action='store_true',
             default=False,
             help="uses the csv to modify values in the hkstairs db.",
         )
-        parser.add_argument('--test_run',action='store_true',
+        parser.add_argument('--test_run', action='store_true',
             default=False,
             help="does a mock version of the run command with verbose messages, but doesn't modify the db.",
         )
@@ -31,108 +34,137 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
-
         if not options['stage'] and not options['run'] and not options['test_run']:
-            print "you must use this command with either --stage or --run or --test-run. for more info, run with --help."
+            print("you must use this command with either --stage or --run or --test-run. for more info, run with --help.")
             return
-        
+
         if options['stage']:
             refresh_csv(table_name="wp_gq_stair_vote")
-        
+
         if options['test_run']:
-            data = self.prepare_data(table_name="wp_gq_stair_vote",verbose=True)
+            data = self.prepare_data(table_name="wp_gq_stair_vote", verbose=True)
             if data:
-                self.update_info(data,fake=True)
+                self.update_info(data, fake=True)
             return
-            
+
         if options['run']:
-            data = self.prepare_data(table_name="wp_gq_stair_vote",verbose=options['verbose'])
+            data = self.prepare_data(table_name="wp_gq_stair_vote", verbose=options['verbose'])
             if data:
                 self.update_info(data)
-        
-    def prepare_data(self,table_name='',verbose=False):
-        
-        data_dir = os.path.join(settings.BASE_DIR,"stairdb","management","commands","tmp_data")
-        
-        files = [i for i in os.listdir(data_dir) if table_name in i]
-        dates = {}
-        for index,f in enumerate(files):
-            datestring = f[-12:-4]
-            try:
-                date = datetime.strptime(datestring, "%m%d%Y").date()
-            except ValueError:
-                continue
-            dates[date] = f
-        
-        if not dates:
-            print "no csv files found for this table:",table_name
-            return False
-        csvfile = os.path.join(data_dir,dates[max(dates.keys())])
-        print "pulling data from:\n"+csvfile
-        
-        data = {}
-        with open(csvfile,"rb") as incsv:
-            reader = csv.reader(incsv)
-            headers = reader.next()
-            id_i = headers.index('stair_id')
-            vt_i = headers.index('type')
-            n_i = headers.index('number_value')
-            tv_i = headers.index('text_value')
-            
-            for row in reader:
-                stairid = row[id_i]
-                ## prepare entry in the dictionary if it doesn't yet exist
-                try:
-                    data[stairid]
-                except KeyError:
-                    data[stairid] = {'handrail':[],'stair_ct':[]}
 
-                ## process row differently depending on what type of vote it is
-                vt = row[vt_i]
-                ## if 1 this is a vote on handrail presence, use text value
-                if vt == "1":
-                    val = row[tv_i]
-                    data[stairid]['handrail'].append(val)
-                ## if 2 this is a vote on tread count, use number value
-                elif vt == "2":
-                    val = row[n_i]
-                    data[stairid]['stair_ct'].append(val)
-                ## if 3 this is a vote on stair type, not implemented here at this time
-                elif vt == "3":
-                    pass
-                else:
-                    pass
-        
-        ## evaluate and transform all values in data from vote lists to single strings
-        ## in both cases use the mode of the list
-        for k,v in data.iteritems():
-            for cat,votes in v.iteritems():
-                if len(votes) == 0:
-                    data[k][cat] = ''
-                else:
-                    data[k][cat] = max(set(votes), key=votes.count)
-        if verbose:
-            print "---prepared dictionary---"
-            print data
-        return data
-        
-    def update_info(self,data,fake=False):
+    def prepare_data(self, table_name='', verbose=False):
+        from django.core.cache import cache
+
+        if not cache.get('sq_stairs'):
+            sq_stairs = getStairs()
+            cache.set('sq_stairs', sq_stairs)
+        else:
+            sq_stairs = cache.get('sq_stairs')
+
+        print(('Processing '+str(len(sq_stairs)))+' SQ Stairs:')
+        for sq_stair in sq_stairs:
+            # print str(sq_stair.get('stair_id'))+' '+str(sq_stair.get('name'))+' '+str(sq_stair.get('current_name'))+' '+str(sq_stair.get('stepcount'))+' '+str(sq_stair.get('handrails'))
+            # print str(sq_stair.get('stair_id'))
+            stair_id = int(sq_stair.get('stair_id'))
+
+            # if stair_id != 2180:
+            #     continue
+
+            try:
+                item = Stair.objects.get(stairid=stair_id)
+            except Stair.DoesNotExist:
+                # print "does not exist"
+                continue
+
+            update = False
+
+            if(item):
+                if(item.name != sq_stair.get('name') and sq_stair.get('name') != 'Stair '+str(stair_id)):
+                    print('  updating name for '+str(stair_id)+' - from '+str(item.name)+' to '+str(sq_stair.get('name')))
+                    item.name = sq_stair.get('name')
+                    update = True
+
+                if(item.stair_ct != sq_stair.get('stepcount') and sq_stair.get('stepcount') != 'Unknown'):
+                    print('  updating stair_ct for '+str(stair_id)+' - from '+str(item.stair_ct)+' to '+str(sq_stair.get('stepcount')))
+                    item.stair_ct = sq_stair.get('stepcount')
+                    update = True
+
+                if(item.handrail != sq_stair.get('handrails') and sq_stair.get('handrails') != 'Unknown'):
+                    print('  updating handrails for '+str(stair_id)+' - from '+str(item.handrail)+' to '+str(sq_stair.get('handrails')))
+                    item.handrail = sq_stair.get('handrails')
+                    update = True
+
+                if(item.location != sq_stair.get('location') and sq_stair.get('location') != 'Unknown'):
+                    print('  updating location for '+str(stair_id)+' - from '+str(item.location)+' to '+str(sq_stair.get('location')))
+                    item.handrail = sq_stair.get('location')
+                    update = True
+                    
+                if(item.type != sq_stair.get('type') and sq_stair.get('type') is not False):
+                    print('  updating type for '+str(stair_id)+' - from '+str(item.type)+' to '+str(sq_stair.get('type')))
+                    item.type = sq_stair.get('type')
+                    update = True
+
+                for photo in sq_stair.get('photos'):
+                    remotefilename = photo['orig_url']
+                    basename = os.path.basename(remotefilename)
+                    localfilename = "/tmp/"+basename
+                    # print remotefilename+' '+localfilename
+
+                    # Save original to photos
+                    response = requests.get(remotefilename)
+
+                    try:
+                        tempimagefile = Image.open(io.BytesIO(response.content))
+                        pass
+                    except IOError:
+                        continue
+
+                    if self.validateImage(tempimagefile):
+                        year = datetime.now().strftime('%Y')
+                        month = datetime.now().strftime('%m')
+                        # Add stair_id to name
+                        photofilename = year+'/'+month+'/stairid_'+str(stair_id)+'-'+basename
+
+                        # Create Photo
+                        stair = Stair.objects.get(stairid=stair_id)
+                        newphoto = Photo(stairid=stair)
+                        # Save File in media directory
+                        print(" Saving "+str(photofilename)+' '+str(localfilename))
+                        newphoto.image.save(photofilename, ContentFile(response.content), save=False)
+                        newphoto.save()
+                    else:
+                        print(" Not saving - not valid: "+str(photofilename)+' '+str(localfilename))
+
+                    tempimagefile.close()
+
+                if update:
+                    item.save()
+
+    def validateImage(self, imagefile):
+        try:
+            imagefile.verify()
+            # print('Valid image')
+            return True
+        except Exception:
+            # print('Invalid image')
+            return False
+
+    def update_info(self, data, fake=False):
         print("\nupdating handrail and stair count information")
-        ct=0
-        for k,v in data.iteritems():
+        ct = 0
+        for k, v in data.items():
             item = Stair.objects.get(stairid=k)
-            ct+=1
+            ct += 1
             if fake:
-                print "stair",item.stairid," | handrail:",item.handrail,"stair_ct:",item.stair_ct
-                print "  -- new values | handrail:",v['handrail'],"stair_ct:",v['stair_ct']
+                print("stair", item.stairid, " | handrail:", item.handrail, "stair_ct:", item.stair_ct)
+                print("  -- new values | handrail:", v['handrail'], "stair_ct:", v['stair_ct'])
             if v['handrail']:
                 item.handrail = v['handrail']
             if v['stair_ct']:
                 item.stair_ct = int(v['stair_ct'])
-                
+
             if not fake:
                 item.save()
-        print "\n",ct,"stair records {}updated".format("would be " if fake else "")
-            
-        return
+        print("\n", ct, "stair records {}updated".format("would be " if fake else ""))
 
+        return

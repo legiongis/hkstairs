@@ -1,12 +1,12 @@
 {% extends 'base.html' %}
-{% load staticfiles %}
+{% load static %}
 {% load leaflet_tags %}
 {% block header %}{% endblock %}
 {% block content %}
 <nav id="header-nav" class="navbar navbar-inverse" role="navigation">
     <div class="container-fluid">
     <div class="nav-container">
-        <a class="navbar-brand hidden-xs" href="http://stairculture.com/archive/">
+        <a class="navbar-brand" href="http://stairculture.com/archive/">
             <img id="header-logo" style="height:40px" src="{% static 'img/cropped-Symbol-Line-Final_HKSA_2016_smsq_trans.png' %}" alt="Hong Kong Stair Archive"/>
         </a>
         <button class="navbar-toggle" data-toggle="collapse" data-target="#mynavbar">
@@ -18,6 +18,7 @@
           <ul id="top-menu" class="nav navbar-nav navbar-right">
             <li id="menu-item-81" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-home current-menu-item page_item page-item-2 current_page_item menu-item-81"><a href="https://stairculture.com/archive/">Home</a></li>
             <li id="menu-item-109" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-109"><a href="https://hkstairmap.stairculture.com/">Map</a></li>
+            <li id="menu-item-109" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-109"><a href="https://stairculture.com/archive/featured-stairs/">Featured Stairs</a></li>
             <li id="menu-item-362" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-362"><a href="https://stairculture.com/archive/news/">News</a></li>
             <li id="menu-item-80" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-80"><a href="https://stairculture.com/archive/about/">About</a></li>
             <li id="menu-item-1593" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1593"><a href="https://stairculture.com/archive/exhibition/">Exhibition</a></li>
@@ -38,11 +39,11 @@
 <div class="info-box" id="accuracy-box" style="display:none">
     <em>The process of placing historic maps on current maps ("georeferencing") is done by matching points on the historic map to corresponding points on a current basemap.  It is not an exact process.  One can see above how the historical documents fit well in some places, and badly in others.  This is to say that the historic maps are best considered as showing features in their current day </em>vicinity<em>, not their exact location.</em>
 </div>
-<p>
+<!-- <p>
 {% for p in players %}
     {% if not forloop.first %} | {% endif %}{{ p }}
 {% endfor %}
-</p>
+</p> -->
 <input type="hidden" id="col_json" name="col_json" value="{{ col_json }}">
 
     
@@ -60,6 +61,9 @@
     </div>
 
 </div>
+
+
+<div id="sidebar"></div>
 
 <!-- <script>
 document.getElementById('links').onclick = function (event) {

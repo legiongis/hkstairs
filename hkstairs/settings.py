@@ -14,6 +14,7 @@ import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+SITE_ROOT = os.path.realpath(os.path.dirname(__file__))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.10/howto/deployment/checklist/
@@ -24,7 +25,10 @@ SECRET_KEY = 'XXX-XX-XXXX'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost','projects.legiongis.com']
+# Enables cache
+USE_CACHE = True
+
+ALLOWED_HOSTS = ['localhost', 'projects.legiongis.com']
 
 # Application definition
 
@@ -38,8 +42,11 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.gis',
     'leaflet',
+    'sorl.thumbnail',
+    'sorl_thumbnail_serializer',
     'rest_framework',
-    'rest_framework_gis',    
+    'rest_framework_gis',
+    'reversion',
 ]
 
 MIDDLEWARE = [
@@ -71,6 +78,7 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 'stairdb.context_processors.local_url',
                 'stairdb.context_processors.mapbox_api_key',
+                'stairdb.context_processors.sq_rest_api',
             ],
         },
     },
@@ -127,14 +135,8 @@ USE_L10N = True
 
 USE_TZ = True
 
-
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/1.10/howto/static-files/
-
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR,"stairdb","static"),
-]
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 LEAFLET_CONFIG = {
     'DEFAULT_CENTER': (22.28,114.15),
@@ -166,6 +168,19 @@ LEAFLET_CONFIG = {
             'js': STATIC_URL + 'plugins/leaflet-hash.js',
             'auto-include': True,
         },
+        'leaflet-sidebar': {
+            'css': [STATIC_URL + 'plugins/leaflet-sidebar/src/L.Control.Sidebar.css'],
+            'js': STATIC_URL + 'plugins/leaflet-sidebar/src/L.Control.Sidebar.js',
+            'auto-include': True,
+        },
+        'leaflet-fusesearch': {
+            'css': [STATIC_URL + 'plugins/leaflet.fusesearch.css'],
+            'js': [
+                STATIC_URL + 'plugins/fuse.min.js',
+                STATIC_URL + 'plugins/leaflet.fusesearch.js',
+            ],
+            'auto-include': True,
+        },
     }
 }
 
@@ -175,11 +190,15 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
-        'LOCATION': os.path.join(BASE_DIR,'stairdb','cache')
+        'LOCATION': os.path.join(BASE_DIR,'stairdb','cache'),
+        'TIMEOUT': None,
     }
 }
 
+X_FRAME_OPTIONS = 'ALLOWALL' #'ALLOW-FROM https://stairculture.com/'
+
 try:
-    from settings_local import *
-except ImportError:
-    raise Exception("A local_settings.py file is required to run this project")
+    from .settings_local import *  # noqa: F403
+except ImportError as e:
+    print("Error encountered will importing settings_local.py (this file is required)")
+    raise e
