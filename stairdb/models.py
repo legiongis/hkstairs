@@ -1,13 +1,11 @@
-from __future__ import unicode_literals
+
 
 from django.conf import settings
 from django.contrib.gis.db import models
 # from django.utils.html import mark_safe
 # from django.core.serializers import serialize
-from django.core.files.uploadedfile import SimpleUploadedFile
 from django.core.files.storage import FileSystemStorage
 from django.core.cache import cache
-from django.dispatch import receiver
 from multiselectfield import MultiSelectField
 import reversion
 # from functools import partial
@@ -74,7 +72,7 @@ class Stair(models.Model):
     geom = models.PolygonField(null=True)
     coords_x = models.FloatField(null=True,editable=False)
     coords_y = models.FloatField(null=True,editable=False)
-    objects = models.GeoManager()
+    objects = models.Manager()
     featured = models.BooleanField(default=False)
     materials = MultiSelectField(choices=MATERIALS,null=True,blank=True)
     
@@ -92,7 +90,7 @@ class Stair(models.Model):
         
     def save(self, *args, **kwargs):
         cache.clear()
-        print "cache cleared after update"
+        print("cache cleared after update")
 
         self.coords_x = self.geom.centroid.coords[0]
         self.coords_y = self.geom.centroid.coords[1]
@@ -121,7 +119,7 @@ class Photo(models.Model):
     #__unicode__.allow_tags = True
 
     def display_thumbnail(self):
-        return u'<div class="thumbnails" style="width:120px"><img src="%s"/></div>' % (self.image.url)
+        return '<div class="thumbnails" style="width:120px"><img src="%s"/></div>' % (self.image.url)
     display_thumbnail.short_description = 'Image'
     display_thumbnail.allow_tags = True
 
@@ -133,7 +131,7 @@ class Photo(models.Model):
     has_geodata.short_description = 'Has Geodata'
 
     def image_tag(self):
-        return u'<img src="{}" style="height:300px;max-width:100%;"/>'.format(self.image.url)
+        return '<img src="{}" style="height:300px;max-width:100%;"/>'.format(self.image.url)
     image_tag.short_description = 'Image'
     image_tag.allow_tags = True
 
@@ -205,7 +203,7 @@ class Photo(models.Model):
 
         tags = exifread.process_file(self.image)
         geotags = {}
-        for k,v in tags.iteritems():
+        for k,v in tags.items():
             if k.startswith("GPS"):
                 geotags[k] = v
         if len(geotags) == 0:
@@ -237,17 +235,17 @@ class Photo(models.Model):
         lo_dec_deg = (lo_dec_deg_num/lo_dec_deg_denom)/60
         long = str(lo_deg+lo_dec_deg)
         
-        wkt = "POINT ({} {})".format(long,lat)
+        wkt = "POINT ({} {})".format(int,lat)
         return wkt
 
     def rotate_image(self, filepath):
         try:
             image = Image.open(filepath)
             
-            for orientation in TAGS.keys():
+            for orientation in list(TAGS.keys()):
                 if TAGS[orientation] == 'Orientation':
                     break
-            exif = dict(image._getexif().items())
+            exif = dict(list(image._getexif().items()))
 
             update = False
             if exif[orientation] == 3:
@@ -264,7 +262,7 @@ class Photo(models.Model):
                 update = True
 
             if update:
-                print " Rotating image by "+str(degrees)
+                print(" Rotating image by "+str(degrees))
                 image.save(filepath)
             
             Image.close(image)
@@ -273,9 +271,9 @@ class Photo(models.Model):
             pass
 
     def save(self, *args, **kwargs):
-        print('Saving: '+str(self.image))
+        print(('Saving: '+str(self.image)))
 
-        self.rotate_image(settings.BASE_DIR+self.image.url);
+        self.rotate_image(settings.BASE_DIR+self.image.url)
 
         # Create Hash of file
         if not self.md5sum:  # file is new
@@ -286,7 +284,7 @@ class Photo(models.Model):
 
         # Check if hash already exists when working with new images
         if( not self.pk and Photo.objects.filter(md5sum=self.md5sum) ):
-            print "We already have that image in the system"
+            print("We already have that image in the system")
             os.remove(os.path.join(settings.MEDIA_ROOT, self.image.name))
             return
 
@@ -311,7 +309,7 @@ class Photo(models.Model):
                           'GPS GPSLatitude','GPS GPSLatitudeRef']
         ok=True
         for nt in necessary_tags:
-            if not nt in gts.keys():
+            if nt not in list(gts.keys()):
                 # print "not enough geo tags in photo (missing lat/long info)"
                 return
             

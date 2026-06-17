@@ -1,14 +1,13 @@
-from django.conf.urls import url, include
-from rest_framework.urlpatterns import format_suffix_patterns
+from django.urls import path, include
 from rest_framework import routers
 from . import views
 
 router = routers.DefaultRouter()
-router.register(r'stair', views.StairViewSet)
+router.register('stair', views.StairViewSet)
 
 urlpatterns = [
-    url(r'^$', views.index, name='index'),
-    url(r'^', include(router.urls)),
-    url(r'^stairquest/(?P<stairid>[\w-]+)/$', views.StairQuestView.as_view())
+    path("", views.index, name='index'),
+    path("", include(router.urls)),
+    path("stairquest/<int:stairid>/", views.StairQuestView.as_view())
     # url(r'^json/(?P<stairid>[\w-]+)/$', views.get_stairs, name='stair_json'),
 ]

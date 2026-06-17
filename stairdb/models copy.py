@@ -1,4 +1,4 @@
-from __future__ import unicode_literals
+
 
 from django.contrib.gis.db import models
 from django.utils.html import mark_safe
@@ -7,7 +7,7 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from django.conf import settings
 
 from PIL import Image
-from cStringIO import StringIO
+from io import StringIO
 import os
 import exifread
 
@@ -95,7 +95,7 @@ class Photo(models.Model):
             self.stairid)
     
     def image_tag(self):
-        return u'<img src="{}" style="height:300px;max-width:100%;"/>'.format(self.image.url)
+        return '<img src="{}" style="height:300px;max-width:100%;"/>'.format(self.image.url)
     image_tag.short_description = 'Image'
     image_tag.allow_tags = True
 
@@ -164,7 +164,7 @@ class Photo(models.Model):
 
         tags = exifread.process_file(self.image)
         geotags = {}
-        for k,v in tags.iteritems():
+        for k,v in tags.items():
             if k.startswith("GPS"):
                 geotags[k] = v
         if len(geotags) == 0:
@@ -196,7 +196,7 @@ class Photo(models.Model):
         lo_dec_deg = (lo_dec_deg_num/lo_dec_deg_denom)/60
         long = str(lo_deg+lo_dec_deg)
         
-        wkt = "POINT ({} {})".format(long,lat)
+        wkt = "POINT ({} {})".format(int,lat)
         return wkt
 
     def __unicode__(self):
@@ -212,7 +212,7 @@ class Photo(models.Model):
         else:
             fname = os.path.splitext(self.image.url.split("/")[-1])[0]
             tname = os.path.splitext(self.thumbnail.url.split("/")[-1])[0]
-            if tname <> fname+"_thumbnail":
+            if tname != fname+"_thumbnail":
                 self.create_thumbnail(self.image)
 
         force_update = False
@@ -235,7 +235,7 @@ class Photo(models.Model):
                           'GPS GPSLatitude','GPS GPSLatitudeRef']
         ok=True
         for nt in necessary_tags:
-            if not nt in gts.keys():
+            if not nt in list(gts.keys()):
                 #print "not enough geo tags in photo (missing lat/long info)"
                 return
             

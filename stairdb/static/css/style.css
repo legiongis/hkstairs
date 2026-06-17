@@ -158,6 +158,10 @@ html, body, .leaflet-container {
 
 }
 
+.leaflet-container {
+    font: 12px/1.5 "Helvetica Neue", Arial, Helvetica, sans-serif !important;
+}
+
 
 .loader-mask {
     background-color: rgba(0,0,0,.5)

@@ -29,8 +29,8 @@ class Command(BaseCommand):
     
         shp = os.path.join(settings.BASE_DIR,'stairdb','fixtures','Stairs_v5_polygons_wsg84.shp')
         
-        print "loading stairs into database from file:"
-        print shp
+        print("loading stairs into database from file:")
+        print(shp)
 
         sf = shapefile.Reader(shp)
         recs = sf.shapeRecords()
@@ -57,10 +57,10 @@ class Command(BaseCommand):
             obj.save()
             ct += 1
 
-        print ct, "stairs loaded"
-        print bad_ct, "loading errors"
+        print(ct, "stairs loaded")
+        print(bad_ct, "loading errors")
         
     def remove_stairs(self):
         
-        print "removing all existing stairs in database"
+        print("removing all existing stairs in database")
         Stair.objects.all().delete()

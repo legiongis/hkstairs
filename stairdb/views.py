@@ -7,13 +7,13 @@ from django.core.serializers import serialize
 import json
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page, never_cache
-from models import Stair, Photo
+from .models import Stair, Photo
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import viewsets, response
 from .serializers import StairSerializer, MapSerializer
 import time
-from management.commands._utils import getSQStair
+from .management.commands._utils import getSQStair
 from django.views.generic import View
 
 #@never_cache

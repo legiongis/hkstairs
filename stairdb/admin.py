@@ -1,7 +1,7 @@
 from django.contrib import admin
 from reversion.admin import VersionAdmin
 from leaflet.admin import LeafletGeoAdmin
-from models import Stair, Photo
+from .models import Stair, Photo
 from django.conf import settings
 
 
@@ -52,7 +52,7 @@ class StairAdmin(VersionAdmin, OverrideLeafletGeoAdmin):
 
     def featured_photo(self, obj):
         return " ".join([
-            u'<a href="/admin/stairdb/photo/{}/change/"><img src="{}" style="height:100px;max-width:100%;"/></a>'.format(child.id,child.image.url) for child in obj.photos.all()
+            f'<a href="/admin/stairdb/photo/{child.id}/change/"><img src="{child.image.url}" style="height:100px;max-width:100%;"/></a>' for child in obj.photos.all()
         ])
     featured_photo.short_description = "Photos"
     featured_photo.allow_tags = True

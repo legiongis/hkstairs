@@ -4,13 +4,11 @@ from datetime import datetime
 from django.core.management.base import BaseCommand
 # from django.conf import settings
 # import psycopg2 as db
-from _utils import refresh_csv, getStairs
+from ._utils import refresh_csv, getStairs
 from stairdb.models import Stair, Photo
 import requests
 from django.core.files.base import ContentFile
 from PIL import Image
-import tempfile
-from StringIO import StringIO
 import io
 
 
@@ -37,7 +35,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         if not options['stage'] and not options['run'] and not options['test_run']:
-            print "you must use this command with either --stage or --run or --test-run. for more info, run with --help."
+            print("you must use this command with either --stage or --run or --test-run. for more info, run with --help.")
             return
 
         if options['stage']:
@@ -63,7 +61,7 @@ class Command(BaseCommand):
         else:
             sq_stairs = cache.get('sq_stairs')
 
-        print('Processing '+str(len(sq_stairs)))+' SQ Stairs:'
+        print(('Processing '+str(len(sq_stairs)))+' SQ Stairs:')
         for sq_stair in sq_stairs:
             # print str(sq_stair.get('stair_id'))+' '+str(sq_stair.get('name'))+' '+str(sq_stair.get('current_name'))+' '+str(sq_stair.get('stepcount'))+' '+str(sq_stair.get('handrails'))
             # print str(sq_stair.get('stair_id'))
@@ -118,7 +116,7 @@ class Command(BaseCommand):
                     try:
                         tempimagefile = Image.open(io.BytesIO(response.content))
                         pass
-                    except IOError as e:
+                    except IOError:
                         continue
 
                     if self.validateImage(tempimagefile):
@@ -131,11 +129,11 @@ class Command(BaseCommand):
                         stair = Stair.objects.get(stairid=stair_id)
                         newphoto = Photo(stairid=stair)
                         # Save File in media directory
-                        print " Saving "+str(photofilename)+' '+str(localfilename)
+                        print(" Saving "+str(photofilename)+' '+str(localfilename))
                         newphoto.image.save(photofilename, ContentFile(response.content), save=False)
                         newphoto.save()
                     else:
-                        print " Not saving - not valid: "+str(photofilename)+' '+str(localfilename)
+                        print(" Not saving - not valid: "+str(photofilename)+' '+str(localfilename))
 
                     tempimagefile.close()
 
@@ -154,12 +152,12 @@ class Command(BaseCommand):
     def update_info(self, data, fake=False):
         print("\nupdating handrail and stair count information")
         ct = 0
-        for k, v in data.iteritems():
+        for k, v in data.items():
             item = Stair.objects.get(stairid=k)
             ct += 1
             if fake:
-                print "stair", item.stairid, " | handrail:", item.handrail, "stair_ct:", item.stair_ct
-                print "  -- new values | handrail:", v['handrail'], "stair_ct:", v['stair_ct']
+                print("stair", item.stairid, " | handrail:", item.handrail, "stair_ct:", item.stair_ct)
+                print("  -- new values | handrail:", v['handrail'], "stair_ct:", v['stair_ct'])
             if v['handrail']:
                 item.handrail = v['handrail']
             if v['stair_ct']:
@@ -167,6 +165,6 @@ class Command(BaseCommand):
 
             if not fake:
                 item.save()
-        print "\n", ct, "stair records {}updated".format("would be " if fake else "")
+        print("\n", ct, "stair records {}updated".format("would be " if fake else ""))
 
         return

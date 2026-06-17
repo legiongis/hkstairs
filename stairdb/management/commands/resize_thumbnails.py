@@ -7,7 +7,7 @@ import pygeoif
 from stairdb.models import Photo
 import exifread
 from PIL import Image
-from cStringIO import StringIO
+from io import StringIO
 import shutil
 
 
@@ -36,6 +36,6 @@ class Command(BaseCommand):
         allphotos = Photo.objects.all()
 
         for p in allphotos:
-            print "resizing "+str(p.image)
+            print("resizing "+str(p.image))
             p.create_thumbnail(p.image)
             #exit()

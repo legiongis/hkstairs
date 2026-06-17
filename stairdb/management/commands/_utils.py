@@ -46,10 +46,10 @@ def refresh_csv(table_name=""):
 def rotate_image(filepath):
     try:
         image = Image.open(filepath)
-        for orientation in TAGS.keys():
-            if ExifTags.TAGS[orientation] == 'Orientation':
+        for orientation in list(TAGS.keys()):
+            if TAGS[orientation] == 'Orientation':
                 break
-        exif = dict(image._getexif().items())
+        exif = dict(list(image._getexif().items()))
 
         if exif[orientation] == 3:
             image = image.rotate(180, expand=True)
