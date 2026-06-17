@@ -12,6 +12,7 @@ dependencies = [
     "djangorestframework>=3.17.1",
     "djangorestframework-gis>=1.2.1",
     "exifread>=3.5.1",
+    "gunicorn>=26.0.0",
     "pillow>=12.2.0",
     "psycopg[binary]>=3.3.4",
     "sorl-thumbnail>=13.0.0",
