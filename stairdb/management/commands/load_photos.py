@@ -1,14 +1,7 @@
-from django.core.management.base import BaseCommand, CommandError
-from django.conf import settings
+from django.core.management.base import BaseCommand
 from django.core.files.images import ImageFile
 import os
-import shapefile
-import pygeoif
 from stairdb.models import Photo
-import exifread
-from PIL import Image
-from io import StringIO
-import shutil
 
 class Command(BaseCommand):
     help = 'bulk load geotagged photos into database.'

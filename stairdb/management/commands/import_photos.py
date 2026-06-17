@@ -1,15 +1,8 @@
-from django.core.management.base import BaseCommand, CommandError
+from django.core.management.base import BaseCommand
 from django.conf import settings
-from django.core.files import File
 from django.core.files.images import ImageFile
 import os
-import shapefile
-import pygeoif
 from stairdb.models import Photo
-import exifread
-from PIL import Image
-from io import StringIO
-import shutil
 
 class Command(BaseCommand):
     help = 'import photos into media/photos and database.'
