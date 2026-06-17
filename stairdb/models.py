@@ -273,7 +273,7 @@ class Photo(models.Model):
     def save(self, *args, **kwargs):
         print(('Saving: '+str(self.image)))
 
-        self.rotate_image(settings.BASE_DIR+self.image.url)
+        self.rotate_image(self.image.path)
 
         # Create Hash of file
         if not self.md5sum:  # file is new
