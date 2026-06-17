@@ -1,6 +1,13 @@
 #! /usr/bin/bash
 
-source ./create_db.sh
+## get the path to this script's directory
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+## set path to project root (parent of scripts directory)
+PROJECT_ROOT=$(dirname $SCRIPT_DIR)
+
+source $SCRIPT_DIR/create_db.sh
+
+cd $PROJECT_ROOT
 
 uv run manage.py migrate
 
